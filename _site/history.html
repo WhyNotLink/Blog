@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIN's Blog</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="history.css">
+    <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true });
+        
+        const navbar = document.getElementById('navbar');
+        const hero = document.querySelector('.hero');
+        const heroHeight = hero.offsetHeight;
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            if (scrollY > heroHeight) {
+            navbar.classList.add('scrolled');
+            } else {
+            navbar.classList.remove('scrolled');
+            }
+        });
+       
+    </script>
+        <!-- Odometer 数字滚动插件 -->
+    <link rel="stylesheet" href="http://linmeng.infinityfreeapp.com/wp-content/uploads/2024/10/odometr.css">
+    <script src="http://linmeng.infinityfreeapp.com/wp-content/uploads/2024/10/odometr.js"></script>
+
+    <!-- 博客运行计时核心脚本 -->
+    <script>
+    window.pjaxLoaded = function(){
+        var blog_running_days=document.getElementById("blog_running_days");
+        var blog_running_hours=document.getElementById("blog_running_hours");
+        var blog_running_mins=document.getElementById("blog_running_mins");
+        var blog_running_secs=document.getElementById("blog_running_secs");
+        
+        function refresh_blog_running_time(){
+            // 博客起始时间：2024年10月7日（月份0-11，所以9代表10月）
+            var time = new Date() - new Date(2024, 9, 7, 0, 0, 0);
+            var d=parseInt(time/24/60/60/1000);
+            var h=parseInt(time%(24*60*60*1000)/60/60/1000);
+            var m=parseInt(time%(60*60*1000)/60/1000);
+            var s=parseInt(time%(60*1000)/1000);
+            
+            blog_running_days.innerHTML=d;
+            blog_running_hours.innerHTML=h;
+            blog_running_mins.innerHTML=m;
+            blog_running_secs.innerHTML=s;
+        };
+        
+        refresh_blog_running_time();
+        if (typeof(bottomTimeIntervalHasSet) == "undefined"){
+            var bottomTimeIntervalHasSet = true;
+            setInterval(refresh_blog_running_time,500);
+        }
+    };
+    // 初始化数字滚动
+    window.onload = function(){
+        odometer_init();
+        window.pjaxLoaded();
+    };
+
+    function odometer_init(){
+        let el = document.getElementsByClassName('odometer');
+        for (let i = 0; i < el.length; i++) {
+            od = new Odometer({
+                el: el[i],
+                format: 'ddd',
+                duration: 200
+            });
+        }
+    }
+    </script>
+
+</head>
+<body>
+    <!-- 头部
+    <header class="header">
+        <div class="container">
+            <h1 class="site-title">LIN</h1>
+            <p class="site-description">Welcome to the Journey</p>
+        </div>
+    </header> -->
+
+    <!-- 导航 -->
+    <nav class="nav" id="navbar">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="sort.html">分类</a></li>
+                <li><a href="history.html">归档</a></li>
+                <li><a href="aboutme.html">关于我</a></li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <!-- 主体内容 -->
+    <main class="main">
+        <div class="archive-container">
+            <h1 class="archive-title">全部文章 - 13</h1>
+            <div class="timeline">
+                
+                
+                    <div class="timeline-year">2026年</div>
+                    
+                        <div class="timeline-item">
+                            <!-- 文章缩略图：有图片才显示 -->
+                            
+                            <div class="timeline-content">
+                                <div class="timeline-date">2026-04-03</div>
+                                <a href="/%E9%9A%8F%E7%AC%94/2026/04/03/test1.md.html" class="timeline-title">欢迎来到我的博客</a>
+                            </div>
+                        </div>
+                    
+                        <div class="timeline-item">
+                            <!-- 文章缩略图：有图片才显示 -->
+                            
+                            <div class="timeline-content">
+                                <div class="timeline-date">2026-04-02</div>
+                                <a href="/%E9%9A%8F%E7%AC%94/2026/04/02/test2.md.html" class="timeline-title">欢迎来到我的博客</a>
+                            </div>
+                        </div>
+                    
+                        <div class="timeline-item">
+                            <!-- 文章缩略图：有图片才显示 -->
+                            
+                            <div class="timeline-content">
+                                <div class="timeline-date">2026-04-02</div>
+                                <a href="/%E9%9A%8F%E7%AC%94/2026/04/02/test2.md-copy.html" class="timeline-title">欢迎来到我的博客</a>
+                            </div>
+                        </div>
+                    
+                        <div class="timeline-item">
+                            <!-- 文章缩略图：有图片才显示 -->
+                            
+                            <div class="timeline-content">
+                                <div class="timeline-date">2026-04-02</div>
+                                <a href="/%E9%9A%8F%E7%AC%94/2026/04/02/test2.md-copy-9.html" class="timeline-title">欢迎来到我的博客</a>
+                            </div>
+                        </div>
+                    
+                        <div class="timeline-item">
+                            <!-- 文章缩略图：有图片才显示 -->
+                            
+                            <div class="timeline-content">
+                                <div class="timeline-date">2026-04-02</div>
+                                <a href="/%E9%9A%8F%E7%AC%94/2026/04/02/test2.md-copy-8.html" class="timeline-title">欢迎来到我的博客</a>
+                            </div>
+                        </div>
+                    
+                        <div class="timeline-item">
+                            <!-- 文章缩略图：有图片才显示 -->
+                            
+                            <div class="timeline-content">
+                                <div class="timeline-date">2026-04-02</div>
+                                <a href="/%E9%9A%8F%E7%AC%94/2026/04/02/test2.md-copy-7.html" class="timeline-title">欢迎来到我的博客</a>
+                            </div>
+                        </div>
+                    
+                        <div class="timeline-item">
+                            <!-- 文章缩略图：有图片才显示 -->
+                            
+                            <div class="timeline-content">
+                                <div class="timeline-date">2026-04-02</div>
+                                <a href="/%E9%9A%8F%E7%AC%94/2026/04/02/test2.md-copy-6.html" class="timeline-title">欢迎来到我的博客</a>
+                            </div>
+                        </div>
+                    
+                        <div class="timeline-item">
+                            <!-- 文章缩略图：有图片才显示 -->
+                            
+                            <div class="timeline-content">
+                                <div class="timeline-date">2026-04-02</div>
+                                <a href="/%E9%9A%8F%E7%AC%94/2026/04/02/test2.md-copy-5.html" class="timeline-title">欢迎来到我的博客</a>
+                            </div>
+                        </div>
+                    
+                        <div class="timeline-item">
+                            <!-- 文章缩略图：有图片才显示 -->
+                            
+                            <div class="timeline-content">
+                                <div class="timeline-date">2026-04-02</div>
+                                <a href="/%E9%9A%8F%E7%AC%94/2026/04/02/test2.md-copy-4.html" class="timeline-title">欢迎来到我的博客</a>
+                            </div>
+                        </div>
+                    
+                        <div class="timeline-item">
+                            <!-- 文章缩略图：有图片才显示 -->
+                            
+                            <div class="timeline-content">
+                                <div class="timeline-date">2026-04-02</div>
+                                <a href="/%E9%9A%8F%E7%AC%94/2026/04/02/test2.md-copy-3.html" class="timeline-title">欢迎来到我的博客</a>
+                            </div>
+                        </div>
+                    
+                        <div class="timeline-item">
+                            <!-- 文章缩略图：有图片才显示 -->
+                            
+                                <img src="/post-image/image-20260404034104191.png" alt="欢迎来到我的博客">
+                            
+                            <div class="timeline-content">
+                                <div class="timeline-date">2026-04-02</div>
+                                <a href="/ai/2026/04/02/test2.md-copy-2.html" class="timeline-title">欢迎来到我的博客</a>
+                            </div>
+                        </div>
+                    
+                        <div class="timeline-item">
+                            <!-- 文章缩略图：有图片才显示 -->
+                            
+                            <div class="timeline-content">
+                                <div class="timeline-date">2026-04-02</div>
+                                <a href="/%E9%9A%8F%E7%AC%94/2026/04/02/test2.md-copy-11.html" class="timeline-title">欢迎来到我的博客</a>
+                            </div>
+                        </div>
+                    
+                        <div class="timeline-item">
+                            <!-- 文章缩略图：有图片才显示 -->
+                            
+                            <div class="timeline-content">
+                                <div class="timeline-date">2026-04-02</div>
+                                <a href="/%E9%9A%8F%E7%AC%94/2026/04/02/test2.md-copy-10.html" class="timeline-title">欢迎来到我的博客</a>
+                            </div>
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container ">
+            <!-- 版权信息 -->
+            <div>Copyright © 2024 - 版权归属 LIN</div>
+            <!-- 博客运行计时 -->
+            <div class="running-time">
+                本博客已运行 
+                <span id="blog_running_days" class="odometer"></span> days , 
+                <span id="blog_running_hours" class="odometer"></span> h , 
+                <span id="blog_running_mins" class="odometer"></span> m , 
+                <span id="blog_running_secs" class="odometer"></span> s
+            </div>
+        </div>
+    </footer>
+</body>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
+   
+</html>

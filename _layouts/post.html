@@ -5,13 +5,15 @@ layout: null
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIN's Blog</title>
-    <link rel="stylesheet" href="style.css">
+    <title>{{ page.title }} - LIN's Blog</title>
+    <!-- 使用 relative_url 确保路径永远正确 -->
+    <link rel="stylesheet" href="{{ '/style.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/post.css' | relative_url }}">
+    <!-- 支持 Mermaid 流程图 -->
     <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad: true });
-        
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true });
+
         const navbar = document.getElementById('navbar');
         const hero = document.querySelector('.hero');
         const heroHeight = hero.offsetHeight;
@@ -76,90 +78,43 @@ layout: null
     }
     </script>
 
+
+
 </head>
 <body>
-    <!-- 头部
-    <header class="header">
-        <div class="container">
-            <h1 class="site-title">LIN</h1>
-            <p class="site-description">Welcome to the Journey</p>
-        </div>
-    </header> -->
 
-    <!-- 导航 -->
     <nav class="nav" id="navbar">
         <div class="container">
             <ul class="nav-menu">
-                <li><a href="index.html">首页</a></li>
-                <li><a href="sort.html">分类</a></li>
-                <li><a href="history.html">归档</a></li>
-                <li><a href="aboutme.html">关于我</a></li>
+                <li><a href="{{ '/index.html' | relative_url }}">首页</a></li>
+                <li><a href="{{ '/sort.html' | relative_url }}">分类</a></li>
+                <li><a href="{{ '/history.html' | relative_url }}">归档</a></li>
+                <li><a href="{{ '/aboutme.html' | relative_url }}">关于我</a></li>
             </ul>
         </div>
     </nav>
 
-    <section class="hero">
-    <div class="hero-content">
-        <h1 class="hero-title gradient-text">LIN</h1>
-        <p class="hero-subtitle gradient-text">Welcome to the Journey</p>
-    </div>
-    </section>
-
-    <!-- 主体内容 -->
     <main class="main">
         <div class="container">
             <div class="content">
-                <!-- 文章列表 -->
-                {% for post in site.posts %}
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="{{ post.url }}">{{ post.title }}</a>
-                    </h2>
+                <article class="post-detail">
+                    <h1 class="post-title">{{ page.title }}</h1>
                     <div class="post-meta">
-                        <span class="post-date">{{ post.date | date: "%Y年%m月%d日" }}</span>
-                        <span class="post-category">{{ post.category }}</span>
+                        {{ page.date | date: "%Y年%m月%d日" }} | 分类：{{ page.category }}
                     </div>
-                    <div class="post-content">
-                        {{ post.excerpt }}
+                    
+                    <!-- Jekyll 会把 Markdown 的内容塞到这里 -->
+                    <div class="entry-content">
+                        {{ content }}
                     </div>
-                    <a href="{{ post.url }}" class="post-read-more">Read More</a>
+                    
                 </article>
-                {% endfor %}
-
+                
+                <div style="margin-top:30px;">
+                    <a href="{{ '/' | relative_url }}" class="post-read-more">← Back</a>
+                </div>
             </div>
-
-            <!-- 侧边栏 -->
-            <aside class="sidebar">
-                <!-- 作者信息 -->
-                <div class="widget">
-                    <h3 class="widget-title">关于我</h3>
-                    <div class="author-info">
-                        <img src="images/touxiang.jpg" alt="作者头像" class="author-avatar">
-                        <p>人生三大目标，摸鱼、摸鱼还是摸鱼</p>
-                    </div>
-                </div>
-
-                <!-- 分类 -->
-                <div class="widget">
-                    <h3 class="widget-title">分类</h3>
-                    <ul class="category-list">
-                        <li><a href="#">随笔</a> (1)</li>
-                        <li><a href="#">教程</a> (1)</li>
-                        <li><a href="#">技术</a> (0)</li>
-                    </ul>
-                </div>
-
-                <!-- 标签 -->
-                <div class="widget">
-                    <h3 class="widget-title">标签</h3>
-                    <div class="tag-cloud">
-                        <a href="#">博客</a>
-                        <a href="#">技术</a>
-                        <a href="#">生活</a>
-                        <a href="#">学习</a>
-                    </div>
-                </div>
-            </aside>
+            
         </div>
     </main>
 
