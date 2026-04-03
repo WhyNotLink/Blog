@@ -2,3 +2,5 @@ title: LIN's Blog
 description: Welcome to the Journey
 author: LIN
 theme: null 
+baseurl: "/Blog"
+url: "https://whynotlink.github.io"

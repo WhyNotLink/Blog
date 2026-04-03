@@ -83,7 +83,7 @@ layout: null
                     {% if post.category == "AI" %}
                     <article class="post">
                         <h2 class="post-title">
-                            <a href="{{ post.url }}">{{ post.title }}</a>
+                            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
                         </h2>
                         <div class="post-meta">
                             <span class="post-date">{{ post.date | date: "%Y年%m月%d日" }}</span>
@@ -92,7 +92,7 @@ layout: null
                         <div class="post-content">
                             {{ post.excerpt }}
                         </div>
-                        <a href="{{ post.url }}" class="post-read-more">阅读更多</a>
+                        <a href="{{ post.url | relative_url }}" class="post-read-more">阅读更多</a>
                     </article>
                     {% endif %}
                 {% endfor %}

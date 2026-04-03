@@ -116,7 +116,7 @@ layout: null
                             {% endif %}
                             <div class="timeline-content">
                                 <div class="timeline-date">{{ post.date | date: "%Y-%m-%d" }}</div>
-                                <a href="{{ post.url }}" class="timeline-title">{{ post.title }}</a>
+                                <a href="{{ post.url | relative_url }}" class="timeline-title">{{ post.title }}</a>
                             </div>
                         </div>
                     {% endfor %}

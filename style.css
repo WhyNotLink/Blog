@@ -9,15 +9,15 @@ body {
     font-family: Comic Sans MS;
     line-height: 1.6;
     color: #333;
-    background-image: url(./images/background.jpg);
+    background-image: url("/Blog/images/background.jpg");
     background-attachment: fixed;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    cursor: url(./images/mouse.png), default;
+    cursor: url("/Blog/images/mouse.png"), default;
 }
 a:hover {
-    cursor: url(./images/mouseack.png), pointer;
+    cursor: url("/Blog/images/mouseack.png"), pointer;
 }
 
 .hero {
