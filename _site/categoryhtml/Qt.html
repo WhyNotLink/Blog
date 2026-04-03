@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document-Qt</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../category.css">
+        <!-- Odometer 数字滚动插件 -->
+    <link rel="stylesheet" href="http://linmeng.infinityfreeapp.com/wp-content/uploads/2024/10/odometr.css">
+    <script src="http://linmeng.infinityfreeapp.com/wp-content/uploads/2024/10/odometr.js"></script>
+
+    <!-- 博客运行计时核心脚本 -->
+    <script>
+    window.pjaxLoaded = function(){
+        var blog_running_days=document.getElementById("blog_running_days");
+        var blog_running_hours=document.getElementById("blog_running_hours");
+        var blog_running_mins=document.getElementById("blog_running_mins");
+        var blog_running_secs=document.getElementById("blog_running_secs");
+        
+        function refresh_blog_running_time(){
+            // 博客起始时间：2024年10月7日（月份0-11，所以9代表10月）
+            var time = new Date() - new Date(2024, 9, 7, 0, 0, 0);
+            var d=parseInt(time/24/60/60/1000);
+            var h=parseInt(time%(24*60*60*1000)/60/60/1000);
+            var m=parseInt(time%(60*60*1000)/60/1000);
+            var s=parseInt(time%(60*1000)/1000);
+            
+            blog_running_days.innerHTML=d;
+            blog_running_hours.innerHTML=h;
+            blog_running_mins.innerHTML=m;
+            blog_running_secs.innerHTML=s;
+        };
+        
+        refresh_blog_running_time();
+        if (typeof(bottomTimeIntervalHasSet) == "undefined"){
+            var bottomTimeIntervalHasSet = true;
+            setInterval(refresh_blog_running_time,500);
+        }
+    };
+    // 初始化数字滚动
+    window.onload = function(){
+        odometer_init();
+        window.pjaxLoaded();
+    };
+
+    function odometer_init(){
+        let el = document.getElementsByClassName('odometer');
+        for (let i = 0; i < el.length; i++) {
+            od = new Odometer({
+                el: el[i],
+                format: 'ddd',
+                duration: 200
+            });
+        }
+    }
+    </script>
+
+</head>
+<body>
+
+    <!-- 导航 -->
+    <nav class="nav" id="navbar">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="../index.html">首页</a></li>
+                <li><a href="../sort.html">分类</a></li>
+                <li><a href="../history.html">归档</a></li>
+                <li><a href="../aboutme.html">关于我</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main">
+        <h2 class="Document-title">Qt</h2>
+        <div class="container">
+            <div class="content">
+                <!-- 文章列表 -->
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </div>
+        </div>
+    </main>
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container ">
+            <!-- 版权信息 -->
+            <div>Copyright © 2024 - 版权归属 LIN</div>
+            <!-- 博客运行计时 -->
+            <div class="running-time">
+                本博客已运行 
+                <span id="blog_running_days" class="odometer"></span> days , 
+                <span id="blog_running_hours" class="odometer"></span> h , 
+                <span id="blog_running_mins" class="odometer"></span> m , 
+                <span id="blog_running_secs" class="odometer"></span> s
+            </div>
+        </div>
+    </footer>
+</body>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
+   
+</html>
