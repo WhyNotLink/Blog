@@ -1,17 +1,20 @@
+---
+layout: null
+---
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的博客</title>
+    <title>LIN's Blog</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- 头部 -->
     <header class="header">
         <div class="container">
-            <h1 class="site-title">我的博客</h1>
-            <p class="site-description">记录生活，分享知识</p>
+            <h1 class="site-title">LIN</h1>
+            <p class="site-description">Welcome to the Journey</p>
         </div>
     </header>
 
@@ -32,29 +35,22 @@
         <div class="container">
             <div class="content">
                 <!-- 文章列表 -->
+                {% for post in site.posts %}
                 <article class="post">
-                    <h2 class="post-title"><a href="#">欢迎来到我的博客</a></h2>
+                    <h2 class="post-title">
+                        <a href="{{ post.url }}">{{ post.title }}</a>
+                    </h2>
                     <div class="post-meta">
-                        <span class="post-date">2026年4月3日</span>
-                        <span class="post-category">随笔</span>
+                        <span class="post-date">{{ post.date | date: "%Y年%m月%d日" }}</span>
+                        <span class="post-category">{{ post.category }}</span>
                     </div>
                     <div class="post-content">
-                        <p>这是我的第一篇博客文章。在这里，我将分享我的学习心得、生活感悟和技术经验。希望能与大家一起成长，共同进步。</p>
+                        {{ post.excerpt }}
                     </div>
-                    <a href="#" class="post-read-more">阅读更多</a>
+                    <a href="{{ post.url }}" class="post-read-more">阅读更多</a>
                 </article>
+                {% endfor %}
 
-                <article class="post">
-                    <h2 class="post-title"><a href="#">如何开始写博客</a></h2>
-                    <div class="post-meta">
-                        <span class="post-date">2026年4月2日</span>
-                        <span class="post-category">教程</span>
-                    </div>
-                    <div class="post-content">
-                        <p>写博客是一个很好的习惯，它可以帮助我们整理思路，记录成长，分享知识。本文将分享如何开始写博客的一些建议。</p>
-                    </div>
-                    <a href="#" class="post-read-more">阅读更多</a>
-                </article>
             </div>
 
             <!-- 侧边栏 -->
@@ -63,8 +59,8 @@
                 <div class="widget">
                     <h3 class="widget-title">关于我</h3>
                     <div class="author-info">
-                        <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20avatar%20portrait&image_size=square" alt="作者头像" class="author-avatar">
-                        <p>我是一名热爱技术和写作的开发者，喜欢分享我的学习心得和生活感悟。</p>
+                        <img src="images/touxiang.jpg" alt="作者头像" class="author-avatar">
+                        <p>人生三大目标，摸鱼、摸鱼还是摸鱼</p>
                     </div>
                 </div>
 
