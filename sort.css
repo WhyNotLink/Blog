@@ -44,3 +44,20 @@
     gap: 100px;
     width: 100%;
 }
+/* .category-count odometer{
+    font-size: 1.2rem;
+   } */
+
+.category-item{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.category-name{
+    font-size: 2rem;
+}
+.category-count{
+    color: #ae92ee;
+}

@@ -6,11 +6,8 @@
     <!-- 使用 relative_url 确保路径永远正确 -->
     <link rel="stylesheet" href="/Blog/style.css">
     <link rel="stylesheet" href="/Blog/post.css">
-    <!-- 支持 Mermaid 流程图 -->
-    <script type="module">
-      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-      mermaid.initialize({ startOnLoad: true });
-
+    
+    <script>
         const navbar = document.getElementById('navbar');
         const hero = document.querySelector('.hero');
         const heroHeight = hero.offsetHeight;
@@ -133,8 +130,10 @@
             </div>
         </div>
     </footer>
+    <!-- 支持 Mermaid 流程图 -->
+    
 </body>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
-   
+
 </html>

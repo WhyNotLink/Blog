@@ -6,11 +6,8 @@
     <!-- 使用 relative_url 确保路径永远正确 -->
     <link rel="stylesheet" href="/Blog/style.css">
     <link rel="stylesheet" href="/Blog/post.css">
-    <!-- 支持 Mermaid 流程图 -->
-    <script type="module">
-      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-      mermaid.initialize({ startOnLoad: true });
-
+    
+    <script>
         const navbar = document.getElementById('navbar');
         const hero = document.querySelector('.hero');
         const heroHeight = hero.offsetHeight;
@@ -140,8 +137,33 @@
             </div>
         </div>
     </footer>
+    <!-- 支持 Mermaid 流程图 -->
+    
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 1. 找到所有被 kramdown 标记为 mermaid 的代码块
+            const mermaidBlocks = document.querySelectorAll('pre > code.language-mermaid');
+            
+            mermaidBlocks.forEach((codeBlock) => {
+            // 2. 创建一个新的 div，类名为 mermaid
+            const container = document.createElement('div');
+            container.className = 'mermaid';
+            // 3. 将原始内容（代码）放入 div
+            container.textContent = codeBlock.textContent;
+            
+            // 4. 替换掉原本的 pre 标签
+            const pre = codeBlock.parentElement;
+            pre.parentNode.replaceChild(container, pre);
+            });
+
+            // 5. 手动启动渲染
+            mermaid.initialize({ startOnLoad: true });
+        });
+        </script>
+    
 </body>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
-   
+
 </html>
