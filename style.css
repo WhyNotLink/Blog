@@ -25,6 +25,7 @@ a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+    user-select: none;
 }
 
 .hero-title {
@@ -94,6 +95,7 @@ a:hover {
     display: flex;
     justify-content: center;
     padding: 0;
+    user-select: none;
 }
 
 .nav-menu li {
@@ -132,16 +134,18 @@ a:hover {
 .sidebar {
     flex: 0 0 300px;
     min-width: 300px;
+    user-select: none;
 }
 
 /* 文章样式 */
 .post {
-    border-radius: 8px;
+    border-radius: 20px;
     background-color: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(6px);
     padding: 30px;
     margin-bottom: 30px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    user-select: none;
 }
 
 .post:hover {
@@ -206,6 +210,26 @@ a:hover {
     padding-bottom: 10px;
     border-bottom: 2px solid #f0f0f0;
 }
+.widget-list {
+    display: flex;
+    flex-direction: row;
+    gap: 55px;
+    list-style: none;
+}
+
+.widget-list li {
+    margin-bottom: 10px;
+}
+
+.widget-list a {
+    color: #333;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.widget-list a:hover {  
+    color: #007bff;
+}
 
 /* 作者信息 */
 .author-info {
@@ -219,24 +243,6 @@ a:hover {
     margin-bottom: 15px;
 }
 
-/* 分类列表 */
-.category-list {
-    list-style: none;
-}
-
-.category-list li {
-    margin-bottom: 10px;
-}
-
-.category-list a {
-    color: #333;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.category-list a:hover {
-    color: #007bff;
-}
 
 /* 标签云 */
 .tag-cloud {
@@ -312,3 +318,13 @@ a:hover {
     }
 }
 
+/* 初始状态：让页面内容透明 */
+.fade-in-content {
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out; 
+}
+
+/* 加载完成后的状态 */
+.fade-in-content.loaded {
+    opacity: 1;
+}

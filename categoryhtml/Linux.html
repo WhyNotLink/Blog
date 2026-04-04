@@ -1,27 +1,14 @@
+---
+layout: null
+---
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>欢迎来到我的博客 - LIN's Blog</title>
-    <!-- 使用 relative_url 确保路径永远正确 -->
-    <link rel="stylesheet" href="/Blog/style.css">
-    <link rel="stylesheet" href="/Blog/post.css">
-    
-    <script>
-        const navbar = document.getElementById('navbar');
-        const hero = document.querySelector('.hero');
-        const heroHeight = hero.offsetHeight;
-
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            if (scrollY > heroHeight) {
-            navbar.classList.add('scrolled');
-            } else {
-            navbar.classList.remove('scrolled');
-            }
-        });
-       
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document-Linux</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../category.css">
         <!-- Odometer 数字滚动插件 -->
     <link rel="stylesheet" href="/Blog/odometr.css">
     <script src="/Blog/odometr.js"></script>
@@ -71,50 +58,46 @@
     }
     </script>
 
-
-
 </head>
 <body>
 
+    <!-- 导航 -->
     <nav class="nav" id="navbar">
         <div class="container">
             <ul class="nav-menu">
-                <li><a href="/Blog/index.html">首页</a></li>
-                <li><a href="/Blog/sort.html">分类</a></li>
-                <li><a href="/Blog/history.html">归档</a></li>
-                <li><a href="/Blog/aboutme.html">关于我</a></li>
+                <li><a href="../index.html">首页</a></li>
+                <li><a href="../sort.html">分类</a></li>
+                <li><a href="../history.html">归档</a></li>
+                <li><a href="../aboutme.html">关于我</a></li>
             </ul>
         </div>
     </nav>
 
     <main class="main">
+        <h2 class="Document-title">Linux</h2>
         <div class="container">
             <div class="content">
-                <article class="post-detail">
-                    <h1 class="post-title">欢迎来到我的博客</h1>
-                    <div class="post-meta">
-                        2026年04月03日 | 分类：随笔
-                    </div>
-                    
-                    <!-- Jekyll 会把 Markdown 的内容塞到这里 -->
-                    <div class="entry-content">
-                        <p>这是我的第一篇博客文章。 在这里，我将分享我的学习心得、生活感悟和技术经验。 希望能与大家一起成长，共同进步。</p>
-
-<h1 id="这是一个测试文档">这是一个测试文档</h1>
-
-
-                    </div>
-                    
-                </article>
-                
-                <div style="margin-top:30px;">
-                    <a href="/Blog/" class="post-read-more">← Back</a>
-                </div>
+                <!-- 文章列表 -->
+                {% for post in site.posts %}
+                    {% if post.category == "Linux" %}
+                    <article class="post">
+                        <h2 class="post-title">
+                            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+                        </h2>
+                        <div class="post-meta">
+                            <span class="post-date">{{ post.date | date: "%Y年%m月%d日" }}</span>
+                            <span class="post-category">{{ post.category }}</span>
+                        </div>
+                        <div class="post-content">
+                            {{ post.excerpt }}
+                        </div>
+                        <a href="{{ post.url | relative_url }}" class="post-read-more">阅读更多</a>
+                    </article>
+                    {% endif %}
+                {% endfor %}
             </div>
-            
         </div>
     </main>
-
     <!-- 页脚 -->
     <footer class="footer">
         <div class="container ">
@@ -130,10 +113,8 @@
             </div>
         </div>
     </footer>
-    <!-- 支持 Mermaid 流程图 -->
-    
 </body>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
-
+   
 </html>

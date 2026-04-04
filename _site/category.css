@@ -30,5 +30,6 @@
     margin-bottom: 20px;
     text-align: center;
     margin-bottom: 80px;
+    user-select: none;
    }
 

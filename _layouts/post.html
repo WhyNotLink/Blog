@@ -8,13 +8,14 @@
     <link rel="stylesheet" href="{{ '/post.css' | relative_url }}">
     
     <script>
-        const navbar = document.getElementById('navbar');
-        const hero = document.querySelector('.hero');
-        const heroHeight = hero.offsetHeight;
+        // const navbar = document.getElementById('navbar');
+        // const hero = document.querySelector('.hero');
+        // const heroHeight = hero.offsetHeight;
+        const threshold = 200;
 
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
-            if (scrollY > heroHeight) {
+            if (scrollY > threshold) {
             navbar.classList.add('scrolled');
             } else {
             navbar.classList.remove('scrolled');

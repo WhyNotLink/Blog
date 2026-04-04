@@ -79,14 +79,6 @@ layout: null
 
 </head>
 <body>
-    <!-- 头部
-    <header class="header">
-        <div class="container">
-            <h1 class="site-title">LIN</h1>
-            <p class="site-description">Welcome to the Journey</p>
-        </div>
-    </header> -->
-
     <!-- 导航 -->
     <nav class="nav" id="navbar">
         <div class="container">
@@ -111,7 +103,7 @@ layout: null
                     {% for post in year.items %}
                         <div class="timeline-item">
                             <!-- 文章缩略图：有图片才显示 -->
-                            {% if post.image %}
+                            {% if post.image and post.image != "" %}
                                 <img src="{{ post.image }}" alt="{{ post.title }}">
                             {% endif %}
                             <div class="timeline-content">

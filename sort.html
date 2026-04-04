@@ -84,27 +84,41 @@ layout: null
             <!-- Android Studio -->
             <a href="categoryhtml/Android_Studio.html" class="category-item" data-cat="android_studio">
                 <span class="category-name">Android Studio</span>
-                <span class="category-count odometer">{{ site.categories.Android_Studio | size }}</span>
+                <span class="category-count odometer">{{ site.categories.Android | size }}</span>
             </a>
             <!-- C/C++ -->
             <a href="categoryhtml/C,C++.html" class="category-item" data-cat="c_cpp">
                 <span class="category-name">C/C++</span>
-                <span class="category-count odometer">{{ site.categories.C_C++ | size }}</span>
+                <span class="category-count odometer">
+                    {% assign c_count = site.categories["C"] | size %}
+                    {% assign cpp_count = site.categories["C++"] | size %}
+                    {% assign c_cpp_combined = site.categories["C/C++"] | size %}
+                    {{ c_count | plus: cpp_count | plus: c_cpp_combined }}
+                </span>
             </a>
             <!-- Keil5/CubMX -->
             <a href="categoryhtml/Keil5,Cubmx,TICCS.html" class="category-item" data-cat="keil_cubmx">
-                <span class="category-name">Keil5/CubMX</span>
-                <span class="category-count odometer">{{ site.categories.Keil5_Cubmx_TICCS | size }}</span>
+                <span class="category-name">Keil5/CubMX/TICCS</span>
+                <span class="category-count odometer">
+                    {% assign keil5_count = site.categories["Keil5"] | size %}
+                    {% assign cubmx_count = site.categories["CubMX"] | size %}
+                    {% assign ticcs_count = site.categories["TICCS"] | size %}
+                    {{ keil5_count | plus: cubmx_count | plus: ticcs_count }}
+                </span>
             </a>
             <!-- Linux -->
-            <a href="categoryhtml/Arch_Linux.html" class="category-item" data-cat="linux">
+            <a href="categoryhtml/Linux.html" class="category-item" data-cat="linux">
                 <span class="category-name">Linux</span>
-                <span class="category-count odometer">{{ site.categories.Arch_Linux | size }}</span>
+                <span class="category-count odometer">{{ site.categories.Linux | size }}</span>
             </a>
             <!-- PCB -->
             <a href="categoryhtml/PCB,EDA.html" class="category-item" data-cat="pcb">
-                <span class="category-name">PCB</span>
-                <span class="category-count odometer">{{ site.categories.PCB_EDA | size }}</span>
+                <span class="category-name">PCB/EDA</span>
+                <span class="category-count odometer">
+                    {% assign pcb_count = site.categories["PCB"] | size %}
+                    {% assign eda_count = site.categories["EDA"] | size %}
+                    {{ pcb_count | plus: eda_count }}
+                </span>
             </a>
             <!-- Python -->
             <a href="categoryhtml/Python.html" class="category-item" data-cat="python">

@@ -79,7 +79,7 @@ layout: null
             <div class="content">
                 <!-- 文章列表 -->
                 {% for post in site.posts %}
-                    {% if post.category == "PCB,EDA" %}
+                    {% if post.category == "PCB" or post.category == "EDA" %}
                     <article class="post">
                         <h2 class="post-title">
                             <a href="{{ post.url | relative_url }}">{{ post.title }}</a>

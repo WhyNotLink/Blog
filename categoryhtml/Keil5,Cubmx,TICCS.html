@@ -6,7 +6,7 @@ layout: null
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document-Keil5,Cubmx,TICCS</title>
+    <title>Document-Keil5,CubMX,TICCS</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="../category.css">
         <!-- Odometer 数字滚动插件 -->
@@ -74,12 +74,12 @@ layout: null
     </nav>
 
     <main class="main">
-        <h2 class="Document-title">Keil5,Cubmx,TICCS</h2>
+        <h2 class="Document-title">Keil5,CubMX,TICCS</h2>
         <div class="container">
             <div class="content">
                 <!-- 文章列表 -->
                 {% for post in site.posts %}
-                    {% if post.category == "Keil5,Cubmx,TICCS" %}
+                    {% if post.category == "Keil5" or post.category == "CubMX" or post.category == "TICCS" %}
                     <article class="post">
                         <h2 class="post-title">
                             <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
