@@ -59,7 +59,7 @@ layout: null
     </script>
 
 </head>
-<body>
+<body class="fade-in-content">
 
     <!-- 导航 -->
     <nav class="nav" id="navbar">
@@ -79,7 +79,7 @@ layout: null
             <div class="content">
                 <!-- 文章列表 -->
                 {% for post in site.posts %}
-                    {% if post.category == "C,C++" %}
+                    {% if post.category contains "C" or post.category contains "C++" %}
                     <article class="post">
                         <h2 class="post-title">
                             <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
@@ -91,7 +91,7 @@ layout: null
                         <div class="post-content">
                             {{ post.excerpt }}
                         </div>
-                        <a href="{{ post.url | relative_url }}" class="post-read-more">阅读更多</a>
+                        <a href="{{ post.url | relative_url }}" class="post-read-more">Read More</a>
                     </article>
                     {% endif %}
                 {% endfor %}
@@ -113,6 +113,21 @@ layout: null
             </div>
         </div>
     </footer>
+    <script>
+        (function() {
+            const bgUrl = "/Blog/images/background.jpg";
+            const img = new Image();
+            
+            img.src = bgUrl;
+            img.onload = function() {
+                console.log("背景图加载完毕！");
+                document.body.classList.add('loaded');
+            };
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 5000);
+        })();
+    </script>
 </body>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>

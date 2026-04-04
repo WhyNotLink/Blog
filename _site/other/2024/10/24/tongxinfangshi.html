@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>硬件通信方式 - LIN's Blog</title>
+    <!-- 使用 relative_url 确保路径永远正确 -->
+    <link rel="stylesheet" href="/Blog/style.css">
+    <link rel="stylesheet" href="/Blog/post.css">
+    
+    <script>
+        // const navbar = document.getElementById('navbar');
+        // const hero = document.querySelector('.hero');
+        // const heroHeight = hero.offsetHeight;
+        const threshold = 200;
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            if (scrollY > threshold) {
+            navbar.classList.add('scrolled');
+            } else {
+            navbar.classList.remove('scrolled');
+            }
+        });
+       
+    </script>
+        <!-- Odometer 数字滚动插件 -->
+    <link rel="stylesheet" href="/Blog/odometr.css">
+    <script src="/Blog/odometr.js"></script>
+    <!-- 博客运行计时核心脚本 -->
+    <script>
+    window.pjaxLoaded = function(){
+        var blog_running_days=document.getElementById("blog_running_days");
+        var blog_running_hours=document.getElementById("blog_running_hours");
+        var blog_running_mins=document.getElementById("blog_running_mins");
+        var blog_running_secs=document.getElementById("blog_running_secs");
+        
+        function refresh_blog_running_time(){
+            // 博客起始时间：2024年10月7日（月份0-11，所以9代表10月）
+            var time = new Date() - new Date(2024, 9, 7, 0, 0, 0);
+            var d=parseInt(time/24/60/60/1000);
+            var h=parseInt(time%(24*60*60*1000)/60/60/1000);
+            var m=parseInt(time%(60*60*1000)/60/1000);
+            var s=parseInt(time%(60*1000)/1000);
+            
+            blog_running_days.innerHTML=d;
+            blog_running_hours.innerHTML=h;
+            blog_running_mins.innerHTML=m;
+            blog_running_secs.innerHTML=s;
+        };
+        
+        refresh_blog_running_time();
+        if (typeof(bottomTimeIntervalHasSet) == "undefined"){
+            var bottomTimeIntervalHasSet = true;
+            setInterval(refresh_blog_running_time,500);
+        }
+    };
+    // 初始化数字滚动
+    window.onload = function(){
+        odometer_init();
+        window.pjaxLoaded();
+        hljs.highlightAll();
+    };
+
+    function odometer_init(){
+        let el = document.getElementsByClassName('odometer');
+        for (let i = 0; i < el.length; i++) {
+            od = new Odometer({
+                el: el[i],
+                format: 'ddd',
+                duration: 200
+            });
+        }
+    }
+    </script>
+
+</head>
+<body class="fade-in-content">
+
+    <nav class="nav" id="navbar">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="/Blog/index.html">首页</a></li>
+                <li><a href="/Blog/sort.html">分类</a></li>
+                <li><a href="/Blog/history.html">归档</a></li>
+                <li><a href="/Blog/aboutme.html">关于我</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="container">
+            <div class="content">
+                <article class="post-detail">
+                    <h1 class="post-title">硬件通信方式</h1>
+                    <div class="post-meta">
+                        2024年10月24日 | 分类：Other
+                    </div>
+                    
+                    <!-- Jekyll 会把 Markdown 的内容塞到这里 -->
+                    <div class="entry-content">
+                        <h1 id="uart">UART</h1>
+
+<p><strong>通用异步接收器 / 发送器</strong>，通常称为 <strong>UART</strong>，是一种广泛应用于嵌入式领域的<strong>串行</strong>、<strong>异步、全双工通信协议。</strong></p>
+
+<p>UART 通道有两条数据线。每个设备上都有一个 RX 引脚和一个 TX 引脚（RX 用于接收，TX 用于发送）。</p>
+
+<p>每个设备的 RX 引脚都连接到另一个设备的 TX 引脚。</p>
+
+<p>请注意，没有共享时钟线！这是通用异步接收方发送方的 “异步” 方面。<code class="language-plaintext highlighter-rouge">同步加了时钟线，称为USART。</code></p>
+
+<pre><code class="language-mermaid">graph LR
+    subgraph D1 [Device 1]
+        direction TB 
+        RX1[RX]
+        TX1[TX]
+        GND1[GND]
+    end
+
+    subgraph D2 [Device 2]
+        direction TB
+        RX2[RX]
+        TX2[TX]
+        GND2[GND]
+    end
+RX1--&gt;TX2;TX1--&gt;RX2;GND1--&gt;GND2
+</code></pre>
+
+<p>UART 作为一种异步串行通信协议，其工作原理是逐位传输传输数据的每个二进制位。</p>
+
+<ul>
+  <li>1、串行通信是指利用一根传输线逐位依次传输数据。</li>
+  <li>2、异步通信以一个字符为传输单位。通信中两个字符之间的时间间隔不固定，但同一字符中两个相邻位之间的时间间隔是固定的。一般来说，两个 UART 设备之间的通信不需要时钟线。此时，需要在两个 UART 设备上指定相同的传输速率，以及空闲位、起始位、奇偶校验位和结束位，即遵循相同的协议。</li>
+  <li>3、全双公，代表着可以双方可以同时发送、接收数据。 4、数据传输速率以波特率表示，即每秒传输的位数。例如，如果数据传输速率为 120 个字符 / 秒，每个字符为 10 位（1 个起始位、7 个数据位、1 个校验位、1 个停止位），则其传输的波特率为 10×120 = 1200 个字符 / 秒 = 1200 波特率。</li>
+</ul>
+
+<h1 id="spi">SPI</h1>
+
+<p><strong>SPI 是英语 Serial Peripheral interface 的缩写，顾名思义就是串行外围设备接口。</strong></p>
+
+<p>SPI，是一<strong>种高速的，全双工，同步</strong>的通信总线，并且在芯片的管脚上只占用四根线。</p>
+
+<pre><code class="language-mermaid">graph 
+    subgraph S2 [Slave2]
+        direction TB 
+        A3[SCK]
+        B3[MOSI]
+        C3[MISO]
+        D3["&lt;span style='text-decoration:overline'&gt;SS&lt;/span&gt;"]
+
+    end
+    subgraph M [Master]
+        direction TB 
+        A[SCK]
+        B[MOSI]
+        C[MISO]
+        D["&lt;span style='text-decoration:overline'&gt;SS&lt;/span&gt;"]
+
+    end
+    
+    subgraph S [Slave]
+        direction TB 
+        A2[SCK]
+        B2[MOSI]
+        C2[MISO]
+        D2["&lt;span style='text-decoration:overline'&gt;SS&lt;/span&gt;"]
+
+    end
+	
+
+    A--&gt;A2;B--&gt;C2;C--&gt;B2;D--&gt;D2;A--&gt;A3;B--&gt;C3;C--&gt;B3;D--&gt;D3
+
+</code></pre>
+
+<h2 id="spi-分为主从两种模式">SPI 分为主、从两种模式</h2>
+
+<p>一个 SPI 通讯系统需要包含一个（且只能是一个）主设备，一个或多个从设备。提供时钟的为主设备（Master），接收时钟的设备为从设备（Slave）</p>
+
+<p>SPI接口读写操作，都是由主设备发起。当存在多个从设备时，通过各自的片选信号进行管理。</p>
+
+<h2 id="spi数据发送接收">SPI数据发送接收</h2>
+
+<p>SPI 主机和从机都有一个串行移位寄存器，主机通过向它的 SPI 串行寄存器写入一个字节来发起一次传输。</p>
+
+<ul>
+  <li>1、首先拉低对应 SS 信号线，表示与该设备进行通信</li>
+  <li>2、主机通过发送 SCLK 时钟信号，来告诉从机写数据或者读数据<code class="language-plaintext highlighter-rouge">这里要注意，SCLK时钟信号可能是低电平有效，也可能是高电平有效，因为SPI有四种模式，这里不展开，只要知道设备必须相同模式才能工作。</code></li>
+  <li>3、主机 (Master) 将要发送的数据写到发送数据缓存区 (Menory)，缓存区经过移位寄存器 (0~7)，串行移位寄存器通过 MOSI 信号线将字节一位一位的移出去传送给从机，，同时 MISO 接口接收到的数据经过移位寄存器一位一位的移到接收缓存区。</li>
+  <li>4、从机 (Slave) 也将自己的串行移位寄存器 (0~7) 中的内容通过 MISO 信号线返回给主机。同时通过 MOSI 信号线接收主机发送的数据，这样，两个移位寄存器中的内容就被交换。</li>
+</ul>
+
+<p><strong>SPI 只有主模式和从模式之分，没有读和写的说法，外设的写操作和读操作是同步完成的。如果只进行写操作，主机只需忽略接收到的字节；反之，若主机要读取从机的一个字节，就必须发送一个空字节来引发从机的传输。也就是说，你发一个数据必然会收到一个数据；你要收一个数据必须也要先发一个数据。</strong></p>
+
+<h1 id="i2c">I2C</h1>
+
+<p>I2C 总线是一种串行、<strong><em>*半双工*</em></strong>的总线，主要用于近距离、低速的芯片之间的通信；I2C 总线有两根双向的信号线，一根数据线 SDA 用于收发数据，一根时钟线 SCL 用于通信双方时钟的同步。</p>
+
+<pre><code class="language-mermaid">graph LR
+    subgraph S2 [Slave]
+        direction TB 
+        A3[SDA]
+        B3[SCL]
+
+    end
+    subgraph M [Master]
+        direction TB 
+        A[SDA]
+        B[SCL]
+
+
+    end
+    
+    subgraph S [Slave]
+        direction TB 
+        A2[SDA]
+        B2[SCL]
+
+    end
+
+    A--&gt;A2;B--&gt;B2;A--&gt;A3;B--&gt;B3
+</code></pre>
+
+<p>I2C 总线是一种多主机总线，连接在 I2C 总线上的器件分为主机和从机。主机有权发起和结束一次通信，从机只能被动呼叫；当总线上有多个主机同时启用总线时，I2C 也具备冲突检测和仲裁的功能来防止错误产生；</p>
+
+<p>每个连接到 I2C 总线上的器件都有一个唯一的地址（7bit），<code class="language-plaintext highlighter-rouge">且每个器件都可以作为主机也可以作为从机（但同一时刻只能有一个主机）</code>，总线上的器件增加和删除不影响其他器件正常工作；</p>
+
+<p>I2C 总线在通信时总线上发送数据的器件为发送器，接收数据的器件为接收器。</p>
+
+<h1 id="can">CAN</h1>
+
+<p>Controller Area Network（控制器局域网）;</p>
+
+<p>使用 CAN-H 和 CAN-L 两条线，抗电磁干扰能力强，传输距离可达 10km（低速）。</p>
+
+<h1 id="usb">USB</h1>
+
+<p>分为24P和16P（引脚数），主要区别就是支不支持USB3.0高速协议。有些只能充电，有些能传数据。现在USB魔改的太杂了。</p>
+
+<h1 id="dma">DMA</h1>
+
+<p>一般数据通过CPU到内存或者外设需要一定时间，在这个时间里CPU进程卡住无法做别的事情，DMA就是帮助CPU运送数据的一个工具。开启DMA后CPU可继续处理其他事情，由DMA将数据进行运送。</p>
+
+
+                    </div>
+                    
+                </article>
+                
+                <div style="margin-top:30px;">
+                    <a href="/Blog/" class="post-read-more">← Back</a>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container ">
+            <!-- 版权信息 -->
+            <div>Copyright © 2024 - 版权归属 LIN</div>
+            <!-- 博客运行计时 -->
+            <div class="running-time">
+                本博客已运行 
+                <span id="blog_running_days" class="odometer"></span> days , 
+                <span id="blog_running_hours" class="odometer"></span> h , 
+                <span id="blog_running_mins" class="odometer"></span> m , 
+                <span id="blog_running_secs" class="odometer"></span> s
+            </div>
+        </div>
+    </footer>
+    <!-- 支持 Mermaid 流程图 -->
+    
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 1. 找到所有被 kramdown 标记为 mermaid 的代码块
+            const mermaidBlocks = document.querySelectorAll('pre > code.language-mermaid');
+            
+            mermaidBlocks.forEach((codeBlock) => {
+            // 2. 创建一个新的 div，类名为 mermaid
+            const container = document.createElement('div');
+            container.className = 'mermaid';
+            // 3. 将原始内容（代码）放入 div
+            container.textContent = codeBlock.textContent;
+            
+            // 4. 替换掉原本的 pre 标签
+            const pre = codeBlock.parentElement;
+            pre.parentNode.replaceChild(container, pre);
+            });
+
+            // 5. 手动启动渲染
+            mermaid.initialize({ startOnLoad: true });
+        });
+        </script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/androidstudio.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <script>
+        (function() {
+            const bgUrl = "/Blog/images/background.jpg";
+            const img = new Image();
+            
+            img.src = bgUrl;
+            img.onload = function() {
+                console.log("背景图加载完毕！");
+                document.body.classList.add('loaded');
+            };
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 5000);
+        })();
+    </script>
+</body>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
+
+</html>

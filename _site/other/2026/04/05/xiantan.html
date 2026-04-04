@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>模拟图传与数字图传 - LIN's Blog</title>
+    <title>如何入门嵌入式开发 - LIN's Blog</title>
     <!-- 使用 relative_url 确保路径永远正确 -->
     <link rel="stylesheet" href="/Blog/style.css">
     <link rel="stylesheet" href="/Blog/post.css">
@@ -58,6 +58,7 @@
     window.onload = function(){
         odometer_init();
         window.pjaxLoaded();
+        hljs.highlightAll();
     };
 
     function odometer_init(){
@@ -72,10 +73,8 @@
     }
     </script>
 
-
-
 </head>
-<body>
+<body class="fade-in-content">
 
     <nav class="nav" id="navbar">
         <div class="container">
@@ -92,172 +91,33 @@
         <div class="container">
             <div class="content">
                 <article class="post-detail">
-                    <h1 class="post-title">模拟图传与数字图传</h1>
+                    <h1 class="post-title">如何入门嵌入式开发</h1>
                     <div class="post-meta">
-                        2026年04月02日 | 分类：PCB
+                        2026年04月05日 | 分类：Other
                     </div>
                     
                     <!-- Jekyll 会把 Markdown 的内容塞到这里 -->
                     <div class="entry-content">
-                        <h1 id="数字图传">数字图传</h1>
+                        <p>本章内容是闲谈，给后面实验室的学弟学妹们一个参考。
+其实嵌入式开发是一个复杂的过程，需要学习很多知识。
+它不仅涉及硬件还有软件
+一般人精通一方面就很厉害了，如果你有兴趣可以全方面学习。</p>
 
-<p>天空端</p>
+<p>几年前我也许可能会说先去学51然后32，现在我说先去学32然后51。
+32也不是以前的那种了标准库了，现在更多的是hal库的32。</p>
 
-<pre><code class="language-mermaid">graph LR
-A(摄像头) --&gt; B(处理器) --&gt; C(射频)
+<p>不管什么，想开始学32就需要学习C语言，无论标准库还是hal库都是C语言的函数而已。</p>
 
-</code></pre>
+<p>先用万能的stm32f103c8t6开发板,无论是标准库还是hal库都可以。
+玩会了这个可以去尝试其他开发板，比如F4，H7，G4系列，arduino等等。当然这个阶段你可以尝试自己画自己的开发板
+想要自己画板子，那就需要去学习PCB，EDA开发工具了。这里推荐嘉立创EDA，毕竟可以白嫖。这个阶段你可以自己做个小车，做个小项目。
+接下来就可以往更细分方向走了，你可以玩电源，玩屏幕，玩电机。
+如果你觉得硬件差不多了也可以去写软件，比如说涉足Linux，学习移植，学习内核、驱动开发。
+更或者涉足AI，因为我觉得未来AI产业落地肯定需要嵌入式行业支持。
+然后也可以涉足互联网开发，比如Web服务器，数据库等。
+学点Python，学点Java，学点C#，学点JavaScript等。到这现阶段也就差不多了，后面再考虑。</p>
 
-<h2 id="基于udp的wifi图传">基于UDP的WIFI图传</h2>
-
-<p>最简单、基于WIFI连接</p>
-
-<ul>
-  <li>
-    <p>需要通信双方建立WIFI连接</p>
-  </li>
-  <li>
-    <p>一旦连接断开，会有明显卡顿</p>
-  </li>
-</ul>
-
-<h2 id="无连接的wifi图传树莓派图传">无连接的WIFI图传（树莓派图传）</h2>
-
-<p>将数据包通过注入的方式发出去，另一端网卡直接进行在monitor(监听)模式,筛选数据包然后组合解码</p>
-
-<ul>
-  <li>
-    <h4 id="基本原理">基本原理</h4>
-
-    <ul>
-      <li>发送端直接将数据包通过inject方式从网卡发出</li>
-      <li>接收端WIFI运行于monitor模式</li>
-      <li>无需建立WIFI连接</li>
-    </ul>
-  </li>
-</ul>
-
-<p>这种图传也通常叫做树莓派图传，因为充分利用了树莓派的软件生态</p>
-
-<ul>
-  <li>
-    <h4 id="树莓派图传">树莓派图传</h4>
-
-    <ul>
-      <li>摄像头 -&gt; 树莓派编码（H264）-&gt; 树莓派发送</li>
-      <li>延迟：150ms以内</li>
-      <li>瓶颈：linux的V4l2子系统会缓存3-4帧用于视频编码（H264帧间压缩）</li>
-    </ul>
-  </li>
-  <li>
-    <h4 id="缺点">缺点</h4>
-
-    <ul>
-      <li>
-        <p>不是所有网卡驱动都带monitor模式，看是否支持kail</p>
-      </li>
-      <li>
-        <p>体积太大/太贵（可以移植到国产Soc）</p>
-      </li>
-      <li>
-        <p>编码延迟</p>
-      </li>
-    </ul>
-  </li>
-</ul>
-
-<p>https://befinitiv.wordpress.com/wifibroadcast-analog-like-transmission-of-live-video-data/</p>
-
-<p>https://github.com/svpcom/wifibroadcast</p>
-
-<p>https://github.com/rodizio1/EZ-WifiBroadcast</p>
-
-<h2 id="esp32-cam-fpv">ESP32 CAM fpv</h2>
-
-<p>最合适的？</p>
-
-<p>400X296(20-50ms)</p>
-
-<p>800X600(50-80ms)</p>
-
-<pre><code class="language-mermaid">graph LR
-    subgraph ESP32
-        direction LR
-        I2S
-        WIFI
-        I2S --&gt;|DMA| WIFI
-    end
-
-    A("DVP摄像头(JPEG输出)") --&gt; I2S
-</code></pre>
-
-<p>也是类似于inject方式发包</p>
-
-<ul>
-  <li>
-    <h4 id="缺点-1">缺点</h4>
-
-    <ul>
-      <li>仅支持部分常见dvp摄像头</li>
-      <li>功率较小
-        <ul>
-          <li>https://github.com/bisonscience/ESP32-M1-Reach-Out</li>
-          <li></li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-</ul>
-
-<p>https://github.com/jeanlemotan/esp32-cam-fpv</p>
-
-<h2 id="sdr图传">SDR图传</h2>
-
-<pre><code class="language-mermaid">graph LR
-    subgraph SDR硬件平台
-        direction LR
-        FPGA
-        C(射频收发器)
-        FPGA --&gt; C
-    end
-
-    A("摄像头") --&gt; FPGA
-</code></pre>
-
-<ul>
-  <li>
-    <h4 id="缺点-2">缺点</h4>
-
-    <ul>
-      <li>难度较大</li>
-      <li>贵</li>
-    </ul>
-  </li>
-</ul>
-
-<h1 id="模拟图传">模拟图传</h1>
-
-<p>图传系统主要分为两个部分：接收端和发射端。发射端是安装在飞机上的摄像头与图传发射机，摄像头将拍摄到的画面转换为模拟信号传输给图传发射机，而发射机将摄像头的信号通过无线电发射出去。而接收端负责接收信号并且将呈现在屏幕上。</p>
-
-<h2 id="发射端">发射端</h2>
-
-<p>发射端关注发射功率。功率越大越好。常见的功率25mw，200mw，400mw，500mw，600mw，800mw和1w以上的大功率图传。</p>
-
-<p>频段也有1.2G-5.8G，现在常用5.8G</p>
-
-<p><a href="https://oshwhub.com/clz1/5.8Ghztu-zhuan">飞行器设计之5.8Ghz图传 - 立创开源硬件平台</a></p>
-
-<h2 id="接收端">接收端</h2>
-
-<p>接收端主要有两种类别：一种是头戴的fpv眼镜或者是眼罩，还有一种是架在遥控器/三脚架上的屏幕（类似汽车中控台的那种）。</p>
-
-<p>因为我们要改装，所以选用第二种</p>
-
-<p><a href="https://github.com/sheaivey/rx5808-pro-diversity?tab=readme-ov-file">sheaivey/rx5808-pro-diversity: DIY project to create your own 5.8ghz FPV diversity basestation - based off the rx5808 receiver module. Project includes basic Arduino Nano implementation to advanced custom PCB board and introduction to digital switches 4066 chip.</a></p>
-
-<p>然后可以直接用CVBS输入的屏幕预览，或者OTG视频采集卡到手机上看，也可以接下来用CVBS-&gt;USB给树莓派或者PC电脑用做AI处理</p>
-
-<p><a href="https://github.com/Ft-Available/RX5808-Div">Ft-Available/RX5808-Div: 自制的RX5808接收机</a></p>
+<p>还有一个比较重要的，不管未来是考研还是就业，最好大二去实习一下。</p>
 
                     </div>
                     
@@ -311,6 +171,23 @@ A(摄像头) --&gt; B(处理器) --&gt; C(射频)
         });
         </script>
     
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/androidstudio.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <script>
+        (function() {
+            const bgUrl = "/Blog/images/background.jpg";
+            const img = new Image();
+            
+            img.src = bgUrl;
+            img.onload = function() {
+                console.log("背景图加载完毕！");
+                document.body.classList.add('loaded');
+            };
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 5000);
+        })();
+    </script>
 </body>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>

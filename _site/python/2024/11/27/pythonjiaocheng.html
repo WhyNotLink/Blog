@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Python教程(一) - LIN's Blog</title>
+    <!-- 使用 relative_url 确保路径永远正确 -->
+    <link rel="stylesheet" href="/Blog/style.css">
+    <link rel="stylesheet" href="/Blog/post.css">
+    
+    <script>
+        // const navbar = document.getElementById('navbar');
+        // const hero = document.querySelector('.hero');
+        // const heroHeight = hero.offsetHeight;
+        const threshold = 200;
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            if (scrollY > threshold) {
+            navbar.classList.add('scrolled');
+            } else {
+            navbar.classList.remove('scrolled');
+            }
+        });
+       
+    </script>
+        <!-- Odometer 数字滚动插件 -->
+    <link rel="stylesheet" href="/Blog/odometr.css">
+    <script src="/Blog/odometr.js"></script>
+    <!-- 博客运行计时核心脚本 -->
+    <script>
+    window.pjaxLoaded = function(){
+        var blog_running_days=document.getElementById("blog_running_days");
+        var blog_running_hours=document.getElementById("blog_running_hours");
+        var blog_running_mins=document.getElementById("blog_running_mins");
+        var blog_running_secs=document.getElementById("blog_running_secs");
+        
+        function refresh_blog_running_time(){
+            // 博客起始时间：2024年10月7日（月份0-11，所以9代表10月）
+            var time = new Date() - new Date(2024, 9, 7, 0, 0, 0);
+            var d=parseInt(time/24/60/60/1000);
+            var h=parseInt(time%(24*60*60*1000)/60/60/1000);
+            var m=parseInt(time%(60*60*1000)/60/1000);
+            var s=parseInt(time%(60*1000)/1000);
+            
+            blog_running_days.innerHTML=d;
+            blog_running_hours.innerHTML=h;
+            blog_running_mins.innerHTML=m;
+            blog_running_secs.innerHTML=s;
+        };
+        
+        refresh_blog_running_time();
+        if (typeof(bottomTimeIntervalHasSet) == "undefined"){
+            var bottomTimeIntervalHasSet = true;
+            setInterval(refresh_blog_running_time,500);
+        }
+    };
+    // 初始化数字滚动
+    window.onload = function(){
+        odometer_init();
+        window.pjaxLoaded();
+        hljs.highlightAll();
+    };
+
+    function odometer_init(){
+        let el = document.getElementsByClassName('odometer');
+        for (let i = 0; i < el.length; i++) {
+            od = new Odometer({
+                el: el[i],
+                format: 'ddd',
+                duration: 200
+            });
+        }
+    }
+    </script>
+
+</head>
+<body class="fade-in-content">
+
+    <nav class="nav" id="navbar">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="/Blog/index.html">首页</a></li>
+                <li><a href="/Blog/sort.html">分类</a></li>
+                <li><a href="/Blog/history.html">归档</a></li>
+                <li><a href="/Blog/aboutme.html">关于我</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="container">
+            <div class="content">
+                <article class="post-detail">
+                    <h1 class="post-title">Python教程(一)</h1>
+                    <div class="post-meta">
+                        2024年11月27日 | 分类：Python
+                    </div>
+                    
+                    <!-- Jekyll 会把 Markdown 的内容塞到这里 -->
+                    <div class="entry-content">
+                        <h1 id="python-基础数据类型与流程控制">Python 基础数据类型与流程控制</h1>
+
+<h2 id="一python-基础语法">一、Python 基础语法</h2>
+
+<h3 id="11-缩进规则">1.1 缩进规则</h3>
+
+<ul>
+  <li>Python<strong>以缩进来划分代码块</strong>，缩进错误会直接导致程序报错</li>
+  <li>缩进规范：使用<strong>2-4 个空格</strong>，<code class="language-plaintext highlighter-rouge">Tab</code>等价于 4 个空格</li>
+  <li>同一代码块缩进长度必须统一，禁止空格与<code class="language-plaintext highlighter-rouge">Tab</code>混用</li>
+</ul>
+
+<h3 id="12-注释方式">1.2 注释方式</h3>
+
+<ul>
+  <li>单行注释：使用<code class="language-plaintext highlighter-rouge">#</code> 开头</li>
+  <li>多行注释：使用<code class="language-plaintext highlighter-rouge">''' 注释内容 '''</code> 或<code class="language-plaintext highlighter-rouge">""" 注释内容 """</code></li>
+</ul>
+
+<h3 id="13-标识符规则">1.3 标识符规则</h3>
+
+<p>标识符用于命名变量、函数、类、模块等，规则如下：</p>
+
+<ol>
+  <li>
+    <p>区分大小写（<code class="language-plaintext highlighter-rouge">sxt</code>与<code class="language-plaintext highlighter-rouge">SXT</code>为不同标识符）</p>
+  </li>
+  <li>
+    <p>首字符必须是<strong>字母 / 下划线</strong>，后续可接字母、数字、下划线</p>
+  </li>
+  <li>
+    <p>禁止使用 Python 保留字</p>
+  </li>
+  <li>
+    <p>特殊命名规范：</p>
+
+    <ul>
+      <li>单下划线开头<code class="language-plaintext highlighter-rouge">_xxx</code>：表示内部属性，不建议外部访问</li>
+      <li>双下划线开头<code class="language-plaintext highlighter-rouge">__xxx</code>：类私有成员</li>
+      <li>双下划线首尾<code class="language-plaintext highlighter-rouge">__xxx__</code>：系统内置方法，避免自定义</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="14-保留字">1.4 保留字</h3>
+
+<p>Python 保留字均为小写，不可用作标识符：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">and</th>
+      <th>def</th>
+      <th>exec</th>
+      <th>if</th>
+      <th>not</th>
+      <th>return</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">assert</td>
+      <td>del</td>
+      <td>finally</td>
+      <td>import</td>
+      <td>or</td>
+      <td>try</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">break</td>
+      <td>elif</td>
+      <td>for</td>
+      <td>in</td>
+      <td>pass</td>
+      <td>while</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">class</td>
+      <td>else</td>
+      <td>from</td>
+      <td>is</td>
+      <td>print</td>
+      <td>with</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">continue</td>
+      <td>except</td>
+      <td>global</td>
+      <td>lambda</td>
+      <td>raise</td>
+      <td>yield</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="15-输入与输出">1.5 输入与输出</h3>
+
+<h4 id="输出print-">输出：print ()</h4>
+
+<ul>
+  <li>基础打印：<code class="language-plaintext highlighter-rouge">print("Hello Python")</code></li>
+  <li>多参数打印：<code class="language-plaintext highlighter-rouge">print("a", "b", "c")</code></li>
+  <li>表达式打印：<code class="language-plaintext highlighter-rouge">print("300+200", 300+200)</code></li>
+  <li>格式化输出（占位符）：</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">占位符</th>
+      <th style="text-align: center">类型</th>
+      <th style="text-align: center">示例</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">%d</td>
+      <td style="text-align: center">整数</td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">print("%d" % 10)</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">%f</td>
+      <td style="text-align: center">浮点数</td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">print("%.1f" % 3.5)</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">%s</td>
+      <td style="text-align: center">字符串</td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">print("%s" % "张三")</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">%x</td>
+      <td style="text-align: center">十六进制整数</td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">print("%x" % 20)</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="输入input-">输入：input ()</h4>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">input()</code>默认返回<strong>字符串类型</strong>，数值需强制转换</li>
+  <li>示例：</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>name = input("请输入姓名：")
+age = int(input("请输入年龄："))  # 转整型
+sal = float(input("请输入薪资："))  # 转浮点型
+</code></pre></div></div>
+
+<h3 id="16-变量操作">1.6 变量操作</h3>
+
+<ol>
+  <li>基础赋值：<code class="language-plaintext highlighter-rouge">变量名 = 变量值</code>（Python 变量必须赋值后使用）</li>
+  <li>链式赋值：<code class="language-plaintext highlighter-rouge">a = b = c = 10</code></li>
+  <li>系列解包赋值：<code class="language-plaintext highlighter-rouge">a, b = 1, 2</code></li>
+  <li>变量交换：<code class="language-plaintext highlighter-rouge">a, b = b, a</code></li>
+  <li>删除变量：<code class="language-plaintext highlighter-rouge">del 变量名</code></li>
+</ol>
+
+<h2 id="二python-数据类型">二、Python 数据类型</h2>
+
+<h3 id="21-数据类型总览">2.1 数据类型总览</h3>
+
+<pre><code class="language-mermaid">graph TD
+    A[Python数据类型] --&gt; B[基本数据类型]
+    A --&gt; C[高级数据类型]
+    B --&gt; B1[数字Number]
+    B --&gt; B2[布尔Boolean]
+    B --&gt; B3[字符串String]
+    B1 --&gt; B11[整型int]
+    B1 --&gt; B12[浮点型float]
+    B1 --&gt; B13[复数型complex]
+    C --&gt; C1[列表List]
+    C --&gt; C2[元组Tuple]
+    C --&gt; C3[集合Set]
+    C --&gt; C4[字典Dict]
+</code></pre>
+
+<h3 id="22-基本数据类型">2.2 基本数据类型</h3>
+
+<h4 id="数字类型number">数字类型（Number）</h4>
+
+<ul>
+  <li>整型<code class="language-plaintext highlighter-rouge">int</code>：整数（无长短整型区分）</li>
+  <li>浮点型<code class="language-plaintext highlighter-rouge">float</code>：双精度浮点数</li>
+  <li>复数型<code class="language-plaintext highlighter-rouge">complex</code>：<code class="language-plaintext highlighter-rouge">a+bj</code>形式，示例：<code class="language-plaintext highlighter-rouge">z = 2+3j</code></li>
+</ul>
+
+<h4 id="布尔类型boolean">布尔类型（Boolean）</h4>
+
+<ul>
+  <li>取值：<code class="language-plaintext highlighter-rouge">True</code>/<code class="language-plaintext highlighter-rouge">False</code>，可等价为<code class="language-plaintext highlighter-rouge">1</code>/<code class="language-plaintext highlighter-rouge">0</code></li>
+</ul>
+
+<h4 id="字符串类型string">字符串类型（String）</h4>
+
+<ul>
+  <li>定义：单 / 双引号包裹字符序列，支持正向 / 反向索引</li>
+  <li>索引规则：正向从<code class="language-plaintext highlighter-rouge">0</code>开始，反向从<code class="language-plaintext highlighter-rouge">-1</code>开始</li>
+  <li>示例：</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>s = "abcdef12345"
+s[0]  # 取第一个字符'a'
+s[-1] # 取最后一个字符'5'
+</code></pre></div></div>
+
+<h3 id="23-高级数据类型">2.3 高级数据类型</h3>
+
+<h4 id="列表list">列表（List）</h4>
+
+<ul>
+  <li>
+    <p>定义：<code class="language-plaintext highlighter-rouge">[元素1, 元素2, ...]</code>，元素可修改、类型可不同</p>
+  </li>
+  <li>
+    <p>常用操作：</p>
+
+    <ul>
+      <li>长度：<code class="language-plaintext highlighter-rouge">len(list)</code></li>
+      <li>添加：<code class="language-plaintext highlighter-rouge">list.append(obj)</code></li>
+      <li>删除：<code class="language-plaintext highlighter-rouge">list.remove(obj)</code>、<code class="language-plaintext highlighter-rouge">list.pop(index)</code></li>
+      <li>排序：<code class="language-plaintext highlighter-rouge">list.sort()</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="元组tuple">元组（Tuple）</h4>
+
+<ul>
+  <li>定义：<code class="language-plaintext highlighter-rouge">(元素1, 元素2, ...)</code>，<strong>元素不可修改</strong></li>
+  <li>切片规则：<code class="language-plaintext highlighter-rouge">sequence[start:stop:step]</code>（左闭右开）</li>
+</ul>
+
+<h4 id="集合set">集合（Set）</h4>
+
+<ul>
+  <li>定义：<code class="language-plaintext highlighter-rouge">{元素1, 元素2, ...}</code>，<strong>无序、无重复元素</strong></li>
+  <li>常用操作：添加<code class="language-plaintext highlighter-rouge">add()</code>、删除<code class="language-plaintext highlighter-rouge">remove()</code>、交集 / 并集运算</li>
+</ul>
+
+<h4 id="字典dict">字典（Dict）</h4>
+
+<ul>
+  <li>定义：<code class="language-plaintext highlighter-rouge">{key1:value1, key2:value2, ...}</code>，键唯一、值任意</li>
+  <li>键要求：不可变类型（字符串、数字）</li>
+  <li>常用操作：
+    <ul>
+      <li>访问：<code class="language-plaintext highlighter-rouge">dict[key]</code></li>
+      <li>修改 / 添加：<code class="language-plaintext highlighter-rouge">dict[key] = value</code></li>
+      <li>删除：<code class="language-plaintext highlighter-rouge">del dict[key]</code>、<code class="language-plaintext highlighter-rouge">dict.clear()</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="三python-流程控制">三、Python 流程控制</h2>
+
+<h3 id="31-条件控制">3.1 条件控制</h3>
+
+<h4 id="if-elif-else-语句">if-elif-else 语句</h4>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if 条件1:
+    代码块1
+elif 条件2:
+    代码块2
+else:
+    代码块3
+</code></pre></div></div>
+
+<p>match-case 语句（Python3.10+）
+等价于 C 语言switch-case，用于多模式匹配</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>match 变量:
+    case 模式1:
+        代码块1
+    case 模式2:
+        代码块2
+    case _:
+        默认代码块
+</code></pre></div></div>
+
+<h3 id="32-循环语句">3.2 循环语句</h3>
+
+<h4 id="while-循环">while 循环</h4>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>while 条件:
+    循环体
+</code></pre></div></div>
+
+<h4 id="for-循环">for 循环</h4>
+
+<ul>
+  <li>遍历可迭代对象：</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sites = ["Baidu", "Google"]
+for site in sites:
+    print(site)
+</code></pre></div></div>
+
+<h4 id="range--函数">range () 函数</h4>
+
+<ul>
+  <li>生成数字序列，格式：<code class="language-plaintext highlighter-rouge">range(start, stop, step)</code></li>
+  <li>示例：<code class="language-plaintext highlighter-rouge">range(5)</code> → <code class="language-plaintext highlighter-rouge">0,1,2,3,4</code></li>
+</ul>
+
+<h3 id="33-推导式">3.3 推导式</h3>
+
+<ul>
+  <li>格式：<code class="language-plaintext highlighter-rouge">[表达式 for 变量 in 可迭代对象 if 条件]</code></li>
+  <li>示例：生成 1-9 的平方列表</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>squares = [x**2 for x in range(10)]
+</code></pre></div></div>
+
+<h2 id="四异常处理">四、异常处理</h2>
+
+<p>基础语法：<code class="language-plaintext highlighter-rouge">try...except...finally</code></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>try:
+    可能报错的代码
+except 异常类型:
+    异常处理代码
+finally:
+    无论是否报错都会执行的代码
+</code></pre></div></div>
+
+
+                    </div>
+                    
+                </article>
+                
+                <div style="margin-top:30px;">
+                    <a href="/Blog/" class="post-read-more">← Back</a>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container ">
+            <!-- 版权信息 -->
+            <div>Copyright © 2024 - 版权归属 LIN</div>
+            <!-- 博客运行计时 -->
+            <div class="running-time">
+                本博客已运行 
+                <span id="blog_running_days" class="odometer"></span> days , 
+                <span id="blog_running_hours" class="odometer"></span> h , 
+                <span id="blog_running_mins" class="odometer"></span> m , 
+                <span id="blog_running_secs" class="odometer"></span> s
+            </div>
+        </div>
+    </footer>
+    <!-- 支持 Mermaid 流程图 -->
+    
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 1. 找到所有被 kramdown 标记为 mermaid 的代码块
+            const mermaidBlocks = document.querySelectorAll('pre > code.language-mermaid');
+            
+            mermaidBlocks.forEach((codeBlock) => {
+            // 2. 创建一个新的 div，类名为 mermaid
+            const container = document.createElement('div');
+            container.className = 'mermaid';
+            // 3. 将原始内容（代码）放入 div
+            container.textContent = codeBlock.textContent;
+            
+            // 4. 替换掉原本的 pre 标签
+            const pre = codeBlock.parentElement;
+            pre.parentNode.replaceChild(container, pre);
+            });
+
+            // 5. 手动启动渲染
+            mermaid.initialize({ startOnLoad: true });
+        });
+        </script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/androidstudio.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <script>
+        (function() {
+            const bgUrl = "/Blog/images/background.jpg";
+            const img = new Image();
+            
+            img.src = bgUrl;
+            img.onload = function() {
+                console.log("背景图加载完毕！");
+                document.body.classList.add('loaded');
+            };
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 5000);
+        })();
+    </script>
+</body>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
+
+</html>
