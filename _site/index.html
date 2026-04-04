@@ -369,6 +369,9 @@
         // 页面首次加载时执行
         window.addEventListener('load', function() {
             odometer_init();
+        }); 
+        $(document).on('pjax:complete', function() {
+            window.pjaxLoaded();
         });
 
 
