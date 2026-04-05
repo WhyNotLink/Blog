@@ -230,7 +230,7 @@ mermaid: true
 | loop     | 循环播放                              |
 | poster   | 视频加载前显示的封面图片              |
 
-​	2、```<video>：播放视频，支持mp4、webm、ogg格式``
+​	2、```<video>：播放视频，支持mp4、webm、ogg格式```
 
 ```
 <video src="视频路径" controls width="600" poster="视频封面图片路径">您的浏览器不支持视频播放</video>
