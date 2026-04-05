@@ -98,7 +98,28 @@
                     
                     <!-- Jekyll 会把 Markdown 的内容塞到这里 -->
                     <div class="entry-content">
-                        <h1 id="一初始化">一、初始化</h1>
+                        <ul id="markdown-toc">
+  <li><a href="#一初始化" id="markdown-toc-一初始化">一、初始化</a></li>
+  <li><a href="#二器件驱动代码" id="markdown-toc-二器件驱动代码">二、器件驱动代码</a>    <ul>
+      <li><a href="#21点亮lcd屏幕" id="markdown-toc-21点亮lcd屏幕">2.1点亮LCD屏幕</a></li>
+      <li><a href="#22按键" id="markdown-toc-22按键">2.2按键</a>        <ul>
+          <li><a href="#仅单击检测" id="markdown-toc-仅单击检测">仅单击检测</a></li>
+          <li><a href="#单击长按检测" id="markdown-toc-单击长按检测">单击、长按检测</a></li>
+          <li><a href="#单击双击长按检测" id="markdown-toc-单击双击长按检测">单击、双击、长按检测</a></li>
+        </ul>
+      </li>
+      <li><a href="#23led" id="markdown-toc-23led">2.3LED</a></li>
+      <li><a href="#24串口通信" id="markdown-toc-24串口通信">2.4串口通信</a></li>
+      <li><a href="#25tim-进行-pwm-输出" id="markdown-toc-25tim-进行-pwm-输出">2.5TIM 进行 PWM 输出</a></li>
+      <li><a href="#26adc" id="markdown-toc-26adc">2.6ADC</a></li>
+      <li><a href="#27tim-输入捕获" id="markdown-toc-27tim-输入捕获">2.7TIM 输入捕获</a></li>
+      <li><a href="#28常用的函数" id="markdown-toc-28常用的函数">2.8常用的函数</a></li>
+    </ul>
+  </li>
+</ul>
+<hr />
+
+<h1 id="一初始化">一、初始化</h1>
 
 <p>点击RCC开启外部时钟</p>
 
@@ -656,7 +677,9 @@ sprintf(buff,"        DATA");
             }, 5000);
         })();
     </script>
+
 </body>
+    <script src="/Blog/autohighlight.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
 

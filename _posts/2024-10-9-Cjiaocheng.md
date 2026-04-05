@@ -9,6 +9,9 @@ category: [C]
 
 mermaid: true
 ---
+* TOC
+{:toc}
+---
 
 ## 一、基本语法
 

@@ -98,7 +98,54 @@
                     
                     <!-- Jekyll 会把 Markdown 的内容塞到这里 -->
                     <div class="entry-content">
-                        <h2 id="一指针基础">一、指针基础</h2>
+                        <ul id="markdown-toc">
+  <li><a href="#一指针基础" id="markdown-toc-一指针基础">一、指针基础</a>    <ul>
+      <li><a href="#1-核心概念" id="markdown-toc-1-核心概念">1. 核心概念</a></li>
+      <li><a href="#2-两个核心运算符" id="markdown-toc-2-两个核心运算符">2. 两个核心运算符</a></li>
+      <li><a href="#3-指针定义语法" id="markdown-toc-3-指针定义语法">3. 指针定义语法</a></li>
+    </ul>
+  </li>
+  <li><a href="#二指针的基本特性" id="markdown-toc-二指针的基本特性">二、指针的基本特性</a>    <ul>
+      <li><a href="#1-空指针" id="markdown-toc-1-空指针">1. 空指针</a></li>
+      <li><a href="#2-野指针" id="markdown-toc-2-野指针">2. 野指针</a></li>
+      <li><a href="#3-指针的步长" id="markdown-toc-3-指针的步长">3. 指针的步长</a></li>
+    </ul>
+  </li>
+  <li><a href="#三指针与数组" id="markdown-toc-三指针与数组">三、指针与数组</a>    <ul>
+      <li><a href="#1-核心结论" id="markdown-toc-1-核心结论">1. 核心结论</a></li>
+      <li><a href="#2-指针访问数组" id="markdown-toc-2-指针访问数组">2. 指针访问数组</a></li>
+      <li><a href="#3-指针遍历数组" id="markdown-toc-3-指针遍历数组">3. 指针遍历数组</a></li>
+    </ul>
+  </li>
+  <li><a href="#四指针与字符串" id="markdown-toc-四指针与字符串">四、指针与字符串</a>    <ul>
+      <li><a href="#1-两种定义方式" id="markdown-toc-1-两种定义方式">1. 两种定义方式</a></li>
+      <li><a href="#2-指针操作字符串" id="markdown-toc-2-指针操作字符串">2. 指针操作字符串</a></li>
+    </ul>
+  </li>
+  <li><a href="#五指针与函数传址调用" id="markdown-toc-五指针与函数传址调用">五、指针与函数（传址调用）</a>    <ul>
+      <li><a href="#1-传值-vs-传址" id="markdown-toc-1-传值-vs-传址">1. 传值 vs 传址</a></li>
+      <li><a href="#2-交换两个数传址经典案例" id="markdown-toc-2-交换两个数传址经典案例">2. 交换两个数（传址经典案例）</a></li>
+      <li><a href="#3指针作为函数返回值" id="markdown-toc-3指针作为函数返回值">3.指针作为函数返回值</a></li>
+    </ul>
+  </li>
+  <li><a href="#六指针进阶" id="markdown-toc-六指针进阶">六、指针进阶</a>    <ul>
+      <li><a href="#1-多级指针指针的指针" id="markdown-toc-1-多级指针指针的指针">1. 多级指针（指针的指针）</a></li>
+      <li><a href="#2-数组指针-vs-指针数组" id="markdown-toc-2-数组指针-vs-指针数组">2. 数组指针 vs 指针数组</a></li>
+      <li><a href="#3-函数指针" id="markdown-toc-3-函数指针">3. 函数指针</a></li>
+      <li><a href="#4-回调函数" id="markdown-toc-4-回调函数">4. 回调函数</a></li>
+    </ul>
+  </li>
+  <li><a href="#七指针与结构体" id="markdown-toc-七指针与结构体">七、指针与结构体</a></li>
+  <li><a href="#八指针与动态内存" id="markdown-toc-八指针与动态内存">八、指针与动态内存</a>    <ul>
+      <li><a href="#1-核心函数" id="markdown-toc-1-核心函数">1. 核心函数</a></li>
+      <li><a href="#2-规范写法" id="markdown-toc-2-规范写法">2. 规范写法</a></li>
+      <li><a href="#3申请它做什么" id="markdown-toc-3申请它做什么">3.申请它做什么？</a></li>
+    </ul>
+  </li>
+</ul>
+<hr />
+
+<h2 id="一指针基础">一、指针基础</h2>
 
 <h3 id="1-核心概念">1. 核心概念</h3>
 
@@ -477,7 +524,9 @@ p = NULL; // 避免野指针
             }, 5000);
         })();
     </script>
+
 </body>
+    <script src="/Blog/autohighlight.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
 

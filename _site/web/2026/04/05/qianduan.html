@@ -1,0 +1,2483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>前端开发 - LIN's Blog</title>
+    <!-- 使用 relative_url 确保路径永远正确 -->
+    <link rel="stylesheet" href="/Blog/style.css">
+    <link rel="stylesheet" href="/Blog/post.css">
+    
+    <script>
+        // const navbar = document.getElementById('navbar');
+        // const hero = document.querySelector('.hero');
+        // const heroHeight = hero.offsetHeight;
+        const threshold = 200;
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            if (scrollY > threshold) {
+            navbar.classList.add('scrolled');
+            } else {
+            navbar.classList.remove('scrolled');
+            }
+        });
+       
+    </script>
+        <!-- Odometer 数字滚动插件 -->
+    <link rel="stylesheet" href="/Blog/odometr.css">
+    <script src="/Blog/odometr.js"></script>
+    <!-- 博客运行计时核心脚本 -->
+    <script>
+    window.pjaxLoaded = function(){
+        var blog_running_days=document.getElementById("blog_running_days");
+        var blog_running_hours=document.getElementById("blog_running_hours");
+        var blog_running_mins=document.getElementById("blog_running_mins");
+        var blog_running_secs=document.getElementById("blog_running_secs");
+        
+        function refresh_blog_running_time(){
+            // 博客起始时间：2024年10月7日（月份0-11，所以9代表10月）
+            var time = new Date() - new Date(2024, 9, 7, 0, 0, 0);
+            var d=parseInt(time/24/60/60/1000);
+            var h=parseInt(time%(24*60*60*1000)/60/60/1000);
+            var m=parseInt(time%(60*60*1000)/60/1000);
+            var s=parseInt(time%(60*1000)/1000);
+            
+            blog_running_days.innerHTML=d;
+            blog_running_hours.innerHTML=h;
+            blog_running_mins.innerHTML=m;
+            blog_running_secs.innerHTML=s;
+        };
+        
+        refresh_blog_running_time();
+        if (typeof(bottomTimeIntervalHasSet) == "undefined"){
+            var bottomTimeIntervalHasSet = true;
+            setInterval(refresh_blog_running_time,500);
+        }
+    };
+    // 初始化数字滚动
+    window.onload = function(){
+        odometer_init();
+        window.pjaxLoaded();
+        hljs.highlightAll();
+    };
+
+    function odometer_init(){
+        let el = document.getElementsByClassName('odometer');
+        for (let i = 0; i < el.length; i++) {
+            od = new Odometer({
+                el: el[i],
+                format: 'ddd',
+                duration: 200
+            });
+        }
+    }
+    </script>
+
+</head>
+<body class="fade-in-content">
+
+    <nav class="nav" id="navbar">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="/Blog/index.html">首页</a></li>
+                <li><a href="/Blog/sort.html">分类</a></li>
+                <li><a href="/Blog/history.html">归档</a></li>
+                <li><a href="/Blog/aboutme.html">关于我</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="container">
+            <div class="content">
+                <article class="post-detail">
+                    <h1 class="post-title">前端开发</h1>
+                    <div class="post-meta">
+                        2026年04月05日 | 分类：Web
+                    </div>
+                    
+                    <!-- Jekyll 会把 Markdown 的内容塞到这里 -->
+                    <div class="entry-content">
+                        <ul id="markdown-toc">
+  <li><a href="#一html超文本标记语言-页面结构骨架" id="markdown-toc-一html超文本标记语言-页面结构骨架">一、HTML（超文本标记语言）—— 页面结构骨架</a>    <ul>
+      <li><a href="#11-基础结构" id="markdown-toc-11-基础结构">1.1 基础结构</a></li>
+      <li><a href="#12-核心标签分类" id="markdown-toc-12-核心标签分类">1.2 核心标签分类</a>        <ul>
+          <li><a href="#121-语义化标签利于seo和可读性" id="markdown-toc-121-语义化标签利于seo和可读性">1.2.1 语义化标签（利于SEO和可读性）</a></li>
+          <li><a href="#122-文本标签" id="markdown-toc-122-文本标签">1.2.2 文本标签</a></li>
+          <li><a href="#123-图片与链接标签" id="markdown-toc-123-图片与链接标签">1.2.3 图片与链接标签</a>            <ul>
+              <li><a href="#图片标签img单标签核心用于展示图片" id="markdown-toc-图片标签img单标签核心用于展示图片">图片标签：<code class="language-plaintext highlighter-rouge">&lt;img&gt;</code>（单标签，核心用于展示图片）</a></li>
+              <li><a href="#链接标签a双标签核心用于页面跳转" id="markdown-toc-链接标签a双标签核心用于页面跳转">链接标签：<code class="language-plaintext highlighter-rouge">&lt;a&gt;</code>（双标签，核心用于页面跳转）</a></li>
+            </ul>
+          </li>
+          <li><a href="#124-列表标签" id="markdown-toc-124-列表标签">1.2.4 列表标签</a></li>
+          <li><a href="#125-表单标签用于收集用户输入" id="markdown-toc-125-表单标签用于收集用户输入">1.2.5 表单标签（用于收集用户输入）</a>            <ul>
+              <li><a href="#常用表单元素" id="markdown-toc-常用表单元素">常用表单元素</a></li>
+            </ul>
+          </li>
+          <li><a href="#126-html5-新特性" id="markdown-toc-126-html5-新特性">1.2.6 HTML5 新特性</a></li>
+          <li><a href="#13-常用属性与规范" id="markdown-toc-13-常用属性与规范">1.3 常用属性与规范</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#二css层叠样式表-页面样式与布局" id="markdown-toc-二css层叠样式表-页面样式与布局">二、CSS（层叠样式表）—— 页面样式与布局</a>    <ul>
+      <li><a href="#21-css-引入方式3种按优先级从高到低" id="markdown-toc-21-css-引入方式3种按优先级从高到低">2.1 CSS 引入方式（3种，按优先级从高到低）</a>        <ul>
+          <li><a href="#211-内联样式行内样式" id="markdown-toc-211-内联样式行内样式">2.1.1 内联样式（行内样式）</a></li>
+          <li><a href="#212-内部样式嵌入样式" id="markdown-toc-212-内部样式嵌入样式">2.1.2 内部样式（嵌入样式）</a></li>
+          <li><a href="#213-外部样式链接样式" id="markdown-toc-213-外部样式链接样式">2.1.3 外部样式（链接样式）</a></li>
+        </ul>
+      </li>
+      <li><a href="#22-选择器找到要样式化的html元素" id="markdown-toc-22-选择器找到要样式化的html元素">2.2 选择器（找到要样式化的HTML元素）</a>        <ul>
+          <li><a href="#221-基础选择器" id="markdown-toc-221-基础选择器">2.2.1 基础选择器</a></li>
+          <li><a href="#222-组合选择器" id="markdown-toc-222-组合选择器">2.2.2 组合选择器</a></li>
+          <li><a href="#223-伪类选择器用于元素的特殊状态" id="markdown-toc-223-伪类选择器用于元素的特殊状态">2.2.3 伪类选择器（用于元素的特殊状态）</a></li>
+          <li><a href="#224-伪元素选择器用于创建虚拟元素" id="markdown-toc-224-伪元素选择器用于创建虚拟元素">2.2.4 伪元素选择器（用于创建虚拟元素）</a></li>
+          <li><a href="#225-选择器优先级解决样式冲突" id="markdown-toc-225-选择器优先级解决样式冲突">2.2.5 选择器优先级（解决样式冲突）</a></li>
+        </ul>
+      </li>
+      <li><a href="#23-核心样式属性" id="markdown-toc-23-核心样式属性">2.3 核心样式属性</a>        <ul>
+          <li><a href="#231-盒模型所有元素都有盒模型" id="markdown-toc-231-盒模型所有元素都有盒模型">2.3.1 盒模型（所有元素都有盒模型）</a></li>
+          <li><a href="#232-字体与文本样式" id="markdown-toc-232-字体与文本样式">2.3.2 字体与文本样式</a>            <ul>
+              <li><a href="#字体样式" id="markdown-toc-字体样式">字体样式</a></li>
+              <li><a href="#文本样式" id="markdown-toc-文本样式">文本样式</a></li>
+            </ul>
+          </li>
+          <li><a href="#233-背景样式" id="markdown-toc-233-背景样式">2.3.3 背景样式</a></li>
+          <li><a href="#234-元素显示与定位" id="markdown-toc-234-元素显示与定位">2.3.4 元素显示与定位</a>            <ul>
+              <li><a href="#元素显示模式display属性" id="markdown-toc-元素显示模式display属性">元素显示模式（display属性）</a></li>
+              <li><a href="#定位position属性核心布局方式" id="markdown-toc-定位position属性核心布局方式">定位（position属性，核心布局方式）</a></li>
+            </ul>
+          </li>
+          <li><a href="#235-浮动float属性传统布局方式" id="markdown-toc-235-浮动float属性传统布局方式">2.3.5 浮动（float属性，传统布局方式）</a></li>
+          <li><a href="#236-弹性布局flex布局现代布局方式" id="markdown-toc-236-弹性布局flex布局现代布局方式">2.3.6 弹性布局（Flex布局，现代布局方式）</a>            <ul>
+              <li><a href="#1-开启flex布局" id="markdown-toc-1-开启flex布局">1. 开启Flex布局</a></li>
+              <li><a href="#2-容器属性作用于父容器" id="markdown-toc-2-容器属性作用于父容器">2. 容器属性（作用于父容器）</a></li>
+              <li><a href="#3-项目属性作用于子项目" id="markdown-toc-3-项目属性作用于子项目">3. 项目属性（作用于子项目）</a></li>
+            </ul>
+          </li>
+          <li><a href="#237-网格布局grid布局现代布局方式补充" id="markdown-toc-237-网格布局grid布局现代布局方式补充">2.3.7 网格布局（Grid布局，现代布局方式，补充）</a>            <ul>
+              <li><a href="#1-开启grid布局" id="markdown-toc-1-开启grid布局">1. 开启Grid布局</a></li>
+              <li><a href="#2-容器属性作用于父容器-1" id="markdown-toc-2-容器属性作用于父容器-1">2. 容器属性（作用于父容器）</a></li>
+              <li><a href="#3-项目属性作用于子项目-1" id="markdown-toc-3-项目属性作用于子项目-1">3. 项目属性（作用于子项目）</a></li>
+            </ul>
+          </li>
+          <li><a href="#238-css3-其他常用新特性" id="markdown-toc-238-css3-其他常用新特性">2.3.8 CSS3 其他常用新特性</a></li>
+          <li><a href="#24-响应式布局核心适配移动端平板pc" id="markdown-toc-24-响应式布局核心适配移动端平板pc">2.4 响应式布局（核心，适配移动端、平板、PC）</a>            <ul>
+              <li><a href="#1-媒体查询基础语法" id="markdown-toc-1-媒体查询基础语法">1. 媒体查询基础语法</a></li>
+              <li><a href="#2-响应式布局注意事项" id="markdown-toc-2-响应式布局注意事项">2. 响应式布局注意事项</a></li>
+            </ul>
+          </li>
+          <li><a href="#25-css-常见问题与解决方案" id="markdown-toc-25-css-常见问题与解决方案">2.5 CSS 常见问题与解决方案</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#三javascriptjs-页面交互与逻辑" id="markdown-toc-三javascriptjs-页面交互与逻辑">三、JavaScript（JS）—— 页面交互与逻辑</a>    <ul>
+      <li><a href="#31-javascript-引入方式3种与css类似" id="markdown-toc-31-javascript-引入方式3种与css类似">3.1 JavaScript 引入方式（3种，与CSS类似）</a>        <ul>
+          <li><a href="#311-内联脚本行内脚本不推荐" id="markdown-toc-311-内联脚本行内脚本不推荐">3.1.1 内联脚本（行内脚本，不推荐）</a></li>
+          <li><a href="#312-内部脚本嵌入脚本" id="markdown-toc-312-内部脚本嵌入脚本">3.1.2 内部脚本（嵌入脚本）</a></li>
+          <li><a href="#313-外部脚本链接脚本最推荐" id="markdown-toc-313-外部脚本链接脚本最推荐">3.1.3 外部脚本（链接脚本，最推荐）</a></li>
+        </ul>
+      </li>
+      <li><a href="#32-javascript-基础语法" id="markdown-toc-32-javascript-基础语法">3.2 JavaScript 基础语法</a>        <ul>
+          <li><a href="#321-变量与常量存储数据" id="markdown-toc-321-变量与常量存储数据">3.2.1 变量与常量（存储数据）</a></li>
+          <li><a href="#322-数据类型6种基本类型--1种引用类型" id="markdown-toc-322-数据类型6种基本类型--1种引用类型">3.2.2 数据类型（6种基本类型 + 1种引用类型）</a>            <ul>
+              <li><a href="#1-基本数据类型值类型直接存储值" id="markdown-toc-1-基本数据类型值类型直接存储值">1. 基本数据类型（值类型，直接存储值）</a></li>
+              <li><a href="#2-引用数据类型引用类型存储内存地址" id="markdown-toc-2-引用数据类型引用类型存储内存地址">2. 引用数据类型（引用类型，存储内存地址）</a></li>
+              <li><a href="#3-数据类型判断" id="markdown-toc-3-数据类型判断">3. 数据类型判断</a></li>
+            </ul>
+          </li>
+          <li><a href="#323-运算符用于数据运算逻辑判断" id="markdown-toc-323-运算符用于数据运算逻辑判断">3.2.3 运算符（用于数据运算、逻辑判断）</a>            <ul>
+              <li><a href="#1-算术运算符用于数值运算" id="markdown-toc-1-算术运算符用于数值运算">1. 算术运算符（用于数值运算）</a></li>
+              <li><a href="#2-赋值运算符用于给变量赋值简化代码" id="markdown-toc-2-赋值运算符用于给变量赋值简化代码">2. 赋值运算符（用于给变量赋值，简化代码）</a></li>
+              <li><a href="#3-比较运算符用于判断两个值的关系返回布尔值truefalse" id="markdown-toc-3-比较运算符用于判断两个值的关系返回布尔值truefalse">3. 比较运算符（用于判断两个值的关系，返回布尔值true/false）</a></li>
+              <li><a href="#4-逻辑运算符用于逻辑判断返回布尔值或原始值常用在条件判断中" id="markdown-toc-4-逻辑运算符用于逻辑判断返回布尔值或原始值常用在条件判断中">4. 逻辑运算符（用于逻辑判断，返回布尔值或原始值，常用在条件判断中）</a></li>
+              <li><a href="#5-三元运算符三目运算符简化if-else条件判断语法条件--成立时执行--不成立时执行" id="markdown-toc-5-三元运算符三目运算符简化if-else条件判断语法条件--成立时执行--不成立时执行">5. 三元运算符（三目运算符，简化if-else条件判断，语法：条件 ? 成立时执行 : 不成立时执行）</a></li>
+            </ul>
+          </li>
+          <li><a href="#324-条件语句用于根据不同条件执行不同代码" id="markdown-toc-324-条件语句用于根据不同条件执行不同代码">3.2.4 条件语句（用于根据不同条件执行不同代码）</a>            <ul>
+              <li><a href="#1-if-else-语句适用于多种条件判断" id="markdown-toc-1-if-else-语句适用于多种条件判断">1. if-else 语句（适用于多种条件判断）</a></li>
+              <li><a href="#2-switch-case-语句适用于固定值的判断如菜单选择状态判断" id="markdown-toc-2-switch-case-语句适用于固定值的判断如菜单选择状态判断">2. switch-case 语句（适用于固定值的判断，如菜单选择、状态判断）</a></li>
+            </ul>
+          </li>
+          <li><a href="#325-循环语句用于重复执行一段代码减少冗余" id="markdown-toc-325-循环语句用于重复执行一段代码减少冗余">3.2.5 循环语句（用于重复执行一段代码，减少冗余）</a>            <ul>
+              <li><a href="#1-for-循环适用于已知循环次数的场景" id="markdown-toc-1-for-循环适用于已知循环次数的场景">1. for 循环（适用于已知循环次数的场景）</a></li>
+              <li><a href="#2-while-循环适用于未知循环次数只知道循环条件的场景" id="markdown-toc-2-while-循环适用于未知循环次数只知道循环条件的场景">2. while 循环（适用于未知循环次数，只知道循环条件的场景）</a></li>
+              <li><a href="#3-do-while-循环与while循环类似区别先执行一次循环体再判断条件" id="markdown-toc-3-do-while-循环与while循环类似区别先执行一次循环体再判断条件">3. do-while 循环（与while循环类似，区别：先执行一次循环体，再判断条件）</a></li>
+              <li><a href="#4-循环控制语句breakcontinue" id="markdown-toc-4-循环控制语句breakcontinue">4. 循环控制语句（break、continue）</a></li>
+            </ul>
+          </li>
+          <li><a href="#326-数组array常用引用类型用于存储多个数据" id="markdown-toc-326-数组array常用引用类型用于存储多个数据">3.2.6 数组（Array，常用引用类型，用于存储多个数据）</a>            <ul>
+              <li><a href="#1-数组的创建方式3种常用" id="markdown-toc-1-数组的创建方式3种常用">1. 数组的创建方式（3种常用）</a></li>
+              <li><a href="#2-数组的核心属性与方法" id="markdown-toc-2-数组的核心属性与方法">2. 数组的核心属性与方法</a>                <ul>
+                  <li><a href="#1增删改查" id="markdown-toc-1增删改查">（1）增删改查</a></li>
+                  <li><a href="#2数组遍历" id="markdown-toc-2数组遍历">（2）数组遍历</a></li>
+                  <li><a href="#3其他常用方法" id="markdown-toc-3其他常用方法">（3）其他常用方法</a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li><a href="#327-函数function用于封装可复用的代码" id="markdown-toc-327-函数function用于封装可复用的代码">3.2.7 函数（Function，用于封装可复用的代码）</a>            <ul>
+              <li><a href="#1-函数的创建方式3种常用" id="markdown-toc-1-函数的创建方式3种常用">1. 函数的创建方式（3种常用）</a></li>
+              <li><a href="#2-函数的参数与返回值" id="markdown-toc-2-函数的参数与返回值">2. 函数的参数与返回值</a></li>
+              <li><a href="#3-函数的作用域与作用域链" id="markdown-toc-3-函数的作用域与作用域链">3. 函数的作用域与作用域链</a></li>
+            </ul>
+          </li>
+          <li><a href="#328-对象object核心引用类型用于存储多个相关数据和方法" id="markdown-toc-328-对象object核心引用类型用于存储多个相关数据和方法">3.2.8 对象（Object，核心引用类型，用于存储多个相关数据和方法）</a>            <ul>
+              <li><a href="#1-对象的创建方式3种常用" id="markdown-toc-1-对象的创建方式3种常用">1. 对象的创建方式（3种常用）</a></li>
+              <li><a href="#2-对象的属性访问与修改" id="markdown-toc-2-对象的属性访问与修改">2. 对象的属性访问与修改</a></li>
+              <li><a href="#3-对象的遍历" id="markdown-toc-3-对象的遍历">3. 对象的遍历</a></li>
+            </ul>
+          </li>
+          <li><a href="#33-dom-操作js操作html元素的基础" id="markdown-toc-33-dom-操作js操作html元素的基础">3.3 DOM 操作（JS操作HTML元素的基础）</a>            <ul>
+              <li><a href="#1-获取dom元素先获取才能操作" id="markdown-toc-1-获取dom元素先获取才能操作">1. 获取DOM元素（先获取才能操作）</a></li>
+              <li><a href="#2-操作dom元素的内容" id="markdown-toc-2-操作dom元素的内容">2. 操作DOM元素的内容</a></li>
+              <li><a href="#3-操作dom元素的样式" id="markdown-toc-3-操作dom元素的样式">3. 操作DOM元素的样式</a></li>
+              <li><a href="#4-操作dom元素增删改" id="markdown-toc-4-操作dom元素增删改">4. 操作DOM元素（增删改）</a></li>
+            </ul>
+          </li>
+          <li><a href="#34-事件处理实现页面交互" id="markdown-toc-34-事件处理实现页面交互">3.4 事件处理（实现页面交互）</a>            <ul>
+              <li><a href="#1-常用事件类型" id="markdown-toc-1-常用事件类型">1. 常用事件类型</a></li>
+              <li><a href="#2-事件绑定方式3种常用" id="markdown-toc-2-事件绑定方式3种常用">2. 事件绑定方式（3种常用）</a></li>
+              <li><a href="#3-事件对象event" id="markdown-toc-3-事件对象event">3. 事件对象（event）</a></li>
+              <li><a href="#4-事件冒泡与事件捕获补充" id="markdown-toc-4-事件冒泡与事件捕获补充">4. 事件冒泡与事件捕获（补充）</a></li>
+            </ul>
+          </li>
+          <li><a href="#35-表单校验结合dom和事件" id="markdown-toc-35-表单校验结合dom和事件">3.5 表单校验（结合DOM和事件）</a></li>
+          <li><a href="#36-javascript-常见问题与解决方案" id="markdown-toc-36-javascript-常见问题与解决方案">3.6 JavaScript 常见问题与解决方案</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+<hr />
+
+<h1 id="一html超文本标记语言-页面结构骨架">一、HTML（超文本标记语言）—— 页面结构骨架</h1>
+
+<p>核心作用：定义网页的结构和内容，告诉浏览器“显示什么”，不负责样式和交互，所有标签遵循“闭合原则”（单标签除外），标签不区分大小写，但推荐小写。</p>
+
+<h2 id="11-基础结构">1.1 基础结构</h2>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="ni">&amp;lt;</span>!DOCTYPE html<span class="ni">&amp;gt;</span> <span class="c">&lt;!-- 声明文档类型为HTML5，必须放在第一行 --&gt;</span>
+<span class="ni">&amp;lt;</span>html lang="zh-CN"<span class="ni">&amp;gt;</span> <span class="c">&lt;!-- 根标签，lang指定语言（zh-CN为中文） --&gt;</span>
+  <span class="nt">&lt;head&gt;</span> <span class="c">&lt;!-- 头部：存放页面元信息，不直接显示在页面上 --&gt;</span>
+    <span class="ni">&amp;lt;</span>meta charset="UTF-8"<span class="ni">&amp;gt;</span> <span class="c">&lt;!-- 字符编码，必须设置，避免中文乱码 --&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"viewport"</span> <span class="na">content=</span><span class="s">"width=device-width, initial-scale=1.0"</span><span class="err">&amp;</span><span class="na">gt</span><span class="err">;</span> <span class="err">&lt;!</span><span class="na">--</span> <span class="na">适配移动端</span><span class="err">，</span><span class="na">关键配置</span> <span class="na">--</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;title&gt;</span>页面标题<span class="ni">&amp;lt;</span>/title<span class="ni">&amp;gt;</span> <span class="c">&lt;!-- 浏览器标签页标题 --&gt;</span>
+    <span class="ni">&amp;lt;</span>link rel="stylesheet" href="css文件路径"<span class="ni">&amp;gt;</span> <span class="c">&lt;!-- 引入外部CSS文件 --&gt;</span>
+    <span class="ni">&amp;lt;</span>script src="js文件路径"<span class="ni">&amp;gt;&amp;lt;</span>/script<span class="ni">&amp;gt;</span> <span class="c">&lt;!-- 引入外部JS文件 --&gt;</span>
+  <span class="ni">&amp;lt;</span>/head<span class="ni">&amp;gt;</span>
+  <span class="ni">&amp;lt;</span>body<span class="ni">&amp;gt;</span> <span class="c">&lt;!-- 主体：页面所有可见内容都放在这里 --&gt;</span>
+    页面内容（文本、图片、按钮等）
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="12-核心标签分类">1.2 核心标签分类</h2>
+
+<h3 id="121-语义化标签利于seo和可读性">1.2.1 语义化标签（利于SEO和可读性）</h3>
+
+<p>语义化标签本质是“有含义的标签”，替代传统的div，让结构更清晰，搜索引擎能更好识别内容。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>标签</th>
+      <th>作用说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;header&gt;</code></td>
+      <td>页面或区域头部，可放导航栏、标题等，一个页面可多次使用</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;nav&gt;</code></td>
+      <td>导航栏区域，专门存放页面跳转链接</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;main&gt;</code></td>
+      <td>页面主体内容，<strong>一个页面只能有一个</strong></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;section&gt;</code></td>
+      <td>内容区块，用于划分不同主题的内容（章节、产品列表等）</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;article&gt;</code></td>
+      <td>独立完整内容（新闻、博客、评论），可独立存在</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;aside&gt;</code></td>
+      <td>侧边栏，用于广告、作者信息、相关推荐等附属内容</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;footer&gt;</code></td>
+      <td>页面或区域底部，放版权信息、联系方式等</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;figure&gt;</code></td>
+      <td>用于包裹图片、图表等，配合 <code class="language-plaintext highlighter-rouge">&lt;figcaption&gt;</code> 使用</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;figcaption&gt;</code></td>
+      <td>图片 / 图表的标题或说明文字，放在 <code class="language-plaintext highlighter-rouge">&lt;figure&gt;</code> 内部</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="122-文本标签">1.2.2 文本标签</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>标签</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;h1&gt; ~ &lt;h6&gt;</code></td>
+      <td>标题标签，h1 级别最高（一页建议 1 个），h6 最低；自带加粗、换行</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;p&gt;</code></td>
+      <td>段落标签，自动换行，段落间有默认间距</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;span&gt;</code></td>
+      <td>行内文本标签，无默认样式，用于包裹局部文本（如高亮）</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;strong&gt;</code></td>
+      <td>加粗文本，语义表示重要，比 <code class="language-plaintext highlighter-rouge">&lt;b&gt;</code> 更推荐</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;em&gt;</code></td>
+      <td>斜体文本，语义表示语气强调，比 <code class="language-plaintext highlighter-rouge">&lt;i&gt;</code> 更推荐</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;del&gt;</code></td>
+      <td>删除线文本，常用于商品原价</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;ins&gt;</code></td>
+      <td>下划线文本，常用于商品现价</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;br/&gt;</code></td>
+      <td>强制换行，单标签，区别于段落换行</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;hr/&gt;</code></td>
+      <td>水平分隔线，单标签，用于内容区块分隔</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="123-图片与链接标签">1.2.3 图片与链接标签</h3>
+
+<h4 id="图片标签img单标签核心用于展示图片">图片标签：<code class="language-plaintext highlighter-rouge">&lt;img&gt;</code>（单标签，核心用于展示图片）</h4>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"图片路径"</span> <span class="na">alt=</span><span class="s">"图片加载失败时的提示文本"</span> <span class="na">title=</span><span class="s">"鼠标悬浮时的提示文本"</span> <span class="na">width=</span><span class="s">"宽度"</span> <span class="na">height=</span><span class="s">"高度"</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>src：必选属性，指定图片路径（绝对路径：如https://xxx.jpg；相对路径：如./img/1.jpg）</li>
+  <li>alt：必选属性，提升可访问性，图片加载失败时显示，搜索引擎也会识别</li>
+  <li>width/height：可选，设置图片尺寸，只设置一个，另一个会自动等比例缩放（避免图片变形）</li>
+</ul>
+
+<h4 id="链接标签a双标签核心用于页面跳转">链接标签：<code class="language-plaintext highlighter-rouge">&lt;a&gt;</code>（双标签，核心用于页面跳转）</h4>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"跳转目标"</span> <span class="na">target=</span><span class="s">"打开方式"</span> <span class="na">title=</span><span class="s">"悬浮提示"</span><span class="nt">&gt;</span>链接文本/图片<span class="nt">&lt;/a&gt;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>href：必选属性，跳转目标（可以是网页地址、本地文件路径、锚点、邮件地址）</li>
+  <li>target：可选，设置打开方式
+    <ul>
+      <li>_self：默认值，在当前窗口打开</li>
+      <li>_blank：在新窗口打开（推荐跳转外部链接时使用）</li>
+      <li>_parent：在父框架打开</li>
+      <li>_top：在整个窗口打开，取消框架</li>
+    </ul>
+  </li>
+  <li>锚点跳转：href=”#id值”，跳转到当前页面中id为该值的标签（如<a href="#section1">跳转到章节1</a>，对应<code class="language-plaintext highlighter-rouge">&lt;section id="section1"&gt;</code>）</li>
+  <li>特殊跳转：mailto:邮箱地址（打开邮件客户端）、tel:手机号（打开拨号界面）</li>
+</ul>
+
+<h3 id="124-列表标签">1.2.4 列表标签</h3>
+
+<ul>
+  <li>无序列表<code class="language-plaintext highlighter-rouge">&lt;ul&gt;</code>：默认列表项前有圆点</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;ul&gt;
+  &lt;li&gt;列表项1&lt;/li&gt;
+  &lt;li&gt;列表项2&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre></div></div>
+
+<ul>
+  <li>有序列表：<code class="language-plaintext highlighter-rouge">&lt;ol&gt;</code>，默认列表项前有数字，可通过type属性设置序号类型（1、a、A、i、I）</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;ol type="a"&gt;
+  &lt;li&gt;第一步&lt;/li&gt;
+  &lt;li&gt;第二步&lt;/li&gt;
+&lt;/ol&gt;
+</code></pre></div></div>
+
+<ul>
+  <li>自定义列表：<code class="language-plaintext highlighter-rouge">&lt;dl&gt;</code>,<code class="language-plaintext highlighter-rouge">&lt;dt&gt;</code>（列表标题）和 <code class="language-plaintext highlighter-rouge">&lt;dd&gt;</code>（列表描述），常用于展示名词+解释</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dl&gt;
+  &lt;dt&gt;HTML&lt;/dt&gt;
+  &lt;dd&gt;超文本标记语言，用于定义页面结构&lt;/dd&gt;
+  &lt;dt&gt;CSS&lt;/dt&gt;
+  &lt;dd&gt;层叠样式表，用于美化页面&lt;/dd&gt;
+&lt;/dl&gt;
+</code></pre></div></div>
+
+<h3 id="125-表单标签用于收集用户输入">1.2.5 表单标签（用于收集用户输入）</h3>
+
+<p>核心标签：<code class="language-plaintext highlighter-rouge">&lt;form&gt;</code>（表单容器），所有表单元素必须放在form内，用于提交数据到后端。</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"后端接口地址"</span> <span class="na">method=</span><span class="s">"提交方式"</span> <span class="na">enctype=</span><span class="s">"数据编码方式"</span><span class="err">&amp;</span><span class="na">gt</span><span class="err">;</span>
+  <span class="err">&lt;!</span><span class="na">--</span> <span class="na">表单元素</span> <span class="na">--</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>action：必选，指定表单数据提交到的后端接口地址</li>
+  <li>method：可选，提交方式（get：默认，数据拼接在URL上，不安全，适合少量数据；post：数据隐藏提交，安全，适合大量/敏感数据）</li>
+  <li>enctype：可选，数据编码方式（默认application/x-www-form-urlencoded；上传文件时需设为multipart/form-data）</li>
+</ul>
+
+<h4 id="常用表单元素">常用表单元素</h4>
+
+<ul>
+  <li>输入框：<code class="language-plaintext highlighter-rouge">&lt;input&gt;</code>（单标签，通过type属性控制输入类型）</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;input type="text" name="username" placeholder="请输入用户名" value="默认值" required maxlength="20"&gt;
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">type常用值</th>
+      <th style="text-align: left">说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">text</td>
+      <td style="text-align: left">普通文本输入框</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">password</td>
+      <td style="text-align: left">密码输入框，输入内容会隐藏</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">number</td>
+      <td style="text-align: left">数字输入框，仅允许输入数字</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">tel</td>
+      <td style="text-align: left">手机号输入框，适配移动端拨号键盘</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">email</td>
+      <td style="text-align: left">邮箱输入框，会自动校验邮箱格式</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">radio</td>
+      <td style="text-align: left">单选按钮，多个同name值互斥，仅能选择一个</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">checkbox</td>
+      <td style="text-align: left">复选按钮，多个同name值可多选</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">file</td>
+      <td style="text-align: left">文件上传按钮，用于选择本地文件</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">button</td>
+      <td style="text-align: left">普通按钮，需配合JS绑定事件实现功能</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">submit</td>
+      <td style="text-align: left">提交按钮，点击可提交表单数据</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">reset</td>
+      <td style="text-align: left">重置按钮，点击可重置表单内所有输入内容</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">核心属性</th>
+      <th style="text-align: left">说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">name</td>
+      <td style="text-align: left">表单元素名称，后端接收数据的key，为必填项</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">placeholder</td>
+      <td style="text-align: left">输入提示文本，引导用户输入正确内容</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">value</td>
+      <td style="text-align: left">表单元素的默认值，用户可修改（readonly状态除外）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">required</td>
+      <td style="text-align: left">必填项标识，未填写时无法提交表单</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">maxlength</td>
+      <td style="text-align: left">限制输入内容的最大长度</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">disabled</td>
+      <td style="text-align: left">禁用状态，元素无法编辑，提交表单时不传递该数据</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">readonly</td>
+      <td style="text-align: left">只读状态，元素无法编辑，但提交表单时会传递该数据</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>下拉框：<code class="language-plaintext highlighter-rouge">&lt;select&gt;</code> ，默认单选，添加multiple属性可多选</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;select name="city"&gt;
+  &lt;option value="" disabled selected&gt;请选择城市&amp;lt;/option&amp;gt; &lt;!-- 默认提示项，不可选 --&gt;
+  &lt;option value="beijing"&gt;北京&lt;/option&gt;
+  &lt;option value="shanghai"&gt;上海&lt;/option&gt;
+&lt;/select&gt;
+</code></pre></div></div>
+
+<ul>
+  <li>文本域：<code class="language-plaintext highlighter-rouge">&lt;textarea&gt;</code>（多行文本输入，如备注、留言）</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;textarea name="remark" rows="5" cols="30" placeholder="请输入备注"&gt;默认文本&lt;/textarea&gt;
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">属性</th>
+      <th style="text-align: left">说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">rows</td>
+      <td style="text-align: left">默认显示行数，可通过CSS调整大小</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">cols</td>
+      <td style="text-align: left">默认显示列数，可通过CSS调整大小</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>按钮：<code class="language-plaintext highlighter-rouge">&lt;button&gt;</code>（双标签，比input按钮更灵活，可嵌套文本、图片）</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;button type="submit"&gt;提交&lt;/button&gt;
+&lt;button type="reset"&gt;重置&lt;/button&gt;
+&lt;button type="button"&gt;普通按钮&lt;/button&gt;
+</code></pre></div></div>
+
+<ul>
+  <li>表单分组：<code class="language-plaintext highlighter-rouge">&lt;fieldset&gt;</code>，<code class="language-plaintext highlighter-rouge">&lt;legend&gt;</code>定义分组标题</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;fieldset&gt;
+  &lt;legend&gt;用户信息&lt;/legend&gt;
+  &lt;input type="text" name="username" placeholder="用户名"&gt;
+  &lt;input type="password" name="password" placeholder="密码"&gt;
+&lt;/fieldset&gt;
+</code></pre></div></div>
+
+<h3 id="126-html5-新特性">1.2.6 HTML5 新特性</h3>
+
+<ul>
+  <li>
+    <p>语义化标签：如header、nav、main、section等（前面已详细说明）</p>
+  </li>
+  <li>
+    <p>多媒体标签：</p>
+
+    <p>1、<code class="language-plaintext highlighter-rouge">&lt;audio&gt;：播放音频，支持mp3、wav、ogg格式</code></p>
+  </li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;audio src="音频路径" controls autoplay loop&gt;您的浏览器不支持音频播放&lt;/audio&gt;
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">属性名</th>
+      <th style="text-align: left">说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">controls</td>
+      <td style="text-align: left">显示播放控件</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">autoplay</td>
+      <td style="text-align: left">自动播放（部分浏览器需配合muted静音）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">loop</td>
+      <td style="text-align: left">循环播放</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">poster</td>
+      <td style="text-align: left">视频加载前显示的封面图片</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>​	2、```<video>：播放视频，支持mp4、webm、ogg格式``</video></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;video src="视频路径" controls width="600" poster="视频封面图片路径"&gt;您的浏览器不支持视频播放&lt;/video&gt;
+</code></pre></div></div>
+
+<ul>
+  <li>Web 存储：
+    <ul>
+      <li>localStorage：本地存储，永久保存（除非手动删除），容量约5MB，字符串格式，适合存储不敏感的长期数据（如用户偏好设置）</li>
+      <li>sessionStorage：会话存储，关闭浏览器窗口后数据丢失，容量约5MB，适合存储临时数据（如表单临时输入内容）</li>
+    </ul>
+  </li>
+</ul>
+
+<p>用法示例：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>localStorage.setItem("username", "zhangsan")（存）
+localStorage.getItem("username")（取）
+localStorage.removeItem("username")（删）
+</code></pre></div></div>
+
+<ul>
+  <li>Canvas：画布标签，用于绘制图形、动画、游戏等，需配合JavaScript使用（如绘制矩形、圆形、文字）</li>
+  <li>SVG：矢量图形标签，绘制的图形放大后不会模糊（如图标、图表），可直接通过标签编辑，也可配合CSS美化</li>
+  <li>表单新类型：email、tel、number、date、time、color等，自带基础校验和输入提示</li>
+</ul>
+
+<h3 id="13-常用属性与规范">1.3 常用属性与规范</h3>
+
+<ul>
+  <li>id：唯一标识，一个页面中id不能重复，用于锚点跳转、JS获取元素</li>
+  <li>class：类名，用于CSS样式复用，一个元素可多个class（用空格分隔）</li>
+  <li>title：鼠标悬浮时显示的提示文本，几乎所有标签都可使用</li>
+  <li>规范：标签嵌套要合理（如块级标签可嵌套行内标签，p标签不能嵌套div、h1等块级标签）；属性值必须加引号（单引号、双引号均可，推荐双引号）</li>
+</ul>
+
+<h1 id="二css层叠样式表-页面样式与布局">二、CSS（层叠样式表）—— 页面样式与布局</h1>
+
+<p>核心作用：控制HTML元素的样式（颜色、大小、位置、间距等），实现页面美化，支持“层叠”（多个样式叠加）、“继承”（子元素继承父元素部分样式）、“优先级”（解决样式冲突）。</p>
+
+<h2 id="21-css-引入方式3种按优先级从高到低">2.1 CSS 引入方式（3种，按优先级从高到低）</h2>
+
+<h3 id="211-内联样式行内样式">2.1.1 内联样式（行内样式）</h3>
+
+<p>直接在HTML标签内通过style属性写CSS，仅作用于当前标签，优先级最高，不利于样式复用。</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">"width: 100px; height: 100px; background-color: red;"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<h3 id="212-内部样式嵌入样式">2.1.2 内部样式（嵌入样式）</h3>
+
+<p>在HTML的head标签内，通过<code class="language-plaintext highlighter-rouge">&lt;style&gt;</code>标签写CSS，作用于当前整个页面，优先级次之。</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;head&gt;</span>
+  <span class="nt">&lt;style&gt;</span>
+    <span class="nt">div</span> <span class="p">{</span>
+      <span class="nl">width</span><span class="p">:</span> <span class="m">100px</span><span class="p">;</span>
+      <span class="nl">height</span><span class="p">:</span> <span class="m">100px</span><span class="p">;</span>
+      <span class="nl">background-color</span><span class="p">:</span> <span class="nx">red</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="nt">&lt;/style&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+</code></pre></div></div>
+
+<h3 id="213-外部样式链接样式">2.1.3 外部样式（链接样式）</h3>
+
+<p>创建独立的.css文件，通过<code class="language-plaintext highlighter-rouge">&lt;link&gt;</code>标签引入HTML，作用于多个页面，优先级最低，最推荐使用（利于样式复用和维护）。</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// HTML中引入
+<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"./css/style.css"</span><span class="nt">&gt;</span>
+
+// style.css文件中
+div {
+  width: 100px;
+  height: 100px;
+  background-color: red;
+}
+</code></pre></div></div>
+
+<h2 id="22-选择器找到要样式化的html元素">2.2 选择器（找到要样式化的HTML元素）</h2>
+
+<p>选择器的核心是“匹配元素”，不同选择器有不同优先级，优先级高的样式会覆盖优先级低的样式。</p>
+
+<h3 id="221-基础选择器">2.2.1 基础选择器</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">选择器</th>
+      <th style="text-align: left">语法</th>
+      <th style="text-align: left">说明</th>
+      <th style="text-align: left">示例</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">元素选择器</td>
+      <td style="text-align: left">标签名</td>
+      <td style="text-align: left">匹配所有该标签的元素</td>
+      <td style="text-align: left">div { … }（匹配所有div）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">类选择器</td>
+      <td style="text-align: left">.类名</td>
+      <td style="text-align: left">匹配所有class为该值的元素，可复用</td>
+      <td style="text-align: left">.box { … }（匹配所有class=”box”的元素）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">id选择器</td>
+      <td style="text-align: left">#id值</td>
+      <td style="text-align: left">匹配id为该值的唯一元素，不可复用</td>
+      <td style="text-align: left">#header { … }（匹配id=”header”的元素）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">通配符选择器</td>
+      <td style="text-align: left">*</td>
+      <td style="text-align: left">匹配页面所有元素，常用于重置默认样式</td>
+      <td style="text-align: left">* { margin: 0; padding: 0; }（清除所有元素的默认边距）</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="222-组合选择器">2.2.2 组合选择器</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">选择器</th>
+      <th style="text-align: left">语法</th>
+      <th style="text-align: left">说明</th>
+      <th style="text-align: left">示例</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">后代选择器</td>
+      <td style="text-align: left">选择器1 选择器2</td>
+      <td style="text-align: left">匹配选择器1的所有后代元素（包括子、孙、曾孙等）</td>
+      <td style="text-align: left">.box p { … }（匹配class=”box”内的所有p标签）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">子选择器</td>
+      <td style="text-align: left">选择器1 &gt; 选择器2</td>
+      <td style="text-align: left">匹配选择器1的直接子元素（仅子级，不包括孙级）</td>
+      <td style="text-align: left">.box &gt; p { … }（匹配class=”box”的直接子元素p）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">相邻兄弟选择器</td>
+      <td style="text-align: left">选择器1 + 选择器2</td>
+      <td style="text-align: left">匹配选择器1后面紧邻的第一个同级元素（必须同父级）</td>
+      <td style="text-align: left">div + p { … }（匹配div后面紧邻的第一个p标签）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">通用兄弟选择器</td>
+      <td style="text-align: left">选择器1 ~ 选择器2</td>
+      <td style="text-align: left">匹配选择器1后面所有同级元素（必须同父级）</td>
+      <td style="text-align: left">div ~ p { … }（匹配div后面所有的p标签）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">交集选择器</td>
+      <td style="text-align: left">选择器1选择器2（无空格）</td>
+      <td style="text-align: left">同时满足两个选择器的元素</td>
+      <td style="text-align: left">div.box { … }（匹配class=”box”的div标签）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">并集选择器</td>
+      <td style="text-align: left">选择器1, 选择器2</td>
+      <td style="text-align: left">匹配所有满足其中一个选择器的元素</td>
+      <td style="text-align: left">div, p, span { … }（匹配所有div、p、span标签）</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="223-伪类选择器用于元素的特殊状态">2.2.3 伪类选择器（用于元素的特殊状态）</h3>
+
+<p>伪类以“:”开头，用于描述元素的状态（如hover、active）或位置（如first-child）。</p>
+
+<ul>
+  <li>链接伪类（按顺序书写：link → visited → hover → active）
+    <ul>
+      <li>a:link：未访问过的链接</li>
+      <li>a:visited：已访问过的链接</li>
+      <li>a:hover：鼠标悬浮在链接上的状态（最常用）</li>
+      <li>a:active：鼠标点击链接时的状态（按下未松开）</li>
+    </ul>
+  </li>
+  <li>表单伪类
+    <ul>
+      <li>input:focus：输入框获取焦点时的状态（如点击输入框后边框变色）</li>
+      <li>input:checked：单选/复选按钮被选中时的状态</li>
+      <li>input:disabled：输入框被禁用时的状态</li>
+      <li>input:required：必填项输入框的状态</li>
+    </ul>
+  </li>
+  <li>结构伪类（匹配元素的位置）
+    <ul>
+      <li>li:first-child：匹配第一个li元素</li>
+      <li>li:last-child：匹配最后一个li元素</li>
+      <li>li:nth-child(n)：匹配第n个li元素（n为数字，可写even偶数、odd奇数）</li>
+      <li>li:nth-of-type(n)：匹配同类型元素中的第n个（区别于nth-child，只看同类型）</li>
+    </ul>
+  </li>
+  <li>其他常用伪类：<code class="language-plaintext highlighter-rouge">:hover</code>（所有元素都可使用，如<code class="language-plaintext highlighter-rouge">div:hover</code>）、<code class="language-plaintext highlighter-rouge">:not</code>(选择器)（排除指定选择器的元素，如<code class="language-plaintext highlighter-rouge">div:not(.box)</code>）</li>
+</ul>
+
+<h3 id="224-伪元素选择器用于创建虚拟元素">2.2.4 伪元素选择器（用于创建虚拟元素）</h3>
+
+<p>伪元素以“::”开头，用于在元素内部添加虚拟内容（如before、after），需配合content属性使用。</p>
+
+<ul>
+  <li>::before：在元素内容的前面添加虚拟元素</li>
+  <li>::after：在元素内容的后面添加虚拟元素</li>
+  <li>::first-letter：匹配文本的第一个字母</li>
+  <li>::first-line：匹配文本的第一行</li>
+</ul>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.box</span><span class="nd">::before</span> <span class="p">{</span>
+  <span class="nl">content</span><span class="p">:</span> <span class="s1">""</span><span class="p">;</span> <span class="c">/* 必写，可空值 */</span>
+  <span class="nl">display</span><span class="p">:</span> <span class="nb">block</span><span class="p">;</span>
+  <span class="nl">width</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+  <span class="nl">height</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+  <span class="nl">background-color</span><span class="p">:</span> <span class="nx">blue</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="225-选择器优先级解决样式冲突">2.2.5 选择器优先级（解决样式冲突）</h3>
+
+<p>优先级规则： specificity（ specificity 值越高，优先级越高），计算方式如下（从高到低）：</p>
+
+<ol>
+  <li>内联样式（style属性）：specificity = 1000</li>
+  <li>id选择器：specificity = 100</li>
+  <li>类选择器、伪类选择器、属性选择器：specificity = 10</li>
+  <li>元素选择器、伪元素选择器：specificity = 1</li>
+  <li>通配符选择器：specificity = 0</li>
+</ol>
+
+<p>补充：!important 可强制提升样式优先级（最高），但不推荐滥用（会破坏优先级规则，难以维护），用法：属性值后加 !important（如 <code class="language-plaintext highlighter-rouge">color: red !important;</code>）。</p>
+
+<h2 id="23-核心样式属性">2.3 核心样式属性</h2>
+
+<h3 id="231-盒模型所有元素都有盒模型">2.3.1 盒模型（所有元素都有盒模型）</h3>
+
+<p>盒模型组成（从内到外）：content（内容区）→ padding（内边距）→ border（边框）→ margin（外边距），决定元素的实际大小。</p>
+
+<ul>
+  <li>content：元素的内容（文本、图片等），宽度和高度由width、height属性控制</li>
+  <li>padding：内边距，内容区与边框之间的距离，不影响元素外部空间，会增加元素实际大小</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>写法</th>
+      <th>代码示例</th>
+      <th>含义说明（顺时针：上 → 右 → 下 → 左）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1 个值</td>
+      <td><code class="language-plaintext highlighter-rouge">padding: 10px;</code></td>
+      <td>四个方向<strong>内边距都相同</strong>：上 = 右 = 下 = 左 = 10px</td>
+    </tr>
+    <tr>
+      <td>2 个值</td>
+      <td><code class="language-plaintext highlighter-rouge">padding: 10px 20px;</code></td>
+      <td><strong>上下 10px，左右 20px</strong></td>
+    </tr>
+    <tr>
+      <td>3 个值</td>
+      <td><code class="language-plaintext highlighter-rouge">padding: 10px 20px 30px;</code></td>
+      <td><strong>上 10px，左右 20px，下 30px</strong></td>
+    </tr>
+    <tr>
+      <td>4 个值</td>
+      <td><code class="language-plaintext highlighter-rouge">padding: 10px 20px 30px 40px;</code></td>
+      <td><strong>上 → 右 → 下 → 左</strong>（顺时针顺序）</td>
+    </tr>
+    <tr>
+      <td>单独方向</td>
+      <td><code class="language-plaintext highlighter-rouge">padding-top</code><code class="language-plaintext highlighter-rouge">padding-right</code><code class="language-plaintext highlighter-rouge">padding-bottom</code><code class="language-plaintext highlighter-rouge">padding-left</code></td>
+      <td>单独设置某一个方向的内边距例：<code class="language-plaintext highlighter-rouge">padding-top: 10px;</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>
+    <p>border：边框，内边距与外边距之间的线条，会增加元素实际大小</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>属性 / 写法</th>
+          <th>代码示例</th>
+          <th>作用说明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>边框简写</strong></td>
+          <td><code class="language-plaintext highlighter-rouge">border: 1px solid red;</code></td>
+          <td><strong>三合一写法</strong>：宽度 (1px) + 样式 (solid) + 颜色 (red)，<strong>三个值缺一不可</strong></td>
+        </tr>
+        <tr>
+          <td>单独 - 宽度</td>
+          <td><code class="language-plaintext highlighter-rouge">border-width: 1px;</code></td>
+          <td>设置边框粗细</td>
+        </tr>
+        <tr>
+          <td>单独 - 样式</td>
+          <td><code class="language-plaintext highlighter-rouge">border-style: solid;</code></td>
+          <td>设置边框线型：<code class="language-plaintext highlighter-rouge">solid</code>实线 / <code class="language-plaintext highlighter-rouge">dashed</code>虚线 / <code class="language-plaintext highlighter-rouge">dotted</code>点线</td>
+        </tr>
+        <tr>
+          <td>单独 - 颜色</td>
+          <td><code class="language-plaintext highlighter-rouge">border-color: red;</code></td>
+          <td>设置边框颜色</td>
+        </tr>
+        <tr>
+          <td>单方向边框</td>
+          <td><code class="language-plaintext highlighter-rouge">border-top: 1px solid red;</code></td>
+          <td>单独设置某一边：上 (<code class="language-plaintext highlighter-rouge">top</code>)、右 (<code class="language-plaintext highlighter-rouge">right</code>)、下 (<code class="language-plaintext highlighter-rouge">bottom</code>)、左 (<code class="language-plaintext highlighter-rouge">left</code>)</td>
+        </tr>
+        <tr>
+          <td>边框圆角</td>
+          <td><code class="language-plaintext highlighter-rouge">border-radius: 5px;</code></td>
+          <td>圆角大小，数值越大越圆</td>
+        </tr>
+        <tr>
+          <td>正圆效果</td>
+          <td><code class="language-plaintext highlighter-rouge">border-radius: 50%;</code></td>
+          <td><strong>必须配合宽高相等</strong>的元素使用</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>
+    <p>margin：外边距，元素与其他元素之间的距离，不影响元素自身大小，会影响元素在页面中的位置</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>写法</th>
+          <th>代码示例</th>
+          <th>含义说明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1 个值</td>
+          <td><code class="language-plaintext highlighter-rouge">margin: 10px;</code></td>
+          <td>上、右、下、左四个方向外边距均为 10px</td>
+        </tr>
+        <tr>
+          <td>2 个值</td>
+          <td><code class="language-plaintext highlighter-rouge">margin: 10px 20px;</code></td>
+          <td>上下 10px，左右 20px</td>
+        </tr>
+        <tr>
+          <td>3 个值</td>
+          <td><code class="language-plaintext highlighter-rouge">margin: 10px 20px 30px;</code></td>
+          <td>上 10px，左右 20px，下 30px</td>
+        </tr>
+        <tr>
+          <td>4 个值</td>
+          <td><code class="language-plaintext highlighter-rouge">margin: 10px 20px 30px 40px;</code></td>
+          <td>上 → 右 → 下 → 左（顺时针）</td>
+        </tr>
+        <tr>
+          <td>居中常用</td>
+          <td><code class="language-plaintext highlighter-rouge">margin: 10px auto;</code></td>
+          <td>上下 10px，左右自动水平居中（仅块级元素生效）</td>
+        </tr>
+        <tr>
+          <td>单方向设置</td>
+          <td><code class="language-plaintext highlighter-rouge">margin-top</code><code class="language-plaintext highlighter-rouge">margin-right</code><code class="language-plaintext highlighter-rouge">margin-bottom</code><code class="language-plaintext highlighter-rouge">margin-left</code></td>
+          <td>单独控制某一方向的外边距</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+</ul>
+
+<p>注意：margin存在“塌陷”问题（相邻两个块级元素的上下margin会重叠，取较大值），解决方法：给父元素添加<code class="language-plaintext highlighter-rouge">border</code>、<code class="language-plaintext highlighter-rouge">padding</code>，或使用<code class="language-plaintext highlighter-rouge">overflow: hidden</code>。</p>
+
+<ul>
+  <li>盒模型模式：
+    <ul>
+      <li>标准盒模型（默认）：<code class="language-plaintext highlighter-rouge">box-sizing: content-box;</code>元素实际宽度 = width + padding + border</li>
+      <li>怪异盒模型（推荐）：<code class="language-plaintext highlighter-rouge">box-sizing: border-box;</code>元素实际宽度 = width（包含content、padding、border），无需手动计算，更方便布局</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="232-字体与文本样式">2.3.2 字体与文本样式</h3>
+
+<h4 id="字体样式">字体样式</h4>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">font-family</span><span class="o">:</span> <span class="s1">"微软雅黑"</span><span class="o">,</span> <span class="s1">"宋体"</span><span class="o">,</span> <span class="nt">sans-serif</span><span class="o">;</span> <span class="c">/* 字体族，多个字体用逗号分隔，兜底sans-serif（无衬线字体） */</span>
+<span class="nt">font-size</span><span class="o">:</span> <span class="err">16</span><span class="nt">px</span><span class="o">;</span> <span class="c">/* 字体大小，默认16px，常用单位px（固定）、rem（相对根元素） */</span>
+<span class="nt">font-weight</span><span class="o">:</span> <span class="err">400</span><span class="o">;</span> <span class="c">/* 字体粗细，400=正常（normal），700=加粗（bold），100-900可选 */</span>
+<span class="nt">font-style</span><span class="o">:</span> <span class="nt">normal</span><span class="o">;</span> <span class="c">/* 字体样式，normal=正常，italic=斜体 */</span>
+<span class="nt">font</span><span class="o">:</span> <span class="nt">italic</span> <span class="err">700</span> <span class="err">16</span><span class="nt">px</span> <span class="s1">"微软雅黑"</span><span class="o">,</span> <span class="nt">sans-serif</span><span class="o">;</span> <span class="c">/* 字体复合属性，顺序：style → weight → size → family（必须包含size和family） */</span>
+</code></pre></div></div>
+
+<h4 id="文本样式">文本样式</h4>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">color</span><span class="o">:</span> <span class="nt">red</span><span class="o">;</span> <span class="c">/* 文本颜色，支持十六进制（#ff0000）、rgb（rgb(255,0,0)）、rgba（rgba(255,0,0,0.5)，最后一个值是透明度0-1） */</span>
+<span class="nt">text-align</span><span class="o">:</span> <span class="nt">left</span><span class="o">;</span> <span class="c">/* 文本对齐方式，left=左对齐（默认）、center=居中、right=右对齐、justify=两端对齐 */</span>
+<span class="nt">text-decoration</span><span class="o">:</span> <span class="nt">none</span><span class="o">;</span> <span class="c">/* 文本装饰，none=无装饰（清除链接下划线）、underline=下划线、line-through=删除线、overline=上划线 */</span>
+<span class="nt">text-indent</span><span class="o">:</span> <span class="err">2</span><span class="nt">em</span><span class="o">;</span> <span class="c">/* 首行缩进，2em=两个字符（em是相对当前字体大小） */</span>
+<span class="nt">line-height</span><span class="o">:</span> <span class="err">1</span><span class="o">.</span><span class="err">5</span><span class="o">;</span> <span class="c">/* 行高，单位可省略（相对于字体大小），line-height=height可实现文本垂直居中 */</span>
+<span class="nt">letter-spacing</span><span class="o">:</span> <span class="err">2</span><span class="nt">px</span><span class="o">;</span> <span class="c">/* 字间距，控制字符之间的距离 */</span>
+<span class="nt">word-spacing</span><span class="o">:</span> <span class="err">5</span><span class="nt">px</span><span class="o">;</span> <span class="c">/* 词间距，控制单词之间的距离（英文有效） */</span>
+<span class="nt">text-transform</span><span class="o">:</span> <span class="nt">none</span><span class="o">;</span> <span class="c">/* 文本大小写，none=默认、uppercase=全大写、lowercase=全小写、capitalize=首字母大写（英文有效） */</span>
+</code></pre></div></div>
+
+<h3 id="233-背景样式">2.3.3 背景样式</h3>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">background-color</span><span class="o">:</span> <span class="nf">#f5f5f5</span><span class="o">;</span> <span class="c">/* 背景颜色，与text-color取值一致 */</span>
+<span class="nt">background-image</span><span class="o">:</span> <span class="nt">url</span><span class="o">(</span><span class="s1">"图片路径"</span><span class="o">);</span> <span class="c">/* 背景图片 */</span>
+<span class="nt">background-repeat</span><span class="o">:</span> <span class="nt">no-repeat</span><span class="o">;</span> <span class="c">/* 背景图片重复方式，no-repeat=不重复（默认repeat=重复）、repeat-x=水平重复、repeat-y=垂直重复 */</span>
+<span class="nt">background-position</span><span class="o">:</span> <span class="nt">center</span><span class="o">;</span> <span class="c">/* 背景图片位置，可写方位词（center、left、top等）或像素值（background-position: 50px 50px; 水平50px，垂直50px） */</span>
+<span class="nt">background-size</span><span class="o">:</span> <span class="nt">cover</span><span class="o">;</span> <span class="c">/* 背景图片大小，cover=覆盖整个容器（可能裁剪）、contain=完整显示图片（可能留空白）、具体尺寸（如100px 100px） */</span>
+<span class="nt">background-attachment</span><span class="o">:</span> <span class="nt">fixed</span><span class="o">;</span> <span class="c">/* 背景图片固定，滚动页面时背景不移动（默认scroll=跟随滚动） */</span>
+<span class="c">/* 背景复合属性，顺序无严格要求，但推荐：color → image → repeat → position → size → attachment */</span>
+<span class="nt">background</span><span class="o">:</span> <span class="nf">#f5f5f5</span> <span class="nt">url</span><span class="o">(</span><span class="s1">"图片路径"</span><span class="o">)</span> <span class="nt">no-repeat</span> <span class="nt">center</span> <span class="nt">cover</span> <span class="nt">fixed</span><span class="o">;</span>
+</code></pre></div></div>
+
+<p>补充：背景渐变（CSS3新特性）：</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">/* 线性渐变：从左到右，红色到蓝色 */</span>
+<span class="nt">background</span><span class="o">:</span> <span class="nt">linear-gradient</span><span class="o">(</span><span class="nt">to</span> <span class="nt">right</span><span class="o">,</span> <span class="nt">red</span><span class="o">,</span> <span class="nt">blue</span><span class="o">);</span>
+<span class="c">/* 径向渐变：从中心向外，红色到蓝色 */</span>
+<span class="nt">background</span><span class="o">:</span> <span class="nt">radial-gradient</span><span class="o">(</span><span class="nt">red</span><span class="o">,</span> <span class="nt">blue</span><span class="o">);</span>
+</code></pre></div></div>
+
+<h3 id="234-元素显示与定位">2.3.4 元素显示与定位</h3>
+
+<h4 id="元素显示模式display属性">元素显示模式（display属性）</h4>
+
+<p>元素默认分为块级元素、行内元素、行内块元素，可通过display属性切换。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">显示模式</th>
+      <th style="text-align: left">display值</th>
+      <th style="text-align: left">特点</th>
+      <th style="text-align: left">示例元素</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">块级元素</td>
+      <td style="text-align: left">block</td>
+      <td style="text-align: left">独占一行；可设置width、height、margin、padding；默认宽度100%（父元素宽度）</td>
+      <td style="text-align: left">div、h1-h6、p、ul、ol、li、section、header等</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">行内元素</td>
+      <td style="text-align: left">inline</td>
+      <td style="text-align: left">不独占一行；不可设置width、height；margin和padding仅左右有效，上下无效</td>
+      <td style="text-align: left">span、a、strong、em、del等</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">行内块元素</td>
+      <td style="text-align: left">inline-block</td>
+      <td style="text-align: left">不独占一行；可设置width、height、margin、padding；兼具行内和块级元素特点</td>
+      <td style="text-align: left">input、img、button等</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>补充：<code class="language-plaintext highlighter-rouge">display: none</code>; 隐藏元素，元素不显示，且不占据页面空间（区别于<code class="language-plaintext highlighter-rouge">visibility: hidden</code>; 隐藏元素但占据空间）。</p>
+
+<h4 id="定位position属性核心布局方式">定位（position属性，核心布局方式）</h4>
+
+<p>定位用于精确控制元素在页面中的位置，定位元素会脱离正常文档流（除static外）。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">定位方式</th>
+      <th style="text-align: left">position值</th>
+      <th style="text-align: left">特点</th>
+      <th style="text-align: left">定位基准</th>
+      <th style="text-align: left">常用场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">静态定位</td>
+      <td style="text-align: left">static</td>
+      <td style="text-align: left">默认值，不脱离文档流，无法使用top、right、bottom、left定位</td>
+      <td style="text-align: left">无</td>
+      <td style="text-align: left">默认布局</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">相对定位</td>
+      <td style="text-align: left">relative</td>
+      <td style="text-align: left">不脱离文档流，元素位置相对自身原来的位置偏移，保留原来的空间</td>
+      <td style="text-align: left">自身原来的位置</td>
+      <td style="text-align: left">作为绝对定位的父容器；微调元素位置</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">绝对定位</td>
+      <td style="text-align: left">absolute</td>
+      <td style="text-align: left">脱离文档流，不保留原来的空间，位置相对于最近的已定位父元素（relative/absolute/fixed），若无则相对于body</td>
+      <td style="text-align: left">最近的已定位父元素</td>
+      <td style="text-align: left">弹窗、下拉菜单、元素悬浮</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">固定定位</td>
+      <td style="text-align: left">fixed</td>
+      <td style="text-align: left">脱离文档流，不保留原来的空间，位置相对于浏览器窗口，滚动页面时位置不变</td>
+      <td style="text-align: left">浏览器窗口</td>
+      <td style="text-align: left">导航栏固定、回到顶部按钮</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">粘性定位</td>
+      <td style="text-align: left">sticky</td>
+      <td style="text-align: left">未滚动到指定位置时是static，滚动到指定位置后变成fixed，保留原来的空间</td>
+      <td style="text-align: left">浏览器窗口+父元素</td>
+      <td style="text-align: left">滚动时固定的标题、侧边栏</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>补充：定位偏移属性（top、right、bottom、left），用于控制定位元素的具体位置，单位常用px、%。</p>
+
+<h3 id="235-浮动float属性传统布局方式">2.3.5 浮动（float属性，传统布局方式）</h3>
+
+<p>浮动用于让元素脱离正常文档流，向左或向右浮动，围绕浮动元素的内容会自动环绕，常用于传统的多列布局。</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">float</span><span class="o">:</span> <span class="nt">left</span><span class="o">;</span> <span class="c">/* 向左浮动 */</span>
+<span class="nt">float</span><span class="o">:</span> <span class="nt">right</span><span class="o">;</span> <span class="c">/* 向右浮动 */</span>
+<span class="nt">float</span><span class="o">:</span> <span class="nt">none</span><span class="o">;</span> <span class="c">/* 默认值，不浮动 */</span>
+</code></pre></div></div>
+
+<p>注意：浮动会导致“父元素塌陷”（父元素高度为0，因为浮动元素脱离文档流），解决方法（清除浮动）：</p>
+
+<ul>
+  <li>方法1：给父元素添加<code class="language-plaintext highlighter-rouge">overflow: hidden</code>;</li>
+  <li>方法2：在浮动元素末尾添加一个空的div，设置<code class="language-plaintext highlighter-rouge">clear: both</code>;</li>
+  <li>方法3：使用伪元素清除浮动（推荐）</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.parent::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+</code></pre></div></div>
+
+<h3 id="236-弹性布局flex布局现代布局方式">2.3.6 弹性布局（Flex布局，现代布局方式）</h3>
+
+<p>Flex布局（弹性布局）是目前最常用的布局方式，简单灵活，适用于各种布局场景（如居中、多列、对齐等），核心是“容器”和“项目”（容器内的子元素）。</p>
+
+<h4 id="1-开启flex布局">1. 开启Flex布局</h4>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.container</span> <span class="p">{</span>
+  <span class="nl">display</span><span class="p">:</span> <span class="nb">flex</span><span class="p">;</span> <span class="c">/* 给父容器开启Flex布局，子元素自动成为Flex项目 */</span>
+  <span class="nl">display</span><span class="p">:</span> <span class="nb">inline-flex</span><span class="p">;</span> <span class="c">/* 行内Flex容器，不独占一行 */</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="2-容器属性作用于父容器">2. 容器属性（作用于父容器）</h4>
+
+<ul>
+  <li>flex-direction：设置主轴方向（项目排列方向）
+    <ul>
+      <li>row：默认值，主轴水平向右（项目从左到右排列）</li>
+      <li>row-reverse：主轴水平向左（项目从右到左排列）</li>
+      <li>column：主轴垂直向下（项目从上到下排列）</li>
+      <li>column-reverse：主轴垂直向上（项目从下到上排列）</li>
+    </ul>
+  </li>
+  <li>flex-wrap：设置项目是否换行
+    <ul>
+      <li>nowrap：默认值，不换行，项目会被压缩</li>
+      <li>wrap：换行，超出容器宽度的项目自动换行</li>
+      <li>wrap-reverse：反向换行，换行后项目从下到上排列</li>
+    </ul>
+  </li>
+  <li>flex-flow：flex-direction + flex-wrap 的复合属性（如 flex-flow: row wrap;）</li>
+  <li>justify-content：设置项目在主轴上的对齐方式（核心，用于水平/垂直居中）
+    <ul>
+      <li>flex-start：默认值，主轴起点对齐</li>
+      <li>flex-end：主轴终点对齐</li>
+      <li>center：主轴居中对齐（常用，如水平居中）</li>
+      <li>space-between：两端对齐，项目之间间距相等</li>
+      <li>space-around：项目两侧间距相等，整体间距是项目之间间距的2倍</li>
+      <li>space-evenly：项目之间、项目与容器边缘间距都相等</li>
+    </ul>
+  </li>
+  <li>align-items：设置项目在交叉轴上的对齐方式（交叉轴与主轴垂直）
+    <ul>
+      <li>stretch：默认值，项目拉伸至与容器交叉轴高度一致</li>
+      <li>flex-start：交叉轴起点对齐</li>
+      <li>flex-end：交叉轴终点对齐</li>
+      <li>center：交叉轴居中对齐（常用，如垂直居中）</li>
+      <li>baseline：项目按文本基线对齐</li>
+    </ul>
+  </li>
+  <li>align-content：设置多行项目在交叉轴上的对齐方式（仅当项目换行时有效）</li>
+</ul>
+
+<h4 id="3-项目属性作用于子项目">3. 项目属性（作用于子项目）</h4>
+
+<ul>
+  <li>flex-grow：项目的放大比例，默认0（不放大），值为数字（无单位），所有项目的flex-grow之和决定放大比例。例如：3个项目flex-grow分别为1、1、2，剩余空间按1:1:2的比例分配给3个项目。</li>
+  <li>flex-shrink：项目的缩小比例，默认1（允许缩小），值为数字（无单位），当项目总宽度超出容器时，按flex-shrink比例缩小。值为0时，项目不缩小（固定宽度）。</li>
+  <li>flex-basis：项目在主轴上的初始宽度（默认值为auto，即项目自身宽度），可设置具体数值（如100px），优先级高于width属性。</li>
+  <li>flex：flex-grow + flex-shrink + flex-basis 的复合属性（推荐使用），默认值为0 1 auto。常用取值：flex: 1; 等价于flex: 1 1 auto（项目自动放大缩小，适应容器）；flex: none; 等价于flex: 0 0 auto（项目固定大小，不放大不缩小）。</li>
+  <li>align-self：单独设置某个项目在交叉轴上的对齐方式，覆盖父容器的align-items属性，取值与align-items一致（stretch、flex-start、flex-end、center、baseline），默认值为auto（继承父容器align-items）。</li>
+  <li>order：控制项目的排列顺序，默认值为0，数值越小，项目排列越靠前，可设置负数（如order: -1，优先排列）。</li>
+</ul>
+
+<h3 id="237-网格布局grid布局现代布局方式补充">2.3.7 网格布局（Grid布局，现代布局方式，补充）</h3>
+
+<p>Grid布局（网格布局）是比Flex布局更强大的布局方式，适用于二维布局（行+列），可快速实现复杂的多列多行布局，核心同样是“容器”和“项目”。</p>
+
+<h4 id="1-开启grid布局">1. 开启Grid布局</h4>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.container</span> <span class="p">{</span>
+  <span class="nl">display</span><span class="p">:</span> <span class="nb">grid</span><span class="p">;</span> <span class="c">/* 给父容器开启Grid布局，子元素自动成为Grid项目 */</span>
+  <span class="nl">display</span><span class="p">:</span> <span class="nb">inline-grid</span><span class="p">;</span> <span class="c">/* 行内Grid容器，不独占一行 */</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="2-容器属性作用于父容器-1">2. 容器属性（作用于父容器）</h4>
+
+<ul>
+  <li>grid-template-columns：设置列数和每列宽度（核心）</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/* 3列，每列宽度分别为100px、200px、300px */
+grid-template-columns: 100px 200px 300px;
+/* 3列，每列宽度相等，占满容器（常用） */
+grid-template-columns: repeat(3, 1fr); /* repeat(重复次数, 宽度)，1fr=等分剩余空间 */
+/* 自适应列宽，最小100px，最大自适应 */
+grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+/* 混合宽度 */
+grid-template-columns: 100px auto 1fr;
+</code></pre></div></div>
+
+<ul>
+  <li>grid-template-rows：设置行数和每行高度，用法与grid-template-columns一致</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> /* 2行，每行高度分别为50px、100px */
+grid-template-rows: 50px 100px;
+/* 2行，每行高度自适应，占满剩余空间 */
+grid-template-rows: repeat(2, 1fr);
+</code></pre></div></div>
+
+<ul>
+  <li>grid-gap（别名gap）：设置项目之间的间距（行间距+列间距），无需额外清除间距</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gap: 10px; /* 行间距和列间距都是10px */
+gap: 10px 20px; /* 行间距10px，列间距20px */
+/* 单独设置：row-gap（行间距）、column-gap（列间距） */
+</code></pre></div></div>
+
+<ul>
+  <li>grid-template-areas：通过命名区域布局（直观，适合复杂布局）</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/* 先给容器定义区域 */
+.container {
+  grid-template-columns: 1fr 3fr;
+  grid-template-rows: 100px 300px 100px;
+  grid-template-areas:
+    "header header"
+    "aside main"
+    "footer footer";
+}
+/* 给项目分配区域 */
+.header { grid-area: header; }
+.aside { grid-area: aside; }
+.main { grid-area: main; }
+.footer { grid-area: footer; }
+</code></pre></div></div>
+
+<ul>
+  <li>justify-items：设置项目在单元格内的水平对齐方式（类似Flex的justify-content），取值：stretch（默认）、start、center、end</li>
+  <li>align-items：设置项目在单元格内的垂直对齐方式（类似Flex的align-items），取值与justify-items一致</li>
+</ul>
+
+<h4 id="3-项目属性作用于子项目-1">3. 项目属性（作用于子项目）</h4>
+
+<ul>
+  <li>grid-column：控制项目占据的列数（列起始位置 + 列结束位置）</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/* 从第1列开始，到第3列结束（占据2列） */
+grid-column: 1 / 3;
+/* 简写：占据2列 */
+grid-column: span 2;
+</code></pre></div></div>
+
+<ul>
+  <li>grid-row：控制项目占据的行数，用法与grid-column一致</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/* 从第1行开始，到第2行结束（占据1行） */
+grid-row: 1 / 2;
+/* 简写：占据2行 */
+grid-row: span 2;
+</code></pre></div></div>
+
+<ul>
+  <li>grid-area：给项目命名，配合容器的grid-template-areas使用（前文已示例）</li>
+  <li>justify-self：单独设置某个项目在单元格内的水平对齐方式，覆盖容器的justify-items</li>
+  <li>align-self：单独设置某个项目在单元格内的垂直对齐方式，覆盖容器的align-items</li>
+</ul>
+
+<h3 id="238-css3-其他常用新特性">2.3.8 CSS3 其他常用新特性</h3>
+
+<ul>
+  <li>过渡（transition）：实现元素样式的平滑变化，避免生硬切换，需配合hover、active等状态使用</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.box {
+  width: 100px;
+  height: 100px;
+  background-color: red;
+  /* 过渡属性：过渡的样式 过渡时间 过渡速度 延迟时间 */
+  transition: width 0.5s ease 0.1s;
+}
+.box:hover {
+  width: 200px; /* 鼠标悬浮时，宽度平滑从100px变为200px */
+}
+</code></pre></div></div>
+
+<p>​		补充：transition: all 0.5s; 可给所有可过渡样式添加过渡效果（简化写法）。</p>
+
+<ul>
+  <li>动画（animation）：实现更复杂的动态效果，可自定义关键帧，无需依赖状态触发</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/* 定义关键帧（动画的各个阶段） */
+@keyframes move {
+  0% { left: 0; } /* 动画开始状态 */
+  50% { left: 200px; background-color: blue; } /* 动画中间状态 */
+  100% { left: 400px; } /* 动画结束状态 */
+}
+.box {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background-color: red;
+  /* 动画属性：动画名称 动画时间 动画速度 循环次数 延迟时间 */
+  animation: move 2s ease infinite 0.1s;
+}
+</code></pre></div></div>
+
+<p>​       常用动画属性：animation-iteration-count（循环次数，infinite=无限循环）、animation-direction（动画方向，reverse=反向）、animation-pause-on-hover（鼠标悬浮暂停动画）。</p>
+
+<ul>
+  <li>阴影（box-shadow/text-shadow）：给元素或文本添加阴影，增强视觉层次感</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/* 盒子阴影：水平偏移 垂直偏移 模糊度 阴影大小 阴影颜色 内阴影（inset） */
+box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.3);
+/* 文本阴影：水平偏移 垂直偏移 模糊度 阴影颜色 */
+text-shadow: 1px 1px 2px #333;
+</code></pre></div></div>
+
+<ul>
+  <li>圆角（border-radius）：除了实现圆形，还可实现不规则圆角</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>border-radius: 10px 20px 30px 40px; /* 上左、上右、下右、下左（顺时针） */
+border-radius: 50% 30%; /* 椭圆圆角 */
+</code></pre></div></div>
+
+<ul>
+  <li>透明度（opacity）：控制元素整体透明度，值0-1（0=完全透明，1=不透明），会影响子元素</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>opacity: 0.5; /* 元素及子元素都半透明 */
+</code></pre></div></div>
+
+<p>​       补充：rgba() 仅控制背景/文本透明度，不影响子元素（如 background-color: rgba(255,0,0,0.5);）。</p>
+
+<ul>
+  <li>弹性盒补充（calc() 函数）：动态计算样式值，支持加减乘除运算，可混合单位</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>width: calc(100% - 20px); /* 宽度 = 父容器宽度 - 20px */
+height: calc(50px + 10px); /* 高度 = 50px + 10px */
+</code></pre></div></div>
+
+<h3 id="24-响应式布局核心适配移动端平板pc">2.4 响应式布局（核心，适配移动端、平板、PC）</h3>
+
+<p>核心思想：根据不同设备的屏幕宽度，应用不同的CSS样式，实现“一套代码，多端适配”，核心工具是「媒体查询（Media Query）」。</p>
+
+<h4 id="1-媒体查询基础语法">1. 媒体查询基础语法</h4>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">/* 当屏幕宽度 ≤ 768px 时，应用以下样式（适配移动端） */</span>
+<span class="k">@media</span> <span class="p">(</span><span class="n">max-width</span><span class="p">:</span> <span class="m">768px</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nc">.container</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+    <span class="nl">padding</span><span class="p">:</span> <span class="m">0</span> <span class="m">10px</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nc">.nav</span> <span class="p">{</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span> <span class="c">/* 隐藏导航栏 */</span>
+  <span class="p">}</span>
+  <span class="nc">.mobile-nav</span> <span class="p">{</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="nb">block</span><span class="p">;</span> <span class="c">/* 显示移动端导航 */</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c">/* 当屏幕宽度 &gt; 768px 且 ≤ 1200px 时，应用以下样式（适配平板） */</span>
+<span class="k">@media</span> <span class="p">(</span><span class="n">min-width</span><span class="p">:</span> <span class="m">769px</span><span class="p">)</span> <span class="n">and</span> <span class="p">(</span><span class="n">max-width</span><span class="p">:</span> <span class="m">1200px</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nc">.container</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">90%</span><span class="p">;</span>
+    <span class="nl">margin</span><span class="p">:</span> <span class="m">0</span> <span class="nb">auto</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c">/* 当屏幕宽度 &gt; 1200px 时，应用以下样式（适配PC） */</span>
+<span class="k">@media</span> <span class="p">(</span><span class="n">min-width</span><span class="p">:</span> <span class="m">1201px</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nc">.container</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">1200px</span><span class="p">;</span>
+    <span class="nl">margin</span><span class="p">:</span> <span class="m">0</span> <span class="nb">auto</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="2-响应式布局注意事项">2. 响应式布局注意事项</h4>
+
+<ul>
+  <li>必须在HTML头部添加视口配置（前文HTML基础结构已提及），否则媒体查询无效：</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"&gt;
+</code></pre></div></div>
+
+<p>说明：<code class="language-plaintext highlighter-rouge">width=device-width</code>（让页面宽度等于设备屏幕宽度）、<code class="language-plaintext highlighter-rouge">user-scalable=no</code>（禁止用户缩放页面）。</p>
+
+<ul>
+  <li>采用“移动优先”原则（推荐）：先写移动端样式，再通过媒体查询写平板、PC端样式，减少代码冗余。</li>
+  <li>
+    <p>避免使用固定像素宽度，优先使用百分比（%）、fr、rem、vw/vh等自适应单位：</p>
+
+    <ul>
+      <li>
+        <p>rem：相对根元素（html）的字体大小，默认1rem=16px，可通过设置html的font-size适配不同设备。</p>
+      </li>
+      <li>
+        <p>vw/vh：相对屏幕宽度/高度，1vw=屏幕宽度的1%，1vh=屏幕高度的1%。</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>图片自适应：给图片设置<code class="language-plaintext highlighter-rouge">max-width: 100%; height: auto;</code>，避免图片超出容器。</p>
+
+<h3 id="25-css-常见问题与解决方案">2.5 CSS 常见问题与解决方案</h3>
+
+<ul>
+  <li>问题1：margin塌陷（前文盒模型已提及）
+    <ul>
+      <li>解决方案：父元素添加<code class="language-plaintext highlighter-rouge">overflow: hidden</code>; 或<code class="language-plaintext highlighter-rouge">border-top: 1px solid transparent</code>;。</li>
+    </ul>
+  </li>
+  <li>问题2：浮动父容器塌陷
+    <ul>
+      <li>解决方案：使用伪元素清除浮动（推荐），或给父元素添加<code class="language-plaintext highlighter-rouge">overflow: hidden</code>;。</li>
+    </ul>
+  </li>
+  <li>问题3：元素垂直居中
+    <ul>
+      <li>解决方案：Flex布局：父容器设置 <code class="language-plaintext highlighter-rouge">display: flex; justify-content: center; align-items: center</code>;（最常用）。
+        <ul>
+          <li>定位：子元素absolute + 父元素relative</li>
+          <li>子元素设置<code class="language-plaintext highlighter-rouge">top: 50%; left: 50%; transform: translate(-50%, -50%)</code>;。</li>
+          <li>行内元素：设置 line-height = 父元素高度（仅单行文本有效）。</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>问题4：样式冲突
+    <ul>
+      <li>解决方案：提高选择器优先级、避免滥用!important、合理使用class命名（如BEM命名规范）。</li>
+    </ul>
+  </li>
+  <li>问题5：移动端适配错乱
+    <ul>
+      <li>解决方案：检查视口配置、使用自适应单位、编写正确的媒体查询。</li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="三javascriptjs-页面交互与逻辑">三、JavaScript（JS）—— 页面交互与逻辑</h1>
+
+<p>核心作用：控制HTML元素的行为和交互，实现页面动态效果（如点击事件、表单校验、数据请求等），是网页的“大脑”，可操作HTML（DOM）和CSS（CSSOM），实现前后端数据交互。</p>
+
+<h2 id="31-javascript-引入方式3种与css类似">3.1 JavaScript 引入方式（3种，与CSS类似）</h2>
+
+<h3 id="311-内联脚本行内脚本不推荐">3.1.1 内联脚本（行内脚本，不推荐）</h3>
+
+<p>直接在HTML标签内通过事件属性写JS代码，仅作用于当前标签，不利于代码维护和复用。</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;button</span> <span class="na">onclick=</span><span class="s">"alert('点击成功！')"</span><span class="nt">&gt;</span>点击我<span class="nt">&lt;/button&gt;</span>
+</code></pre></div></div>
+
+<h3 id="312-内部脚本嵌入脚本">3.1.2 内部脚本（嵌入脚本）</h3>
+
+<p>在HTML的head或body标签内，通过<script>标签写JS代码，作用于当前整个页面，适合写少量JS代码。</script></p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;button</span> <span class="na">id=</span><span class="s">"btn"</span><span class="nt">&gt;</span>点击我<span class="nt">&lt;/button&gt;</span>
+  <span class="nt">&lt;script&gt;</span>
+    <span class="c1">// 内部脚本代码</span>
+    <span class="kd">const</span> <span class="nx">btn</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">btn</span><span class="dl">'</span><span class="p">);</span>
+    <span class="nx">btn</span><span class="p">.</span><span class="nx">onclick</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">点击成功！</span><span class="dl">'</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</code></pre></div></div>
+
+<p>注意：若脚本写在head标签内，需等待页面元素加载完成后再操作元素（可使用window.onload事件），否则会获取不到元素。</p>
+
+<h3 id="313-外部脚本链接脚本最推荐">3.1.3 外部脚本（链接脚本，最推荐）</h3>
+
+<p>创建独立的.js文件，通过<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>标签的src属性引入HTML，作用于多个页面，利于代码复用和维护，适合写大量JS代码。</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// HTML中引入（推荐放在body标签末尾，避免阻塞页面加载）
+<span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;button</span> <span class="na">id=</span><span class="s">"btn"</span><span class="nt">&gt;</span>点击我<span class="nt">&lt;/button&gt;</span>
+  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"./js/index.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+
+// index.js文件中
+const btn = document.getElementById('btn');
+btn.onclick = function() {
+  alert('点击成功！');
+}
+</code></pre></div></div>
+
+<p>补充：<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>标签的defer和async属性（用于控制脚本加载顺序）：</p>
+
+<p>​            defer：脚本延迟执行，等待页面完全加载完成后再执行，不阻塞页面加载，多个defer脚本按顺序执行。			async：脚本异步加载，加载完成后立即执行，不阻塞页面加载，多个async脚本执行顺序不确定。</p>
+
+<h2 id="32-javascript-基础语法">3.2 JavaScript 基础语法</h2>
+
+<h3 id="321-变量与常量存储数据">3.2.1 变量与常量（存储数据）</h3>
+
+<p>JS中使用var、let、const声明变量/常量，推荐使用let和const（ES6新特性，解决var的缺陷）。</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 1. var（不推荐，存在变量提升、作用域混乱等问题）</span>
+<span class="kd">var</span> <span class="nx">name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">张三</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">age</span> <span class="o">=</span> <span class="mi">18</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">李四</span><span class="dl">'</span><span class="p">;</span> <span class="c1">// 可重复声明，不报错</span>
+
+<span class="c1">// 2. let（声明变量，可修改，块级作用域）</span>
+<span class="kd">let</span> <span class="nx">name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">张三</span><span class="dl">'</span><span class="p">;</span>
+<span class="nx">name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">李四</span><span class="dl">'</span><span class="p">;</span> <span class="c1">// 可修改</span>
+<span class="c1">// let name = '王五'; // 不可重复声明，报错</span>
+
+<span class="c1">// 3. const（声明常量，不可修改，块级作用域，必须初始化）</span>
+<span class="kd">const</span> <span class="nx">PI</span> <span class="o">=</span> <span class="mf">3.14159</span><span class="p">;</span>
+<span class="c1">// PI = 3.14; // 不可修改，报错</span>
+<span class="kd">const</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">];</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nf">push</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="c1">// 允许修改数组/对象内部内容，不允许重新赋值</span>
+</code></pre></div></div>
+
+<p>补充：块级作用域（ES6新特性）：变量/常量仅在当前代码块（{}内）有效，避免全局污染。</p>
+
+<h3 id="322-数据类型6种基本类型--1种引用类型">3.2.2 数据类型（6种基本类型 + 1种引用类型）</h3>
+
+<h4 id="1-基本数据类型值类型直接存储值">1. 基本数据类型（值类型，直接存储值）</h4>
+
+<ul>
+  <li>string（字符串）：用单引号、双引号或反引号包裹，如 ‘abc’、”123”、<code class="language-plaintext highlighter-rouge">Hello ${name}</code>（模板字符串，ES6新特性）。</li>
+  <li>number（数字）：整数、小数、负数、NaN（非数字，如10/’a’）、Infinity（无穷大，如10/0）。</li>
+  <li>boolean（布尔值）：只有两个值，true（真）、false（假），常用于判断条件。</li>
+  <li>undefined（未定义）：变量声明但未赋值，如 let a; console.log(a); // undefined。</li>
+  <li>null（空值）：主动表示“空”，如 let a = null;（区别于undefined，null是主动赋值的空）。</li>
+  <li>symbol（符号，ES6新特性）：唯一值，用于对象属性名，避免属性名冲突。</li>
+</ul>
+
+<h4 id="2-引用数据类型引用类型存储内存地址">2. 引用数据类型（引用类型，存储内存地址）</h4>
+
+<ul>
+  <li>object（对象）：最常用的引用类型，用于存储多个相关数据和方法，如 { name: ‘张三’, age: 18, sayHi: function() {} }。</li>
+  <li>补充：数组（Array）、函数（Function）、日期（Date）、正则（RegExp）等本质上都是object类型的子集。</li>
+</ul>
+
+<h4 id="3-数据类型判断">3. 数据类型判断</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 1. typeof：判断基本数据类型（除null外）、函数</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="k">typeof</span> <span class="dl">'</span><span class="s1">abc</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// string</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="k">typeof</span> <span class="mi">123</span><span class="p">);</span> <span class="c1">// number</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="k">typeof</span> <span class="kc">true</span><span class="p">);</span> <span class="c1">// boolean</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="k">typeof</span> <span class="kc">undefined</span><span class="p">);</span> <span class="c1">// undefined</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="k">typeof</span> <span class="kc">null</span><span class="p">);</span> <span class="c1">// object（bug，记住即可）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="k">typeof</span> <span class="kd">function</span><span class="p">(){});</span> <span class="c1">// function</span>
+
+<span class="c1">// 2. instanceof：判断引用数据类型</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="k">instanceof</span> <span class="nb">Array</span><span class="p">);</span> <span class="c1">// true</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">({}</span> <span class="k">instanceof</span> <span class="nb">Object</span><span class="p">);</span> <span class="c1">// true</span>
+
+<span class="c1">// 3. Object.prototype.toString.call()：万能判断方法（最准确）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toString</span><span class="p">.</span><span class="nf">call</span><span class="p">(</span><span class="kc">null</span><span class="p">));</span> <span class="c1">// [object Null]</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toString</span><span class="p">.</span><span class="nf">call</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]));</span> <span class="c1">// [object Array]</span>
+</code></pre></div></div>
+
+<h3 id="323-运算符用于数据运算逻辑判断">3.2.3 运算符（用于数据运算、逻辑判断）</h3>
+
+<p>运算符是JS中用于处理数据的核心工具，按功能分为5大类，重点掌握常用运算符及使用场景，避免踩坑。</p>
+
+<h4 id="1-算术运算符用于数值运算">1. 算术运算符（用于数值运算）</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 基本算术运算符</span>
+<span class="kd">let</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span><span class="p">);</span> <span class="c1">// 13（加法）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">a</span> <span class="o">-</span> <span class="nx">b</span><span class="p">);</span> <span class="c1">// 7（减法）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">a</span> <span class="o">*</span> <span class="nx">b</span><span class="p">);</span> <span class="c1">// 30（乘法）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">a</span> <span class="o">/</span> <span class="nx">b</span><span class="p">);</span> <span class="c1">// 3.333...（除法，注意：JS中除法不会自动取整）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">a</span> <span class="o">%</span> <span class="nx">b</span><span class="p">);</span> <span class="c1">// 1（取余/模运算，求余数）</span>
+
+<span class="c1">// 自增/自减运算符（常用，简化代码）</span>
+<span class="kd">let</span> <span class="nx">c</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">c</span><span class="o">++</span><span class="p">);</span> <span class="c1">// 5（先输出，再自增）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="o">++</span><span class="nx">c</span><span class="p">);</span> <span class="c1">// 7（先自增，再输出）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">c</span><span class="o">--</span><span class="p">);</span> <span class="c1">// 7（先输出，再自减）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="o">--</span><span class="nx">c</span><span class="p">);</span> <span class="c1">// 5（先自减，再输出）</span>
+</code></pre></div></div>
+
+<p>注意：1. 加法运算符（+）可用于拼接字符串（如 ‘Hello’ + ‘World’ → ‘HelloWorld’），若一方是字符串，另一方会自动转为字符串；2. 除法运算中，0除以0结果为NaN，非0数除以0结果为Infinity。</p>
+
+<h4 id="2-赋值运算符用于给变量赋值简化代码">2. 赋值运算符（用于给变量赋值，简化代码）</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+<span class="nx">x</span> <span class="o">+=</span> <span class="mi">5</span><span class="p">;</span> <span class="c1">// 等价于 x = x + 5 → x = 15</span>
+<span class="nx">x</span> <span class="o">-=</span> <span class="mi">3</span><span class="p">;</span> <span class="c1">// 等价于 x = x - 3 → x = 12</span>
+<span class="nx">x</span> <span class="o">*=</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">// 等价于 x = x * 2 → x = 24</span>
+<span class="nx">x</span> <span class="o">/=</span> <span class="mi">4</span><span class="p">;</span> <span class="c1">// 等价于 x = x / 4 → x = 6</span>
+<span class="nx">x</span> <span class="o">%=</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">// 等价于 x = x % 2 → x = 0</span>
+</code></pre></div></div>
+
+<h4 id="3-比较运算符用于判断两个值的关系返回布尔值truefalse">3. 比较运算符（用于判断两个值的关系，返回布尔值true/false）</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">m</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="nx">n</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">5</span><span class="dl">'</span><span class="p">;</span>
+<span class="c1">// 相等/不相等（会自动转换数据类型，不推荐）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">m</span> <span class="o">==</span> <span class="nx">n</span><span class="p">);</span> <span class="c1">// true（值相等，类型不同但自动转换）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">m</span> <span class="o">!=</span> <span class="nx">n</span><span class="p">);</span> <span class="c1">// false</span>
+
+<span class="c1">// 全等/不全等（严格判断，值和类型都必须相等，推荐使用）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">m</span> <span class="o">===</span> <span class="nx">n</span><span class="p">);</span> <span class="c1">// false（值相等，类型不同：number vs string）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">m</span> <span class="o">!==</span> <span class="nx">n</span><span class="p">);</span> <span class="c1">// true</span>
+
+<span class="c1">// 大小比较</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">m</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">);</span> <span class="c1">// true</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">m</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">);</span> <span class="c1">// true</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">n</span> <span class="o">&gt;</span> <span class="mi">6</span><span class="p">);</span> <span class="c1">// false（字符串'5'会转为数字5再比较）</span>
+</code></pre></div></div>
+
+<p>重点：推荐使用全等（===）和不全等（!==），避免自动类型转换导致的判断错误（如 0 == false 会返回true，不符合预期）。</p>
+
+<h4 id="4-逻辑运算符用于逻辑判断返回布尔值或原始值常用在条件判断中">4. 逻辑运算符（用于逻辑判断，返回布尔值或原始值，常用在条件判断中）</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">flag1</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">flag2</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="c1">// 逻辑与（&amp;&amp;）：两个都为true，结果才为true；有一个为false，结果为false</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">flag1</span> <span class="o">&amp;&amp;</span> <span class="nx">flag2</span><span class="p">);</span> <span class="c1">// false</span>
+<span class="c1">// 短路特性：左边为false，右边不执行（常用简化代码）</span>
+<span class="kd">let</span> <span class="nx">num1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="nx">flag2</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">num1</span> <span class="o">=</span> <span class="mi">10</span><span class="p">);</span> <span class="c1">// flag2为false，右边不执行，num1仍为0</span>
+
+<span class="c1">// 逻辑或（||）：两个有一个为true，结果就为true；都为false，结果为false</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">flag1</span> <span class="o">||</span> <span class="nx">flag2</span><span class="p">);</span> <span class="c1">// true</span>
+<span class="c1">// 短路特性：左边为true，右边不执行（常用设置默认值）</span>
+<span class="kd">let</span> <span class="nx">username</span> <span class="o">=</span> <span class="dl">''</span><span class="p">;</span>
+<span class="kd">let</span> <span class="nx">defaultName</span> <span class="o">=</span> <span class="nx">username</span> <span class="o">||</span> <span class="dl">'</span><span class="s1">游客</span><span class="dl">'</span><span class="p">;</span> <span class="c1">// username为空，取默认值'游客'</span>
+
+<span class="c1">// 逻辑非（!）：取反，true变false，false变true</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="o">!</span><span class="nx">flag1</span><span class="p">);</span> <span class="c1">// false</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="o">!</span><span class="mi">0</span><span class="p">);</span> <span class="c1">// true（0、''、null、undefined、NaN 会被转为false，取反后为true）</span>
+</code></pre></div></div>
+
+<h4 id="5-三元运算符三目运算符简化if-else条件判断语法条件--成立时执行--不成立时执行">5. 三元运算符（三目运算符，简化if-else条件判断，语法：条件 ? 成立时执行 : 不成立时执行）</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 示例1：判断年龄是否成年</span>
+<span class="kd">let</span> <span class="nx">age</span> <span class="o">=</span> <span class="mi">19</span><span class="p">;</span>
+<span class="kd">let</span> <span class="nx">isAdult</span> <span class="o">=</span> <span class="nx">age</span> <span class="o">&gt;=</span> <span class="mi">18</span> <span class="p">?</span> <span class="dl">'</span><span class="s1">成年</span><span class="dl">'</span> <span class="p">:</span> <span class="dl">'</span><span class="s1">未成年</span><span class="dl">'</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">isAdult</span><span class="p">);</span> <span class="c1">// 成年</span>
+
+<span class="c1">// 示例2：简化赋值</span>
+<span class="kd">let</span> <span class="nx">score</span> <span class="o">=</span> <span class="mi">85</span><span class="p">;</span>
+<span class="kd">let</span> <span class="nx">grade</span> <span class="o">=</span> <span class="nx">score</span> <span class="o">&gt;=</span> <span class="mi">90</span> <span class="p">?</span> <span class="dl">'</span><span class="s1">优秀</span><span class="dl">'</span> <span class="p">:</span> <span class="p">(</span><span class="nx">score</span> <span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span><span class="o">=</span> <span class="mi">80</span> <span class="p">?</span> <span class="dl">'</span><span class="s1">良好</span><span class="dl">'</span> <span class="p">:</span> <span class="dl">'</span><span class="s1">及格</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">grade</span><span class="p">);</span> <span class="c1">// 良好</span>
+</code></pre></div></div>
+
+<p>注意：三元运算符可嵌套，但嵌套层数不宜过多（建议不超过2层），否则会影响代码可读性。</p>
+
+<h3 id="324-条件语句用于根据不同条件执行不同代码">3.2.4 条件语句（用于根据不同条件执行不同代码）</h3>
+
+<p>条件语句的核心是“判断”，根据条件的真假，执行对应的代码块，常用有if-else和switch-case两种。</p>
+
+<h4 id="1-if-else-语句适用于多种条件判断">1. if-else 语句（适用于多种条件判断）</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 基本语法：if（条件）{ 条件成立执行的代码 }</span>
+<span class="kd">let</span> <span class="nx">score</span> <span class="o">=</span> <span class="mi">75</span><span class="p">;</span>
+<span class="k">if </span><span class="p">(</span><span class="nx">score</span> <span class="o">&gt;=</span> <span class="mi">90</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">优秀</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">}</span> <span class="k">else</span> <span class="k">if </span><span class="p">(</span><span class="nx">score</span> <span class="o">&gt;=</span> <span class="mi">80</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 可选，多个条件判断</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">良好</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">}</span> <span class="k">else</span> <span class="k">if </span><span class="p">(</span><span class="nx">score</span> <span class="o">&gt;=</span> <span class="mi">60</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">及格</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="c1">// 可选，所有条件都不成立时执行</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">不及格</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>补充：if后面的条件必须是布尔值（true/false），若不是，JS会自动将其转为布尔值（0、’‘、null、undefined、NaN 转为false，其余转为true）。</p>
+
+<h4 id="2-switch-case-语句适用于固定值的判断如菜单选择状态判断">2. switch-case 语句（适用于固定值的判断，如菜单选择、状态判断）</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 基本语法：switch（变量）{ case 值1: 执行代码; break; ... default: 默认执行代码; }</span>
+<span class="kd">let</span> <span class="nx">week</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="k">switch </span><span class="p">(</span><span class="nx">week</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">case</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">星期一</span><span class="dl">'</span><span class="p">);</span>
+    <span class="k">break</span><span class="p">;</span> <span class="c1">// 必须加break，否则会继续执行下一个case（穿透现象）</span>
+  <span class="k">case</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">星期二</span><span class="dl">'</span><span class="p">);</span>
+    <span class="k">break</span><span class="p">;</span>
+  <span class="k">case</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">星期三</span><span class="dl">'</span><span class="p">);</span>
+    <span class="k">break</span><span class="p">;</span>
+  <span class="k">case</span> <span class="mi">4</span><span class="p">:</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">星期四</span><span class="dl">'</span><span class="p">);</span>
+    <span class="k">break</span><span class="p">;</span>
+  <span class="k">case</span> <span class="mi">5</span><span class="p">:</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">星期五</span><span class="dl">'</span><span class="p">);</span>
+    <span class="k">break</span><span class="p">;</span>
+  <span class="k">case</span> <span class="mi">6</span><span class="p">:</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">星期六</span><span class="dl">'</span><span class="p">);</span>
+    <span class="k">break</span><span class="p">;</span>
+  <span class="k">case</span> <span class="mi">7</span><span class="p">:</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">星期日</span><span class="dl">'</span><span class="p">);</span>
+    <span class="k">break</span><span class="p">;</span>
+  <span class="nl">default</span><span class="p">:</span> <span class="c1">// 可选，变量不匹配任何case时执行</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">输入错误</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>注意：1. switch判断是“全等判断”（===），变量和case值的类型必须一致；2. break关键字不可省略（除非需要利用穿透现象），否则会执行所有后续case的代码。</p>
+
+<h3 id="325-循环语句用于重复执行一段代码减少冗余">3.2.5 循环语句（用于重复执行一段代码，减少冗余）</h3>
+
+<p>循环语句适用于需要重复执行的场景（如遍历数组、计算累加和等），常用有for、while、do-while三种，重点掌握for循环。</p>
+
+<h4 id="1-for-循环适用于已知循环次数的场景">1. for 循环（适用于已知循环次数的场景）</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 基本语法：for（初始化变量; 循环条件; 变量更新）{ 循环执行的代码 }</span>
+<span class="c1">// 示例1：计算1-10的累加和</span>
+<span class="kd">let</span> <span class="nx">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">for </span><span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">i</span><span class="p">;</span> <span class="c1">// 等价于 sum = sum + i</span>
+<span class="p">}</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">sum</span><span class="p">);</span> <span class="c1">// 55</span>
+
+<span class="c1">// 示例2：遍历数组（重点，后续常用）</span>
+<span class="kd">let</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">];</span>
+<span class="k">for </span><span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span> <span class="c1">// 依次输出10、20、30、40</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>补充：for循环的三个部分都可省略（如 for(;;) 会变成无限循环），但分号不能省略，实际开发中避免无限循环（会导致页面卡死）。</p>
+
+<h4 id="2-while-循环适用于未知循环次数只知道循环条件的场景">2. while 循环（适用于未知循环次数，只知道循环条件的场景）</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 基本语法：while（循环条件）{ 循环执行的代码; 变量更新 }</span>
+<span class="c1">// 示例：计算1-100中所有偶数的和</span>
+<span class="kd">let</span> <span class="nx">evenSum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="k">while </span><span class="p">(</span><span class="nx">i</span> <span class="o">&lt;=</span> <span class="mi">100</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">evenSum</span> <span class="o">+=</span> <span class="nx">i</span><span class="p">;</span>
+  <span class="nx">i</span> <span class="o">+=</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">// 变量更新，避免无限循环</span>
+<span class="p">}</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">evenSum</span><span class="p">);</span> <span class="c1">// 2550</span>
+</code></pre></div></div>
+
+<p>注意：while循环必须在循环体内更新变量，否则会导致无限循环。</p>
+
+<h4 id="3-do-while-循环与while循环类似区别先执行一次循环体再判断条件">3. do-while 循环（与while循环类似，区别：先执行一次循环体，再判断条件）</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 基本语法：do { 循环执行的代码; 变量更新 } while（循环条件）;</span>
+<span class="c1">// 示例：无论条件是否成立，先执行一次循环体</span>
+<span class="kd">let</span> <span class="nx">num</span> <span class="o">=</span> <span class="mi">11</span><span class="p">;</span>
+<span class="k">do</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">num</span><span class="p">);</span> <span class="c1">// 输出11（即使num&gt;10，仍执行一次）</span>
+  <span class="nx">num</span><span class="o">++</span><span class="p">;</span>
+<span class="p">}</span> <span class="k">while </span><span class="p">(</span><span class="nx">num</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>特点：循环体至少执行一次，适用于“必须执行一次”的场景（如用户输入校验，先获取一次输入，再判断是否符合要求）。</p>
+
+<h4 id="4-循环控制语句breakcontinue">4. 循环控制语句（break、continue）</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 1. break：终止整个循环，跳出循环体</span>
+<span class="k">for </span><span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if </span><span class="p">(</span><span class="nx">i</span> <span class="o">===</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">break</span><span class="p">;</span> <span class="c1">// 当i=3时，终止循环</span>
+  <span class="p">}</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span> <span class="c1">// 输出1、2</span>
+<span class="p">}</span>
+
+<span class="c1">// 2. continue：跳过当前次循环，继续执行下一次循环</span>
+<span class="k">for </span><span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if </span><span class="p">(</span><span class="nx">i</span> <span class="o">===</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">continue</span><span class="p">;</span> <span class="c1">// 当i=3时，跳过本次循环，不执行console.log</span>
+  <span class="p">}</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span> <span class="c1">// 输出1、2、4、5</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="326-数组array常用引用类型用于存储多个数据">3.2.6 数组（Array，常用引用类型，用于存储多个数据）</h3>
+
+<p>数组是JS中最常用的数据结构之一，可存储任意类型的数据（数字、字符串、对象、函数等），长度可动态变化，核心是“批量管理数据”。</p>
+
+<h4 id="1-数组的创建方式3种常用">1. 数组的创建方式（3种常用）</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 方式1：字面量创建（最推荐，简洁高效）</span>
+<span class="kd">let</span> <span class="nx">arr1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="dl">'</span><span class="s1">hello</span><span class="dl">'</span><span class="p">,</span> <span class="kc">true</span><span class="p">];</span> <span class="c1">// 可存储多种类型数据</span>
+<span class="c1">// 方式2：构造函数创建</span>
+<span class="kd">let</span> <span class="nx">arr2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Array</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">);</span> <span class="c1">// 传入多个值，创建包含这些值的数组</span>
+<span class="kd">let</span> <span class="nx">arr3</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Array</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span> <span class="c1">// 传入一个数字，创建长度为5、默认值为undefined的数组</span>
+<span class="c1">// 方式3：Array.of() 创建（ES6新特性，避免构造函数的歧义）</span>
+<span class="kd">let</span> <span class="nx">arr4</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span> <span class="c1">// [5]，区别于new Array(5)</span>
+<span class="kd">let</span> <span class="nx">arr5</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">);</span> <span class="c1">// [10,20,30]</span>
+</code></pre></div></div>
+
+<h4 id="2-数组的核心属性与方法">2. 数组的核心属性与方法</h4>
+
+<p>核心属性：length（获取/设置数组长度）</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">];</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span> <span class="c1">// 3（获取长度）</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span> <span class="c1">// 设置长度，多余位置填充undefined，数组变为[1,2,3,undefined,undefined]</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">// 缩短长度，多余元素被删除，数组变为[1,2]</span>
+</code></pre></div></div>
+
+<p>常用方法（按功能分类，配实操示例）：</p>
+
+<h5 id="1增删改查">（1）增删改查</h5>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">];</span>
+
+<span class="c1">// 1. 增：添加元素到数组</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nf">push</span><span class="p">(</span><span class="mi">40</span><span class="p">);</span> <span class="c1">// 末尾添加，返回新长度，arr变为[10,20,30,40]</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nf">unshift</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span> <span class="c1">// 开头添加，返回新长度，arr变为[0,10,20,30,40]</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nf">splice</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">);</span> <span class="c1">// 中间添加：splice(起始索引, 删除个数, 要添加的元素)，arr变为[0,10,15,20,30,40]</span>
+
+<span class="c1">// 2. 删：删除数组元素</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nf">pop</span><span class="p">();</span> <span class="c1">// 删除末尾元素，返回被删除的元素，arr变为[0,10,15,20,30]</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nf">shift</span><span class="p">();</span> <span class="c1">// 删除开头元素，返回被删除的元素，arr变为[10,15,20,30]</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nf">splice</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">// 中间删除：splice(起始索引, 删除个数)，删除索引1的元素，arr变为[10,20,30]</span>
+
+<span class="c1">// 3. 改：修改数组元素（直接通过索引赋值）</span>
+<span class="nx">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">25</span><span class="p">;</span> <span class="c1">// 修改索引1的元素，arr变为[10,25,30]</span>
+
+<span class="c1">// 4. 查：查找数组元素</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// 通过索引查找，输出10</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">.</span><span class="nf">indexOf</span><span class="p">(</span><span class="mi">25</span><span class="p">));</span> <span class="c1">// 查找元素位置，返回索引1（找不到返回-1）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">.</span><span class="nf">includes</span><span class="p">(</span><span class="mi">30</span><span class="p">));</span> <span class="c1">// 判断元素是否存在，返回true（ES6新特性）</span>
+</code></pre></div></div>
+
+<h5 id="2数组遍历">（2）数组遍历</h5>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">];</span>
+
+<span class="c1">// 方式1：for循环（最基础，灵活控制）</span>
+<span class="k">for </span><span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span> <span class="c1">// 依次输出10、20、30、40</span>
+<span class="p">}</span>
+
+<span class="c1">// 方式2：for...of 循环（ES6新特性，简洁，适合遍历值）</span>
+<span class="k">for </span><span class="p">(</span><span class="kd">let</span> <span class="nx">item</span> <span class="k">of</span> <span class="nx">arr</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span> <span class="c1">// 依次输出10、20、30、40</span>
+<span class="p">}</span>
+
+<span class="c1">// 方式3：forEach 方法（最常用，专门用于数组遍历，无返回值）</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nf">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">arr</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// item：当前遍历的元素，index：当前元素索引，arr：原数组</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="s2">`索引</span><span class="p">${</span><span class="nx">index</span><span class="p">}</span><span class="s2">：</span><span class="p">${</span><span class="nx">item</span><span class="p">}</span><span class="s2">`</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// 方式4：map 方法（常用，遍历并返回新数组，不改变原数组）</span>
+<span class="kd">let</span> <span class="nx">newArr</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="nx">item</span> <span class="o">=&gt;</span> <span class="nx">item</span> <span class="o">*</span> <span class="mi">2</span><span class="p">);</span> <span class="c1">// 每个元素乘2，newArr为[20,40,60,80]，原arr不变</span>
+</code></pre></div></div>
+
+<h5 id="3其他常用方法">（3）其他常用方法</h5>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">];</span>
+
+<span class="c1">// 1. filter：过滤数组，返回满足条件的新数组</span>
+<span class="kd">let</span> <span class="nx">filterArr</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nf">filter</span><span class="p">(</span><span class="nx">item</span> <span class="o">=&gt;</span> <span class="nx">item</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">);</span> <span class="c1">// [30,40]</span>
+
+<span class="c1">// 2. find：查找满足条件的第一个元素，返回该元素（找不到返回undefined）</span>
+<span class="kd">let</span> <span class="nx">findItem</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="nx">item</span> <span class="o">=&gt;</span> <span class="nx">item</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">);</span> <span class="c1">// 30</span>
+
+<span class="c1">// 3. reduce：累加/累乘，返回最终结果（常用）</span>
+<span class="kd">let</span> <span class="nx">sum</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nf">reduce</span><span class="p">((</span><span class="nx">prev</span><span class="p">,</span> <span class="nx">curr</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">prev</span> <span class="o">+</span> <span class="nx">curr</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="c1">// 累加，prev是上一次结果，curr是当前元素，初始值0，sum=100</span>
+
+<span class="c1">// 4. join：将数组转为字符串，参数为分隔符（默认逗号）</span>
+<span class="kd">let</span> <span class="nx">str</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="dl">'</span><span class="s1">-</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// "10-20-30-40"</span>
+
+<span class="c1">// 5. reverse：反转数组（改变原数组）</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nf">reverse</span><span class="p">();</span> <span class="c1">// [40,30,20,10]</span>
+
+<span class="c1">// 6. slice：截取数组，返回新数组（不改变原数组），slice(起始索引, 结束索引)（结束索引不包含）</span>
+<span class="kd">let</span> <span class="nx">sliceArr</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nf">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span> <span class="c1">// [30,20]</span>
+
+<span class="c1">// 7. concat：合并数组，返回新数组（不改变原数组）</span>
+<span class="kd">let</span> <span class="nx">arr2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">];</span>
+<span class="kd">let</span> <span class="nx">concatArr</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nf">concat</span><span class="p">(</span><span class="nx">arr2</span><span class="p">);</span> <span class="c1">// [40,30,20,10,50,60]</span>
+</code></pre></div></div>
+
+<h3 id="327-函数function用于封装可复用的代码">3.2.7 函数（Function，用于封装可复用的代码）</h3>
+
+<p>函数是JS的核心组件，本质是“可复用的代码块”，用于封装逻辑、简化代码、提高复用性，可接收参数、返回结果。</p>
+
+<h4 id="1-函数的创建方式3种常用">1. 函数的创建方式（3种常用）</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 方式1：函数声明（最常用，有函数提升，可在声明前调用）</span>
+<span class="kd">function</span> <span class="nf">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span><span class="p">;</span> <span class="c1">// return：返回函数结果，无return则返回undefined</span>
+<span class="p">}</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nf">add</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">));</span> <span class="c1">// 30</span>
+
+<span class="c1">// 方式2：函数表达式（无函数提升，不可在声明前调用）</span>
+<span class="kd">let</span> <span class="nx">subtract</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">a</span> <span class="o">-</span> <span class="nx">b</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nf">subtract</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">));</span> <span class="c1">// 10</span>
+
+<span class="c1">// 方式3：箭头函数（ES6新特性，简洁，无this绑定，适合简单逻辑）</span>
+<span class="kd">let</span> <span class="nx">multiply</span> <span class="o">=</span> <span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">a</span> <span class="o">*</span> <span class="nx">b</span><span class="p">;</span> <span class="c1">// 省略{}和return（只有一句代码时）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nf">multiply</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span> <span class="c1">// 30</span>
+
+<span class="c1">// 箭头函数完整写法（多句代码需加{}和return）</span>
+<span class="kd">let</span> <span class="nx">divide</span> <span class="o">=</span> <span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">if </span><span class="p">(</span><span class="nx">b</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="dl">'</span><span class="s1">除数不能为0</span><span class="dl">'</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">a</span> <span class="o">/</span> <span class="nx">b</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nf">divide</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span> <span class="c1">// 5</span>
+</code></pre></div></div>
+
+<h4 id="2-函数的参数与返回值">2. 函数的参数与返回值</h4>
+
+<p>（1）参数：分为形参（函数声明时定义的参数）和实参（函数调用时传入的参数），JS中参数个数可不一致（不报错）。</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nf">sum</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// a、b是形参</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">);</span>
+  <span class="k">return</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nf">sum</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span> <span class="c1">// 10、20是实参，输出10 20，返回30</span>
+<span class="nf">sum</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span> <span class="c1">// 实参不足，b为undefined，输出10 undefined，返回NaN</span>
+<span class="nf">sum</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">);</span> <span class="c1">// 实参过多，多余参数被忽略，输出10 20，返回30</span>
+
+<span class="c1">// 给形参设置默认值（ES6新特性）</span>
+<span class="kd">function</span> <span class="nf">greet</span><span class="p">(</span><span class="nx">name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">游客</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s2">`你好，</span><span class="p">${</span><span class="nx">name</span><span class="p">}</span><span class="s2">！`</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nf">greet</span><span class="p">());</span> <span class="c1">// 你好，游客！</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nf">greet</span><span class="p">(</span><span class="dl">'</span><span class="s1">张三</span><span class="dl">'</span><span class="p">));</span> <span class="c1">// 你好，张三！</span>
+</code></pre></div></div>
+
+<p>（2）返回值：通过return语句返回，return后面的代码不会执行；无return时，函数默认返回undefined。</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="dl">'</span><span class="s1">返回值</span><span class="dl">'</span><span class="p">;</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">这句话不会执行</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// 被return阻断</span>
+<span class="p">}</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nf">test</span><span class="p">());</span> <span class="c1">// 返回值</span>
+
+<span class="kd">function</span> <span class="nf">test2</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// 无return</span>
+<span class="p">}</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nf">test2</span><span class="p">());</span> <span class="c1">// undefined</span>
+</code></pre></div></div>
+
+<h4 id="3-函数的作用域与作用域链">3. 函数的作用域与作用域链</h4>
+
+<p>作用域：函数内声明的变量/函数，仅在函数内部有效（局部作用域）；函数外声明的变量（全局作用域），整个页面有效。</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 全局变量（整个页面有效）</span>
+<span class="kd">let</span> <span class="nx">globalVar</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">全局变量</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">function</span> <span class="nf">fn</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// 局部变量（仅函数内部有效）</span>
+  <span class="kd">let</span> <span class="nx">localVar</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">局部变量</span><span class="dl">'</span><span class="p">;</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">globalVar</span><span class="p">);</span> <span class="c1">// 可访问全局变量，输出全局变量</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">localVar</span><span class="p">);</span> <span class="c1">// 可访问局部变量，输出局部变量</span>
+<span class="p">}</span>
+<span class="nf">fn</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">localVar</span><span class="p">);</span> <span class="c1">// 报错，无法访问函数内的局部变量</span>
+</code></pre></div></div>
+
+<p>作用域链：当访问一个变量时，JS会先在当前作用域查找，找不到则向上查找父级作用域，直到找到全局作用域，找不到则报错。</p>
+
+<h3 id="328-对象object核心引用类型用于存储多个相关数据和方法">3.2.8 对象（Object，核心引用类型，用于存储多个相关数据和方法）</h3>
+
+<p>对象是JS中最核心的引用类型，本质是“键值对的集合”，键（key）是字符串（可省略引号），值（value）可是任意类型（数字、字符串、函数、对象等）。</p>
+
+<h4 id="1-对象的创建方式3种常用">1. 对象的创建方式（3种常用）</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 方式1：字面量创建（最推荐，简洁高效）</span>
+<span class="kd">let</span> <span class="nx">person</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">张三</span><span class="dl">'</span><span class="p">,</span> <span class="c1">// 键：name，值：'张三'</span>
+  <span class="na">age</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+  <span class="na">gender</span><span class="p">:</span> <span class="dl">'</span><span class="s1">男</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">sayHi</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="c1">// 方法（值为函数）</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="s2">`你好，我是</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">，今年</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">age</span><span class="p">}</span><span class="s2">岁`</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="c1">// 方式2：构造函数创建（适合创建多个同类对象）</span>
+<span class="kd">function</span> <span class="nf">Person</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">age</span><span class="p">,</span> <span class="nx">gender</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">age</span> <span class="o">=</span> <span class="nx">age</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">gender</span> <span class="o">=</span> <span class="nx">gender</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">sayHi</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="s2">`你好，我是</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">，今年</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">age</span><span class="p">}</span><span class="s2">岁`</span><span class="p">);</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+<span class="kd">let</span> <span class="nx">person1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Person</span><span class="p">(</span><span class="dl">'</span><span class="s1">张三</span><span class="dl">'</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="dl">'</span><span class="s1">男</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">let</span> <span class="nx">person2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Person</span><span class="p">(</span><span class="dl">'</span><span class="s1">李四</span><span class="dl">'</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="dl">'</span><span class="s1">女</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="c1">// 方式3：Object构造函数创建（不常用）</span>
+<span class="kd">let</span> <span class="nx">car</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Object</span><span class="p">();</span>
+<span class="nx">car</span><span class="p">.</span><span class="nx">brand</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">华为</span><span class="dl">'</span><span class="p">;</span>
+<span class="nx">car</span><span class="p">.</span><span class="nx">price</span> <span class="o">=</span> <span class="mi">200000</span><span class="p">;</span>
+<span class="nx">car</span><span class="p">.</span><span class="nx">run</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="s2">`</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">brand</span><span class="p">}</span><span class="s2">汽车正在行驶`</span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<h4 id="2-对象的属性访问与修改">2. 对象的属性访问与修改</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">person</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">张三</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">age</span><span class="p">:</span> <span class="mi">18</span>
+<span class="p">};</span>
+
+<span class="c1">// 1. 访问属性（两种方式）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">person</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span> <span class="c1">// 点语法（推荐，简洁），输出张三</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">person</span><span class="p">[</span><span class="dl">'</span><span class="s1">age</span><span class="dl">'</span><span class="p">]);</span> <span class="c1">// 方括号语法（适合键名有特殊字符、变量作为键名），输出18</span>
+
+<span class="c1">// 2. 修改属性</span>
+<span class="nx">person</span><span class="p">.</span><span class="nx">age</span> <span class="o">=</span> <span class="mi">19</span><span class="p">;</span> <span class="c1">// 点语法修改</span>
+<span class="nx">person</span><span class="p">[</span><span class="dl">'</span><span class="s1">name</span><span class="dl">'</span><span class="p">]</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">张小三</span><span class="dl">'</span><span class="p">;</span> <span class="c1">// 方括号语法修改</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">person</span><span class="p">);</span> <span class="c1">// {name: '张小三', age: 19}</span>
+
+<span class="c1">// 3. 添加新属性</span>
+<span class="nx">person</span><span class="p">.</span><span class="nx">gender</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">男</span><span class="dl">'</span><span class="p">;</span>
+<span class="nx">person</span><span class="p">[</span><span class="dl">'</span><span class="s1">height</span><span class="dl">'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">180</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">person</span><span class="p">);</span> <span class="c1">// {name: '张小三', age: 19, gender: '男', height: 180}</span>
+
+<span class="c1">// 4. 删除属性（delete关键字）</span>
+<span class="k">delete</span> <span class="nx">person</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">person</span><span class="p">);</span> <span class="c1">// {name: '张小三', age: 19, gender: '男'}</span>
+</code></pre></div></div>
+
+<h4 id="3-对象的遍历">3. 对象的遍历</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">person</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">张三</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">age</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+  <span class="na">gender</span><span class="p">:</span> <span class="dl">'</span><span class="s1">男</span><span class="dl">'</span>
+<span class="p">};</span>
+
+<span class="c1">// 方式1：for...in 循环（最常用，遍历对象的所有键）</span>
+<span class="k">for </span><span class="p">(</span><span class="kd">let</span> <span class="nx">key</span> <span class="k">in</span> <span class="nx">person</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// key：对象的键，person[key]：对象的值</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="s2">`</span><span class="p">${</span><span class="nx">key</span><span class="p">}</span><span class="s2">: </span><span class="p">${</span><span class="nx">person</span><span class="p">[</span><span class="nx">key</span><span class="p">]}</span><span class="s2">`</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 方式2：Object.keys() + forEach（ES6新特性，先获取所有键，再遍历）</span>
+<span class="nb">Object</span><span class="p">.</span><span class="nf">keys</span><span class="p">(</span><span class="nx">person</span><span class="p">).</span><span class="nf">forEach</span><span class="p">(</span><span class="nx">key</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="s2">`</span><span class="p">${</span><span class="nx">key</span><span class="p">}</span><span class="s2">: </span><span class="p">${</span><span class="nx">person</span><span class="p">[</span><span class="nx">key</span><span class="p">]}</span><span class="s2">`</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="33-dom-操作js操作html元素的基础">3.3 DOM 操作（JS操作HTML元素的基础）</h3>
+
+<p>DOM（文档对象模型）：将HTML文档解析为一个树形结构，每个HTML元素都是一个“DOM节点”，JS通过DOM操作，可实现对HTML元素的增删改查、样式修改等交互效果。</p>
+
+<h4 id="1-获取dom元素先获取才能操作">1. 获取DOM元素（先获取才能操作）</h4>
+
+<p>常用获取方法（按使用频率排序）：</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 1. 根据id获取（最精准，id唯一）</span>
+<span class="kd">let</span> <span class="nx">btn</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">btn</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// 获取id为btn的元素</span>
+
+<span class="c1">// 2. 根据类名获取（返回伪数组，需遍历）</span>
+<span class="kd">let</span> <span class="nx">boxes</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">getElementsByClassName</span><span class="p">(</span><span class="dl">'</span><span class="s1">box</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// 获取所有class为box的元素</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">boxes</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// 获取第一个box元素</span>
+
+<span class="c1">// 3. 根据标签名获取（返回伪数组，需遍历）</span>
+<span class="kd">let</span> <span class="nx">divs</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">getElementsByTagName</span><span class="p">(</span><span class="dl">'</span><span class="s1">div</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// 获取所有div元素</span>
+
+<span class="c1">// 4. 根据选择器获取（ES6新特性，推荐，灵活）</span>
+<span class="kd">let</span> <span class="nx">singleBox</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">.box</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// 获取第一个匹配选择器的元素（支持id、类、标签选择器）</span>
+<span class="kd">let</span> <span class="nx">allBoxes</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelectorAll</span><span class="p">(</span><span class="dl">'</span><span class="s1">.box</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// 获取所有匹配选择器的元素（返回伪数组）</span>
+</code></pre></div></div>
+
+<p>注意：获取DOM元素必须在元素加载完成后执行（可将脚本放在body末尾，或使用window.onload事件）。</p>
+
+<h4 id="2-操作dom元素的内容">2. 操作DOM元素的内容</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">box</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">.box</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="c1">// 1. innerText：获取/设置元素的纯文本（不解析HTML标签）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">box</span><span class="p">.</span><span class="nx">innerText</span><span class="p">);</span> <span class="c1">// 获取纯文本</span>
+<span class="nx">box</span><span class="p">.</span><span class="nx">innerText</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">新的文本内容</span><span class="dl">'</span><span class="p">;</span> <span class="c1">// 设置纯文本</span>
+<span class="nx">box</span><span class="p">.</span><span class="nx">innerText</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">&lt;strong&gt;加粗文本&lt;/strong&gt;</span><span class="dl">'</span><span class="p">;</span> <span class="c1">// 不会解析标签，显示为&lt;strong&gt;加粗文本&lt;/strong&gt;</span>
+
+<span class="c1">// 2. innerHTML：获取/设置元素的HTML内容（解析HTML标签）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">box</span><span class="p">.</span><span class="nx">innerHTML</span><span class="p">);</span> <span class="c1">// 获取包含HTML标签的内容</span>
+<span class="nx">box</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">新的&lt;strong&gt;加粗文本&lt;/strong&gt;</span><span class="dl">'</span><span class="p">;</span> <span class="c1">// 解析标签，文本会加粗</span>
+<span class="nx">box</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="dl">''</span><span class="p">;</span> <span class="c1">// 清空元素内容</span>
+
+<span class="c1">// 3. value：获取/设置表单元素的值（如input、textarea）</span>
+<span class="kd">let</span> <span class="nx">input</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">input</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">input</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span> <span class="c1">// 获取输入框内容</span>
+<span class="nx">input</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">默认输入内容</span><span class="dl">'</span><span class="p">;</span> <span class="c1">// 设置输入框内容</span>
+</code></pre></div></div>
+
+<h4 id="3-操作dom元素的样式">3. 操作DOM元素的样式</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">box</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">.box</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="c1">// 1. 直接操作style属性（行内样式，优先级高）</span>
+<span class="nx">box</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">200px</span><span class="dl">'</span><span class="p">;</span>
+<span class="nx">box</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">200px</span><span class="dl">'</span><span class="p">;</span>
+<span class="nx">box</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">backgroundColor</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">red</span><span class="dl">'</span><span class="p">;</span> <span class="c1">// 注意：CSS属性驼峰命名（如background-color → backgroundColor）</span>
+<span class="nx">box</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">fontSize</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">16px</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="c1">// 2. 操作class类名（推荐，利于样式复用，不破坏行内样式）</span>
+<span class="c1">// 添加类名</span>
+<span class="nx">box</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="dl">'</span><span class="s1">active</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// 给box添加active类</span>
+<span class="c1">// 移除类名</span>
+<span class="nx">box</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nf">remove</span><span class="p">(</span><span class="dl">'</span><span class="s1">active</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// 移除box的active类</span>
+<span class="c1">// 切换类名（有则移除，无则添加，常用在点击切换效果）</span>
+<span class="nx">box</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nf">toggle</span><span class="p">(</span><span class="dl">'</span><span class="s1">active</span><span class="dl">'</span><span class="p">);</span>
+<span class="c1">// 判断是否有某个类名</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">box</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nf">contains</span><span class="p">(</span><span class="dl">'</span><span class="s1">active</span><span class="dl">'</span><span class="p">));</span> <span class="c1">// 返回true/false</span>
+</code></pre></div></div>
+
+<h4 id="4-操作dom元素增删改">4. 操作DOM元素（增删改）</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 1. 创建新元素</span>
+<span class="kd">let</span> <span class="nx">newDiv</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">createElement</span><span class="p">(</span><span class="dl">'</span><span class="s1">div</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// 创建div元素</span>
+<span class="nx">newDiv</span><span class="p">.</span><span class="nx">innerText</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">新创建的div</span><span class="dl">'</span><span class="p">;</span>
+<span class="nx">newDiv</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">backgroundColor</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">blue</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="c1">// 2. 添加元素（插入到页面中）</span>
+<span class="kd">let</span> <span class="nx">container</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">.container</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">container</span><span class="p">.</span><span class="nf">appendChild</span><span class="p">(</span><span class="nx">newDiv</span><span class="p">);</span> <span class="c1">// 插入到container的末尾</span>
+<span class="nx">container</span><span class="p">.</span><span class="nf">insertBefore</span><span class="p">(</span><span class="nx">newDiv</span><span class="p">,</span> <span class="nx">container</span><span class="p">.</span><span class="nx">firstChild</span><span class="p">);</span> <span class="c1">// 插入到container的第一个子元素前面</span>
+
+<span class="c1">// 3. 修改元素（替换元素）</span>
+<span class="kd">let</span> <span class="nx">oldDiv</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">.old-div</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">container</span><span class="p">.</span><span class="nf">replaceChild</span><span class="p">(</span><span class="nx">newDiv</span><span class="p">,</span> <span class="nx">oldDiv</span><span class="p">);</span> <span class="c1">// 用newDiv替换oldDiv</span>
+
+<span class="c1">// 4. 删除元素</span>
+<span class="nx">container</span><span class="p">.</span><span class="nf">removeChild</span><span class="p">(</span><span class="nx">newDiv</span><span class="p">);</span> <span class="c1">// 删除container中的newDiv</span>
+<span class="c1">// 简化删除（直接删除自身）</span>
+<span class="nx">newDiv</span><span class="p">.</span><span class="nf">remove</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h3 id="34-事件处理实现页面交互">3.4 事件处理（实现页面交互）</h3>
+
+<p>事件：用户在页面上的操作（如点击、鼠标悬浮、输入等），JS通过“绑定事件”，监听用户操作，执行对应的代码（事件处理函数）。</p>
+
+<h4 id="1-常用事件类型">1. 常用事件类型</h4>
+
+<ul>
+  <li>点击事件：click（鼠标点击元素）</li>
+  <li>鼠标事件：mouseover（鼠标悬浮）、mouseout（鼠标离开）、mousemove（鼠标移动）</li>
+  <li>表单事件：input（输入框输入内容）、change（表单元素值改变）、submit（表单提交）、blur（输入框失去焦点）、focus（输入框获取焦点）</li>
+  <li>键盘事件：keydown（按下键盘）、keyup（松开键盘）</li>
+  <li>页面事件：load（页面加载完成）、resize（窗口大小改变）</li>
+</ul>
+
+<h4 id="2-事件绑定方式3种常用">2. 事件绑定方式（3种常用）</h4>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">btn</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">btn</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="c1">// 方式1：行内事件（不推荐，不利于维护，前文已提及）</span>
+<span class="c1">// &lt;button id="btn" onclick="alert('点击了')"&gt;点击我&lt;/button&gt;</span>
+
+<span class="c1">// 方式2：事件属性绑定（简单，适合少量事件）</span>
+<span class="nx">btn</span><span class="p">.</span><span class="nx">onclick</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">点击成功！</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="c1">// 移除事件</span>
+<span class="nx">btn</span><span class="p">.</span><span class="nx">onclick</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+
+<span class="c1">// 方式3：addEventListener（推荐，可绑定多个同类型事件，支持事件捕获/冒泡）</span>
+<span class="nx">btn</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">第一次点击</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="nx">btn</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">第二次点击</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// 点击后会依次执行两个事件处理函数</span>
+<span class="p">});</span>
+<span class="c1">// 移除事件（需使用命名函数）</span>
+<span class="kd">function</span> <span class="nf">clickHandler</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">可移除的点击事件</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nx">btn</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">,</span> <span class="nx">clickHandler</span><span class="p">);</span>
+<span class="nx">btn</span><span class="p">.</span><span class="nf">removeEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">,</span> <span class="nx">clickHandler</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h4 id="3-事件对象event">3. 事件对象（event）</h4>
+
+<p>事件触发时，会自动生成一个“事件对象”，包含事件相关的信息（如点击位置、触发事件的元素等），可在事件处理函数中接收。</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">btn</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// event：事件对象（可简写为e）</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span> <span class="c1">// 触发事件的元素（当前点击的btn）</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">clientX</span><span class="p">,</span> <span class="nx">event</span><span class="p">.</span><span class="nx">clientY</span><span class="p">);</span> <span class="c1">// 鼠标点击的坐标（相对于浏览器窗口）</span>
+  <span class="nx">event</span><span class="p">.</span><span class="nf">preventDefault</span><span class="p">();</span> <span class="c1">// 阻止事件默认行为（如阻止表单提交、链接跳转）</span>
+  <span class="nx">event</span><span class="p">.</span><span class="nf">stopPropagation</span><span class="p">();</span> <span class="c1">// 阻止事件冒泡（后续讲解）</span>
+<span class="p">});</span>
+
+<span class="c1">// 阻止表单默认提交行为（示例）</span>
+<span class="kd">let</span> <span class="nx">form</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">form</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">form</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">submit</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">e</span><span class="p">.</span><span class="nf">preventDefault</span><span class="p">();</span> <span class="c1">// 阻止表单默认提交，避免页面刷新</span>
+  <span class="c1">// 后续可写表单校验、数据提交等逻辑</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h4 id="4-事件冒泡与事件捕获补充">4. 事件冒泡与事件捕获（补充）</h4>
+
+<p>事件冒泡：事件从触发元素（子元素）向上传播到父元素、祖先元素，直到document（默认行为）。</p>
+
+<p>事件捕获：事件从document向下传播到父元素、子元素，直到触发元素（需手动设置）。</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 事件冒泡示例</span>
+<span class="kd">let</span> <span class="nx">parent</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">.parent</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">let</span> <span class="nx">child</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">.child</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="nx">parent</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">父元素被点击</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="nx">child</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">子元素被点击</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="c1">// 点击子元素，会先输出“子元素被点击”，再输出“父元素被点击”（冒泡）</span>
+
+<span class="c1">// 阻止事件冒泡</span>
+<span class="nx">child</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">e</span><span class="p">.</span><span class="nf">stopPropagation</span><span class="p">();</span> <span class="c1">// 阻止冒泡</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">子元素被点击</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="c1">// 点击子元素，仅输出“子元素被点击”，父元素不触发</span>
+</code></pre></div></div>
+
+<h3 id="35-表单校验结合dom和事件">3.5 表单校验（结合DOM和事件）</h3>
+
+<p>表单校验是前端常见需求，用于验证用户输入的内容是否符合要求（如手机号、邮箱格式、密码长度等），避免无效数据提交。</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 示例：简单表单校验（手机号+密码）</span>
+<span class="kd">let</span> <span class="nx">form</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">form</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">let</span> <span class="nx">phoneInput</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">input[name="phone"]</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">let</span> <span class="nx">pwdInput</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">input[name="password"]</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">let</span> <span class="nx">tip</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">.tip</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="nx">form</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">submit</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">e</span><span class="p">.</span><span class="nf">preventDefault</span><span class="p">();</span> <span class="c1">// 阻止表单默认提交</span>
+  <span class="kd">let</span> <span class="nx">phone</span> <span class="o">=</span> <span class="nx">phoneInput</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nf">trim</span><span class="p">();</span> <span class="c1">// 去除首尾空格</span>
+  <span class="kd">let</span> <span class="nx">pwd</span> <span class="o">=</span> <span class="nx">pwdInput</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nf">trim</span><span class="p">();</span>
+
+  <span class="c1">// 校验手机号（简单正则，11位数字）</span>
+  <span class="kd">let</span> <span class="nx">phoneReg</span> <span class="o">=</span> <span class="sr">/^1</span><span class="se">[</span><span class="sr">3-9</span><span class="se">]\d{9}</span><span class="sr">$/</span><span class="p">;</span>
+  <span class="k">if </span><span class="p">(</span><span class="o">!</span><span class="nx">phone</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">tip</span><span class="p">.</span><span class="nx">innerText</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">请输入手机号</span><span class="dl">'</span><span class="p">;</span>
+    <span class="nx">tip</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">color</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">red</span><span class="dl">'</span><span class="p">;</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">if </span><span class="p">(</span><span class="o">!</span><span class="nx">phoneReg</span><span class="p">.</span><span class="nf">test</span><span class="p">(</span><span class="nx">phone</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nx">tip</span><span class="p">.</span><span class="nx">innerText</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">请输入正确的手机号</span><span class="dl">'</span><span class="p">;</span>
+    <span class="nx">tip</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">color</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">red</span><span class="dl">'</span><span class="p">;</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// 校验密码（长度≥6位）</span>
+  <span class="k">if </span><span class="p">(</span><span class="o">!</span><span class="nx">pwd</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">tip</span><span class="p">.</span><span class="nx">innerText</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">请输入密码</span><span class="dl">'</span><span class="p">;</span>
+    <span class="nx">tip</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">color</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">red</span><span class="dl">'</span><span class="p">;</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">if </span><span class="p">(</span><span class="nx">pwd</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">tip</span><span class="p">.</span><span class="nx">innerText</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">密码长度不能少于6位</span><span class="dl">'</span><span class="p">;</span>
+    <span class="nx">tip</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">color</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">red</span><span class="dl">'</span><span class="p">;</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// 校验通过，可提交数据（后续可对接后端接口）</span>
+  <span class="nx">tip</span><span class="p">.</span><span class="nx">innerText</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">校验通过，准备提交！</span><span class="dl">'</span><span class="p">;</span>
+  <span class="nx">tip</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">color</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">green</span><span class="dl">'</span><span class="p">;</span>
+  <span class="c1">// form.submit(); // 手动提交表单（如需）</span>
+<span class="p">});</span>
+
+<span class="c1">// 输入框失去焦点时校验（优化体验）</span>
+<span class="nx">phoneInput</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">blur</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">phone</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nf">trim</span><span class="p">();</span>
+  <span class="kd">let</span> <span class="nx">phoneReg</span> <span class="o">=</span> <span class="sr">/^1</span><span class="se">[</span><span class="sr">3-9</span><span class="se">]\d{9}</span><span class="sr">$/</span><span class="p">;</span>
+  <span class="k">if </span><span class="p">(</span><span class="nx">phone</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">phoneReg</span><span class="p">.</span><span class="nf">test</span><span class="p">(</span><span class="nx">phone</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nx">tip</span><span class="p">.</span><span class="nx">innerText</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">请输入正确的手机号</span><span class="dl">'</span><span class="p">;</span>
+    <span class="nx">tip</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">color</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">red</span><span class="dl">'</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if </span><span class="p">(</span><span class="o">!</span><span class="nx">phone</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">tip</span><span class="p">.</span><span class="nx">innerText</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">请输入手机号</span><span class="dl">'</span><span class="p">;</span>
+    <span class="nx">tip</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">color</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">red</span><span class="dl">'</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">tip</span><span class="p">.</span><span class="nx">innerText</span> <span class="o">=</span> <span class="dl">''</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="36-javascript-常见问题与解决方案">3.6 JavaScript 常见问题与解决方案</h3>
+
+<ul>
+  <li>问题1：获取DOM元素为null，无法操作？ 解决方案：确保脚本在元素加载完成后执行（放在body末尾，或使用window.onload事件）。</li>
+  <li>问题2：数组遍历后修改元素，原数组不变？ 解决方案：区分“修改原数组的方法”（push、pop、splice等）和“返回新数组的方法”（map、filter等），根据需求选择。</li>
+  <li>问题3：箭头函数中this指向异常？ 解决方案：箭头函数没有自己的this，this指向父级作用域的this；若需要操作当前元素的this，使用普通函数。</li>
+  <li>问题4：表单提交后页面刷新？ 解决方案：在表单submit事件中使用event.preventDefault()阻止默认行为。</li>
+  <li>问题5：变量污染（全局变量重复声明）？ 解决方案：尽量使用let/const声明变量，避免var；将代码封装在函数中，减少全局变量；使用ES6模块（import/export）。</li>
+</ul>
+
+
+                    </div>
+                    
+                </article>
+                
+                <div style="margin-top:30px;">
+                    <a href="/Blog/" class="post-read-more">← Back</a>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container ">
+            <!-- 版权信息 -->
+            <div>Copyright © 2024 - 版权归属 LIN</div>
+            <!-- 博客运行计时 -->
+            <div class="running-time">
+                本博客已运行 
+                <span id="blog_running_days" class="odometer"></span> days , 
+                <span id="blog_running_hours" class="odometer"></span> h , 
+                <span id="blog_running_mins" class="odometer"></span> m , 
+                <span id="blog_running_secs" class="odometer"></span> s
+            </div>
+        </div>
+    </footer>
+    <!-- 支持 Mermaid 流程图 -->
+    
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 1. 找到所有被 kramdown 标记为 mermaid 的代码块
+            const mermaidBlocks = document.querySelectorAll('pre > code.language-mermaid');
+            
+            mermaidBlocks.forEach((codeBlock) => {
+            // 2. 创建一个新的 div，类名为 mermaid
+            const container = document.createElement('div');
+            container.className = 'mermaid';
+            // 3. 将原始内容（代码）放入 div
+            container.textContent = codeBlock.textContent;
+            
+            // 4. 替换掉原本的 pre 标签
+            const pre = codeBlock.parentElement;
+            pre.parentNode.replaceChild(container, pre);
+            });
+
+            // 5. 手动启动渲染
+            mermaid.initialize({ startOnLoad: true });
+        });
+        </script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/androidstudio.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <script>
+        (function() {
+            const bgUrl = "/Blog/images/background.jpg";
+            const img = new Image();
+            
+            img.src = bgUrl;
+            img.onload = function() {
+                console.log("背景图加载完毕！");
+                document.body.classList.add('loaded');
+            };
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 5000);
+        })();
+    </script>
+
+</body>
+    <script src="/Blog/autohighlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
+
+</html>

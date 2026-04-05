@@ -11,6 +11,9 @@ category: [Other]
 mermaid: true
 
 ---
+* TOC
+{:toc}
+---
 
 # UART
 

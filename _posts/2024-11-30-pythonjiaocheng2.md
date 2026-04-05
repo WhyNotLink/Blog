@@ -11,6 +11,9 @@ category: [Python]
 mermaid: true
 
 ---
+* TOC
+{:toc}
+---
 
 # Python 正则表达式、函数、文件操作、数据结构与面向对象
 

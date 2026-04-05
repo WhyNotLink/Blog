@@ -11,6 +11,9 @@ category: [Python]
 mermaid: true
 
 ---
+* TOC
+{:toc}
+---
 
 # Python 基础数据类型与流程控制
 
