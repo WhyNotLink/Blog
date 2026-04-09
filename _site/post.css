@@ -106,6 +106,7 @@ pre code {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
 }
 #markdown-toc li ul {
     padding-left: 15px; 
