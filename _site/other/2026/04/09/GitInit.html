@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Git使用指南 - LIN's Blog</title>
+    <!-- 使用 relative_url 确保路径永远正确 -->
+    <link rel="stylesheet" href="/Blog/style.css">
+    <link rel="stylesheet" href="/Blog/post.css">
+    
+    <script>
+        // const navbar = document.getElementById('navbar');
+        // const hero = document.querySelector('.hero');
+        // const heroHeight = hero.offsetHeight;
+        const threshold = 200;
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            if (scrollY > threshold) {
+            navbar.classList.add('scrolled');
+            } else {
+            navbar.classList.remove('scrolled');
+            }
+        });
+       
+    </script>
+        <!-- Odometer 数字滚动插件 -->
+    <link rel="stylesheet" href="/Blog/odometr.css">
+    <script src="/Blog/odometr.js"></script>
+    <!-- 博客运行计时核心脚本 -->
+    <script>
+    window.pjaxLoaded = function(){
+        var blog_running_days=document.getElementById("blog_running_days");
+        var blog_running_hours=document.getElementById("blog_running_hours");
+        var blog_running_mins=document.getElementById("blog_running_mins");
+        var blog_running_secs=document.getElementById("blog_running_secs");
+        
+        function refresh_blog_running_time(){
+            // 博客起始时间：2024年10月7日（月份0-11，所以9代表10月）
+            var time = new Date() - new Date(2024, 9, 7, 0, 0, 0);
+            var d=parseInt(time/24/60/60/1000);
+            var h=parseInt(time%(24*60*60*1000)/60/60/1000);
+            var m=parseInt(time%(60*60*1000)/60/1000);
+            var s=parseInt(time%(60*1000)/1000);
+            
+            blog_running_days.innerHTML=d;
+            blog_running_hours.innerHTML=h;
+            blog_running_mins.innerHTML=m;
+            blog_running_secs.innerHTML=s;
+        };
+        
+        refresh_blog_running_time();
+        if (typeof(bottomTimeIntervalHasSet) == "undefined"){
+            var bottomTimeIntervalHasSet = true;
+            setInterval(refresh_blog_running_time,500);
+        }
+    };
+    // 初始化数字滚动
+    window.onload = function(){
+        odometer_init();
+        window.pjaxLoaded();
+        hljs.highlightAll();
+    };
+
+    function odometer_init(){
+        let el = document.getElementsByClassName('odometer');
+        for (let i = 0; i < el.length; i++) {
+            od = new Odometer({
+                el: el[i],
+                format: 'ddd',
+                duration: 200
+            });
+        }
+    }
+    </script>
+
+</head>
+<body class="fade-in-content">
+
+    <nav class="nav" id="navbar">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="/Blog/index.html">首页</a></li>
+                <li><a href="/Blog/sort.html">分类</a></li>
+                <li><a href="/Blog/history.html">归档</a></li>
+                <li><a href="/Blog/aboutme.html">关于我</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="container">
+            <div class="content">
+                <article class="post-detail">
+                    <h1 class="post-title">Git使用指南</h1>
+                    <div class="post-meta">
+                        2026年04月09日 | 分类：Other
+                    </div>
+                    
+                    <!-- Jekyll 会把 Markdown 的内容塞到这里 -->
+                    <div class="entry-content">
+                        <ul id="markdown-toc">
+  <li><a href="#第一次使用前准备" id="markdown-toc-第一次使用前准备">第一次使用前准备</a>    <ul>
+      <li><a href="#绑定基本信息" id="markdown-toc-绑定基本信息">绑定基本信息</a></li>
+      <li><a href="#绑定远程仓库" id="markdown-toc-绑定远程仓库">绑定远程仓库</a></li>
+      <li><a href="#查看本地仓库关联的远程仓库地址" id="markdown-toc-查看本地仓库关联的远程仓库地址">查看本地仓库关联的远程仓库地址</a></li>
+      <li><a href="#创建密钥" id="markdown-toc-创建密钥">创建密钥</a></li>
+      <li><a href="#查看远程仓库里有哪些分支" id="markdown-toc-查看远程仓库里有哪些分支">查看远程仓库里有哪些分支</a></li>
+    </ul>
+  </li>
+  <li><a href="#git" id="markdown-toc-git">Git</a></li>
+  <li><a href="#fork" id="markdown-toc-fork">Fork</a>    <ul>
+      <li><a href="#创建新分支修改代码" id="markdown-toc-创建新分支修改代码">创建新分支修改代码</a></li>
+      <li><a href="#提交并推送到自己的远程仓库" id="markdown-toc-提交并推送到自己的远程仓库">提交并推送到自己的远程仓库</a></li>
+      <li><a href="#提交-pull-request-pr--合并请求" id="markdown-toc-提交-pull-request-pr--合并请求">提交 Pull Request (PR) / 合并请求</a></li>
+    </ul>
+  </li>
+  <li><a href="#回退" id="markdown-toc-回退">回退</a></li>
+</ul>
+<hr />
+
+<h1 id="第一次使用前准备">第一次使用前准备</h1>
+
+<p>注册github账号</p>
+
+<p>创建一个仓库</p>
+
+<h2 id="绑定基本信息">绑定基本信息</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+</code></pre></div></div>
+
+<h2 id="绑定远程仓库">绑定远程仓库</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git remote add origin https://gitee.com/***/aa.git
+</code></pre></div></div>
+
+<h2 id="查看本地仓库关联的远程仓库地址">查看本地仓库关联的远程仓库地址</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git remote -v
+</code></pre></div></div>
+
+<h2 id="创建密钥">创建密钥</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-keygen -t rsa -b 4096 -C "你的邮箱@xxx.com"
+</code></pre></div></div>
+
+<p>然后去文件夹.ssh找</p>
+
+<h2 id="查看远程仓库里有哪些分支">查看远程仓库里有哪些分支</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git branch -r
+</code></pre></div></div>
+
+<h1 id="git">Git</h1>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git init
+git add README.md
+git remote add origin sample.git
+git add .
+git commit -m "first commit"
+git push origin master//第二次push可以直接git push
+
+//删除文件
+git rm 文件名   也可以直接右键删除
+git commit -m "删除无用文件"
+git push
+</code></pre></div></div>
+
+<h1 id="fork">Fork</h1>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://gitee.com/自己/项目名.git
+</code></pre></div></div>
+
+<h2 id="创建新分支修改代码">创建新分支修改代码</h2>
+
+<p>git checkout -b fix-bug</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">git checkout</code>：Git 用来<strong>切换分支</strong>的基础命令</p>
+  </li>
+  <li>
+    <p>` -b`：<strong>create branch（创建分支）</strong> 的缩写</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">fix-bug</code>：新分支起的<strong>名字</strong>（可以随便改，比如：login、feature、dev 都行）</p>
+  </li>
+</ul>
+
+<h2 id="提交并推送到自己的远程仓库">提交并推送到自己的远程仓库</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add .
+git commit -m "修复了XX问题" 
+git push origin fix-bug
+</code></pre></div></div>
+
+<h2 id="提交-pull-request-pr--合并请求">提交 Pull Request (PR) / 合并请求</h2>
+
+<p>回到他的仓库页面
+点击 Create Pull Request
+选择把他的 fix-bug 分支合并到你的原项目主分支</p>
+
+<h1 id="回退">回退</h1>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git reset --hard &lt;&gt;//强制回退
+git checkout//临时查看
+git revert //保留回退记录
+</code></pre></div></div>
+
+
+                    </div>
+                    
+                </article>
+                
+                <div style="margin-top:30px;">
+                    <a href="/Blog/" class="post-read-more">← Back</a>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container ">
+            <!-- 版权信息 -->
+            <div>Copyright © 2024 - 版权归属 LIN</div>
+            <!-- 博客运行计时 -->
+            <div class="running-time">
+                本博客已运行 
+                <span id="blog_running_days" class="odometer"></span> days , 
+                <span id="blog_running_hours" class="odometer"></span> h , 
+                <span id="blog_running_mins" class="odometer"></span> m , 
+                <span id="blog_running_secs" class="odometer"></span> s
+            </div>
+        </div>
+    </footer>
+    <!-- 支持 Mermaid 流程图 -->
+    
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 1. 找到所有被 kramdown 标记为 mermaid 的代码块
+            const mermaidBlocks = document.querySelectorAll('pre > code.language-mermaid');
+            
+            mermaidBlocks.forEach((codeBlock) => {
+            // 2. 创建一个新的 div，类名为 mermaid
+            const container = document.createElement('div');
+            container.className = 'mermaid';
+            // 3. 将原始内容（代码）放入 div
+            container.textContent = codeBlock.textContent;
+            
+            // 4. 替换掉原本的 pre 标签
+            const pre = codeBlock.parentElement;
+            pre.parentNode.replaceChild(container, pre);
+            });
+
+            // 5. 手动启动渲染
+            mermaid.initialize({ startOnLoad: true });
+        });
+        </script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/androidstudio.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <script>
+        (function() {
+            const bgUrl = "/Blog/images/background.jpg";
+            const img = new Image();
+            
+            img.src = bgUrl;
+            img.onload = function() {
+                console.log("背景图加载完毕！");
+                document.body.classList.add('loaded');
+            };
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 5000);
+        })();
+    </script>
+
+</body>
+    <script src="/Blog/autohighlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
+
+</html>
