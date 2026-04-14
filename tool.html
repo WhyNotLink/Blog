@@ -8,6 +8,7 @@ layout: null
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LIN's Blog</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="tool.css">
     <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     mermaid.initialize({ startOnLoad: true });
@@ -29,9 +30,6 @@ layout: null
         <!-- Odometer 数字滚动插件 -->
     <link rel="stylesheet" href="/Blog/odometr.css">
     <script src="/Blog/odometr.js"></script>
-    <!-- <link rel="stylesheet" href="http://linmeng.infinityfreeapp.com/wp-content/uploads/2024/10/odometr.css">
-    <script src="http://linmeng.infinityfreeapp.com/wp-content/uploads/2024/10/odometr.js"></script> -->
-
     <!-- 博客运行计时核心脚本 -->
     <script>
     window.pjaxLoaded = function(){
@@ -79,15 +77,7 @@ layout: null
     </script>
 
 </head>
-<body class="fade-in-content">
-    <!-- 头部
-    <header class="header">
-        <div class="container">
-            <h1 class="site-title">LIN</h1>
-            <p class="site-description">Welcome to the Journey</p>
-        </div>
-    </header> -->
-
+<body>
     <!-- 导航 -->
     <nav class="nav" id="navbar">
         <div class="container">
@@ -101,68 +91,17 @@ layout: null
         </div>
     </nav>
 
-    <section class="hero">
-    <div class="hero-content">
-        <h1 class="hero-title gradient-text">LIN</h1>
-        <p class="hero-subtitle gradient-text">Welcome to the Journey</p>
-    </div>
-    </section>
 
     <!-- 主体内容 -->
-    <main class="main">
-        <div class="container">
-            <div class="content">
-                <!-- 文章列表 -->
-                {% for post in site.posts %}
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-                    </h2>
-                    <div class="post-meta">
-                        <span class="post-date">{{ post.date | date: "%Y年%m月%d日" }}</span>
-                        <span class="post-category">{{ post.category }}</span>
-                    </div>
-                    <div class="post-content">
-                        {{ post.excerpt }}
-                    </div>
-                    <a href="{{ post.url | relative_url }}" class="post-read-more">Read More</a>
-                </article>
-                {% endfor %}
-
-            </div>
-
-            <!-- 侧边栏 -->
-            <aside class="sidebar">
-                <!-- 作者信息 -->
-                <div class="widget">
-                    <h3 class="widget-title">关于我</h3>
-                    <div class="author-info">
-                        <img src="/Blog/images/touxiang.jpg" alt="作者头像" class="author-avatar">
-                        <p>人生三大目标，摸鱼、摸鱼还是摸鱼</p>
-                    </div>
-                </div>
-
-                <!-- 超链接 -->
-                <div class="widget">
-                    <h3 class="widget-title">神秘小链接</h3>
-                    <ul class="widget-list">
-                        <li><a href="https://space.bilibili.com/13202894?spm_id_from=333.788.0.0">BiliBili</a></li>
-                        <li><a href="https://github.com/WhyNotLink">GitHub</a></li>
-                        <li><a href="#">Email</a></li>
-                    </ul>
-                </div>
-
-                <!-- 标签 -->
-                <div class="widget">
-                    <h3 class="widget-title">标签</h3>
-                    <div class="tag-cloud">
-                        <a href="#">博客</a>
-                        <a href="#">技术</a>
-                        <a href="#">生活</a>
-                        <a href="#">学习</a>
-                    </div>
-                </div>
-            </aside>
+    <main class="tool-container">
+        <h2 class="section-title">工具目录</h2>
+        <div class="tool-list">
+            <a href="tools/register_visualizer/register_visualizer.html" class="tool-item" data-cat="register_visualizer">
+                <span class="tool-name">寄存器文档可视化</span>
+            </a>
+            <a href="tools/regitster_debug_visualizer/register_debug_visualizer.html" class="tool-item" data-cat="register_debug_visualizer">
+                <span class="tool-name">寄存器调试可视化</span>
+            </a>
         </div>
     </main>
 
@@ -181,32 +120,8 @@ layout: null
             </div>
         </div>
     </footer>
-
-    <script>
-        (function() {
-            const bgUrl = "/Blog/images/background.jpg";
-            const img = new Image();
-            
-            img.src = bgUrl;
-            img.onload = function() {
-                console.log("背景图加载完毕！");
-                document.body.classList.add('loaded');
-            };
-            setTimeout(() => {
-                document.body.classList.add('loaded');
-            }, 5000);
-        })();
-    </script>
-
 </body>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
-
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/jquery.scrollto@2.1.2/jquery.scrollTo.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js"></script> -->
-
+   
 </html>

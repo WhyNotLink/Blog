@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIN's Blog</title>
+    <link rel="stylesheet" href="/Blog/style.css">
+    <link rel="stylesheet" href="register_debug_visualizer.css">
+    <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true });
+        
+        const navbar = document.getElementById('navbar');
+        const hero = document.querySelector('.hero');
+        const heroHeight = hero ? hero.offsetHeight : 0;
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            if (scrollY > heroHeight) {
+            navbar.classList.add('scrolled');
+            } else {
+            navbar.classList.remove('scrolled');
+            }
+        });
+       
+    </script>
+
+        <!-- Odometer 数字滚动插件 -->
+    <link rel="stylesheet" href="/Blog/odometr.css">
+    <script src="/Blog/odometr.js"></script>
+    <!-- 博客运行计时核心脚本 -->
+    <script>
+    window.pjaxLoaded = function(){
+        var blog_running_days=document.getElementById("blog_running_days");
+        var blog_running_hours=document.getElementById("blog_running_hours");
+        var blog_running_mins=document.getElementById("blog_running_mins");
+        var blog_running_secs=document.getElementById("blog_running_secs");
+        
+        function refresh_blog_running_time(){
+            // 博客起始时间：2024年10月7日（月份0-11，所以9代表10月）
+            var time = new Date() - new Date(2024, 9, 7, 0, 0, 0);
+            var d=parseInt(time/24/60/60/1000);
+            var h=parseInt(time%(24*60*60*1000)/60/60/1000);
+            var m=parseInt(time%(60*60*1000)/60/1000);
+            var s=parseInt(time%(60*1000)/1000);
+            
+            blog_running_days.innerHTML=d;
+            blog_running_hours.innerHTML=h;
+            blog_running_mins.innerHTML=m;
+            blog_running_secs.innerHTML=s;
+        };
+        
+        refresh_blog_running_time();
+        if (typeof(bottomTimeIntervalHasSet) == "undefined"){
+            var bottomTimeIntervalHasSet = true;
+            setInterval(refresh_blog_running_time,500);
+        }
+    };
+    // 初始化数字滚动
+    window.onload = function(){
+        odometer_init();
+        window.pjaxLoaded();
+        initRegisterVisualizer();
+    };
+
+    function odometer_init(){
+        let el = document.getElementsByClassName('odometer');
+        for (let i = 0; i < el.length; i++) {
+            od = new Odometer({
+                el: el[i],
+                format: 'ddd',
+                duration: 200
+            });
+        }
+    }
+    </script>
+
+</head>
+<body>
+    <!-- 导航 -->
+    <nav class="nav" id="navbar">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="/Blog/index.html">首页</a></li>
+                <li><a href="/Blog/sort.html">分类</a></li>
+                <li><a href="/Blog/history.html">归档</a></li>
+                <li><a href="/Blog/tool.html">工具</a></li>
+                <li><a href="/Blog/aboutme.html">关于我</a></li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <!-- 主体内容 -->
+    <main class="tool-container">
+        <h1 style="text-align: center;color:rgb(255, 255, 255);user-select: none;">寄存器调试可视化</h1>
+        
+
+        <!-- 设备信息 -->
+        <div class="device-info">
+            <h2 id="device-name">选择SVD文件</h2>
+            <div class="file-upload-section">
+                <div class="file-upload-row">
+                    <input type="file" id="svd-file-input" accept=".svd" style="display: none;">
+                    <button id="select-file-btn" class="btn-primary">选择本地SVD文件</button>
+                    <div class="default-files-section">
+                        <label for="default-svd-select">选择网站SVD文件:</label>
+                        <select id="default-svd-select" class="svd-select">
+                            <option value="">-- 选择文件 --</option>
+                            <!-- 动态添加选项 -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主要布局 -->
+        <div class="visualizer-container">
+            <!-- 左侧外设列表 -->
+            <div class="peripherals-panel">
+                <h3>外设列表</h3>
+                <div class="peripherals-list" id="peripherals-list">
+                    <!-- 外设列表将通过JavaScript动态生成 -->
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+
+            <!-- 右侧内容 -->
+            <div class="content-panel">
+                <!-- 寄存器列表 -->
+                <div class="registers-section" id="registers-section">
+                    <h3 id="peripheral-title">选择外设</h3>
+                    <div class="registers-list" id="registers-list">
+                        <!-- 寄存器列表将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+
+                <!-- 寄存器详情 -->
+                <div class="register-detail" id="register-detail">
+                    <h3 id="register-title">选择寄存器</h3>
+                    <div class="register-info" id="register-info">
+                        <!-- 寄存器详情将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container ">
+            <!-- 版权信息 -->
+            <div>Copyright © 2024 - 版权归属 LIN</div>
+            <!-- 博客运行计时 -->
+            <div class="running-time">
+                本博客已运行 
+                <span id="blog_running_days" class="odometer"></span> days , 
+                <span id="blog_running_hours" class="odometer"></span> h , 
+                <span id="blog_running_mins" class="odometer"></span> m , 
+                <span id="blog_running_secs" class="odometer"></span> s
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 全局变量
+        let svdData = null;
+        let currentPeripheral = null;
+        let currentRegister = null;
+        let currentPeripheralName = '';
+        let currentRegisterName = '';
+
+        // 初始化寄存器可视化工具
+        function initRegisterVisualizer() {
+            // 绑定文件选择事件
+            document.getElementById('select-file-btn').addEventListener('click', function() {
+                document.getElementById('svd-file-input').click();
+            });
+            
+            // 绑定默认文件选择事件
+            document.getElementById('default-svd-select').addEventListener('change', function(e) {
+                const selectedFile = e.target.value;
+                if (selectedFile) {
+                    loadSvdFile(selectedFile);
+                }
+            });
+            
+            // 处理文件选择
+            document.getElementById('svd-file-input').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // 重置默认文件选择框
+                    document.getElementById('default-svd-select').value = '';
+                    loadSvdFileFromInput(file);
+                }
+            });
+            
+            // 加载默认SVD文件列表
+            loadDefaultSvdFiles();
+            
+            // 添加返回顶部按钮
+            const testBtn = document.createElement('button');
+            testBtn.textContent = "返回顶部";
+            testBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+            testBtn.style.position = 'fixed';
+            testBtn.style.bottom = '150px';
+            testBtn.style.right = '20px';
+            testBtn.style.padding = '10px 20px';
+            testBtn.style.backgroundColor = '#409eff';
+            testBtn.style.color = 'white';
+            testBtn.style.border = 'none';
+            testBtn.style.borderRadius = '4px';
+            testBtn.style.cursor = 'pointer';
+            testBtn.style.zIndex = '1000';
+            document.body.appendChild(testBtn);
+            
+            // 添加跳转底部按钮
+            const bottomBtn = document.createElement('button');
+            bottomBtn.textContent = "跳转底部";
+            bottomBtn.onclick = () => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            bottomBtn.style.position = 'fixed';
+            bottomBtn.style.bottom = '100px';
+            bottomBtn.style.right = '20px';
+            bottomBtn.style.padding = '10px 20px';
+            bottomBtn.style.backgroundColor = '#409eff';
+            bottomBtn.style.color = 'white';
+            bottomBtn.style.border = 'none';
+            bottomBtn.style.borderRadius = '4px';
+            bottomBtn.style.cursor = 'pointer';
+            bottomBtn.style.zIndex = '1000';
+            document.body.appendChild(bottomBtn);
+        }
+
+        // 加载默认SVD文件列表
+        function loadDefaultSvdFiles() {
+            // 尝试加载register_visualizer/svds文件夹中的文件
+            fetch('../register_visualizer/svds/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('无法访问svds文件夹');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // 解析HTML获取文件列表
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const links = doc.querySelectorAll('a');
+                    const select = document.getElementById('default-svd-select');
+                    
+                    links.forEach(link => {
+                        const href = link.getAttribute('href');
+                        if (href && href.endsWith('.svd')) {
+                            const option = document.createElement('option');
+                            option.value = href;
+                            option.textContent = href;
+                            select.appendChild(option);
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('加载默认SVD文件列表失败:', error);
+                });
+        }
+
+        // 从文件输入加载SVD文件
+        function loadSvdFileFromInput(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const xmlText = e.target.result;
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xmlText, 'application/xml');
+                    
+                    // 检查解析是否成功
+                    const parserError = xmlDoc.querySelector('parsererror');
+                    if (parserError) {
+                        throw new Error('XML解析失败: ' + parserError.textContent);
+                    }
+                    
+                    // 提取设备信息（添加空值检查）
+                    const deviceNameElement = xmlDoc.querySelector('device name');
+                    
+                    if (deviceNameElement) {
+                        const deviceName = deviceNameElement.textContent;
+                        document.getElementById('device-name').textContent = deviceName;
+                    } else {
+                        document.getElementById('device-name').textContent = '设备信息';
+                    }
+                    
+                    // 清空寄存器列表和详情
+                    resetRegisterViews();
+                    
+                    // 提取外设列表
+                    const peripherals = xmlDoc.querySelectorAll('peripheral');
+                    displayPeripherals(peripherals);
+                    
+                    // 保存SVD数据
+                    svdData = xmlDoc;
+                } catch (error) {
+                    console.error('解析SVD文件失败:', error);
+                    document.getElementById('peripherals-list').innerHTML = '<div class="error">解析SVD文件失败: ' + error.message + '</div>';
+                }
+            };
+            reader.onerror = function() {
+                console.error('读取文件失败');
+                document.getElementById('peripherals-list').innerHTML = '<div class="error">读取文件失败</div>';
+            };
+            reader.readAsText(file);
+        }
+
+        // 重置寄存器视图
+        function resetRegisterViews() {
+            // 清空寄存器列表
+            document.getElementById('registers-list').innerHTML = '';
+            document.getElementById('peripheral-title').textContent = '选择外设';
+            
+            // 清空寄存器详情
+            document.getElementById('register-info').innerHTML = '';
+            document.getElementById('register-title').textContent = '选择寄存器';
+            
+            // 重置全局变量
+            currentPeripheral = null;
+            currentRegister = null;
+        }
+
+        // 加载SVD文件
+        function loadSvdFile(fileName) {
+            // 使用指定的文件名或默认文件名
+            const file = fileName || 'STM32G471xx.svd';
+            
+            // 修正路径 - 使用正确的相对路径
+            fetch('../register_visualizer/svds/' + file)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('文件加载失败: ' + response.status);
+                    }
+                    return response.text();
+                })
+                .then(xmlText => {
+                    try {
+                        // 解析XML
+                        const parser = new DOMParser();
+                        const xmlDoc = parser.parseFromString(xmlText, 'application/xml');
+                        
+                        // 检查解析是否成功
+                        const parserError = xmlDoc.querySelector('parsererror');
+                        if (parserError) {
+                            throw new Error('XML解析失败: ' + parserError.textContent);
+                        }
+                        
+                        // 提取设备信息（添加空值检查）
+                        const deviceNameElement = xmlDoc.querySelector('device name');
+                        
+                        if (deviceNameElement) {
+                            const deviceName = deviceNameElement.textContent;
+                            document.getElementById('device-name').textContent = deviceName;
+                        }
+                        
+                        // 清空寄存器列表和详情
+                        resetRegisterViews();
+                        
+                        // 提取外设列表
+                        const peripherals = xmlDoc.querySelectorAll('peripheral');
+                        displayPeripherals(peripherals);
+                        
+                        // 保存SVD数据
+                        svdData = xmlDoc;
+                    } catch (error) {
+                        console.error('解析SVD文件失败:', error);
+                        document.getElementById('peripherals-list').innerHTML = '<div class="error">解析SVD文件失败: ' + error.message + '</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('加载SVD文件失败:', error);
+                    document.getElementById('peripherals-list').innerHTML = '<div class="error">加载SVD文件失败: ' + error.message + '</div>';
+                });
+        }
+
+        // 显示外设列表
+        function displayPeripherals(peripherals) {
+            const peripheralsList = document.getElementById('peripherals-list');
+            peripheralsList.innerHTML = '';
+            
+            peripherals.forEach(peripheral => {
+                // 添加空值检查
+                const nameElement = peripheral.querySelector('name');
+                const descriptionElement = peripheral.querySelector('description');
+                const baseAddressElement = peripheral.querySelector('baseAddress');
+                
+                if (nameElement && descriptionElement && baseAddressElement) {
+                    const name = nameElement.textContent;
+                    const description = descriptionElement.textContent;
+                    const baseAddress = baseAddressElement.textContent;
+                    
+                    const peripheralItem = document.createElement('div');
+                    peripheralItem.className = 'peripheral-item';
+                    peripheralItem.innerHTML = `
+                        <h4>${name}</h4>
+                        <p>${description}</p>
+                        <small>基地址: ${baseAddress}</small>
+                    `;
+                    
+                    peripheralItem.addEventListener('click', () => {
+                        selectPeripheral(peripheral);
+                        // 移除其他外设的选中状态
+                        document.querySelectorAll('.peripheral-item').forEach(item => {
+                            item.classList.remove('selected');
+                        });
+                        // 添加当前外设的选中状态
+                        peripheralItem.classList.add('selected');
+                    });
+                    
+                    peripheralsList.appendChild(peripheralItem);
+                }
+            });
+        }
+
+        // 选择外设
+        function selectPeripheral(peripheral) {
+            currentPeripheral = peripheral;
+            
+            // 添加空值检查
+            const nameElement = peripheral.querySelector('name');
+            if (nameElement) {
+                const name = nameElement.textContent;
+                document.getElementById('peripheral-title').textContent = name;
+                currentPeripheralName = name;
+            }
+            
+            // 显示该外设的寄存器
+            const registers = peripheral.querySelectorAll('register');
+            displayRegisters(registers);
+            
+            // 清空寄存器详情
+            document.getElementById('register-title').textContent = '选择寄存器';
+            document.getElementById('register-info').innerHTML = '';
+            currentRegisterName = '';
+        }
+
+        // 显示寄存器列表
+        function displayRegisters(registers) {
+            const registersList = document.getElementById('registers-list');
+            registersList.innerHTML = '';
+            
+            if (registers.length === 0) {
+                registersList.innerHTML = '<div class="empty">该外设没有寄存器</div>';
+                return;
+            }
+            
+            registers.forEach(register => {
+                // 添加空值检查
+                const nameElement = register.querySelector('name');
+                const descriptionElement = register.querySelector('description');
+                const addressOffsetElement = register.querySelector('addressOffset');
+                
+                if (nameElement && descriptionElement && addressOffsetElement) {
+                    const name = nameElement.textContent;
+                    const description = descriptionElement.textContent;
+                    const addressOffset = addressOffsetElement.textContent;
+                    
+                    const registerItem = document.createElement('div');
+                    registerItem.className = 'register-item';
+                    registerItem.innerHTML = `
+                        <h4>${name}</h4>
+                        <p>${description}</p>
+                        <small>地址偏移: ${addressOffset}</small>
+                    `;
+                    
+                    registerItem.addEventListener('click', () => {
+                        selectRegister(register);
+                        // 移除其他寄存器的选中状态
+                        document.querySelectorAll('.register-item').forEach(item => {
+                            item.classList.remove('selected');
+                        });
+                        // 添加当前寄存器的选中状态
+                        registerItem.classList.add('selected');
+                    });
+                    
+                    registersList.appendChild(registerItem);
+                }
+            });
+        }
+
+        // 选择寄存器
+        function selectRegister(register) {
+            currentRegister = register;
+            
+            // 添加空值检查
+            const nameElement = register.querySelector('name');
+            if (nameElement) {
+                const name = nameElement.textContent;
+                document.getElementById('register-title').textContent = name;
+                currentRegisterName = name;
+            }
+            
+            // 发送寄存器数据
+            sendRegisterData(register);
+            
+            // 显示寄存器详情
+            displayRegisterDetail(register);
+        }
+
+        // 发送寄存器数据
+        function sendRegisterData(register) {
+            if (!currentPeripheral || !register) {
+                return;
+            }
+            
+            // 获取外设信息
+            const baseAddressElement = currentPeripheral.querySelector('baseAddress');
+            
+            // 获取寄存器信息
+            const addressOffsetElement = register.querySelector('addressOffset');
+            const sizeElement = register.querySelector('size');
+            
+            if (!baseAddressElement || !addressOffsetElement) {
+                return;
+            }
+            
+            const peripheralName = currentPeripheralName;
+            const registerName = currentRegisterName;
+            const baseAddress = baseAddressElement.textContent;
+            const addressOffset = addressOffsetElement.textContent;
+            
+            // 获取寄存器大小（位数），默认32位
+            const sizeBits = sizeElement ? parseInt(sizeElement.textContent) : 32;
+            // 读取长度（字节数）
+            const readLength = sizeBits / 8;
+            
+            // 计算绝对物理地址
+            const baseAddrValue = parseInt(baseAddress, 16);
+            const offsetValue = parseInt(addressOffset, 16);
+            const absoluteAddress = '0x' + (baseAddrValue + offsetValue).toString(16).toUpperCase();
+            
+            // 构建数据对象
+            const data = {
+                type: 'REGISTER_SELECTED',
+                peripheralName: peripheralName,
+                registerName: registerName,
+                absoluteAddress: absoluteAddress,
+                addressOffset: addressOffset,
+                readLength: readLength
+            };
+            
+            // 发送消息
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage(data, '*');
+            }
+
+            
+            console.log('发送寄存器数据:', data);
+        }
+
+        // 显示寄存器详情
+        function displayRegisterDetail(register) {
+            const registerInfo = document.getElementById('register-info');
+            
+            // 添加空值检查
+            const descriptionElement = register.querySelector('description');
+            const addressOffsetElement = register.querySelector('addressOffset');
+            const sizeElement = register.querySelector('size');
+            const accessElement = register.querySelector('access');
+            const resetValueElement = register.querySelector('resetValue');
+            
+            const description = descriptionElement ? descriptionElement.textContent : '未知';
+            const addressOffset = addressOffsetElement ? addressOffsetElement.textContent : '未知';
+            const size = sizeElement ? sizeElement.textContent : '32';
+            const access = accessElement ? accessElement.textContent : 'unknown';
+            const resetValue = resetValueElement ? resetValueElement.textContent : '0x0';
+            
+            const fields = register.querySelectorAll('field');
+            
+            registerInfo.innerHTML = `
+                <div class="register-basic-info">
+                    <p><strong>描述:</strong> ${description}</p>
+                    <p><strong>地址偏移:</strong> ${addressOffset}</p>
+                    <p><strong>大小:</strong> ${size} bits</p>
+                    <p><strong>访问方式:</strong> ${access}</p>
+                    <p><strong>复位值:</strong> ${resetValue}</p>
+                </div>
+                
+                <div class="register-fields">
+                    <h4>位域</h4>
+                    ${fields.length > 0 ? displayFields(fields) : '<p class="empty">该寄存器没有位域</p>'}
+                </div>
+                
+                <div class="register-visualization">
+                    <h4>可视化</h4>
+                    ${displayRegisterVisualization(register, fields)}
+                </div>
+            `;
+        }
+
+        // 显示位域
+        function displayFields(fields) {
+            let html = '<div class="fields-list">';
+            
+            fields.forEach(field => {
+                // 添加空值检查
+                const nameElement = field.querySelector('name');
+                const descriptionElement = field.querySelector('description');
+                const bitOffsetElement = field.querySelector('bitOffset');
+                const bitWidthElement = field.querySelector('bitWidth');
+                const accessElement = field.querySelector('access');
+                
+                if (nameElement && descriptionElement && bitOffsetElement && bitWidthElement) {
+                    const name = nameElement.textContent;
+                    const description = descriptionElement.textContent;
+                    const bitOffset = bitOffsetElement.textContent;
+                    const bitWidth = bitWidthElement.textContent;
+                    const access = accessElement ? accessElement.textContent : 'unknown';
+                    
+                    html += `
+                        <div class="field-item">
+                            <h5>${name}</h5>
+                            <p>${description}</p>
+                            <small>位偏移: ${bitOffset}, 位宽: ${bitWidth}, 访问: ${access}</small>
+                        </div>
+                    `;
+                }
+            });
+            
+            html += '</div>';
+            return html;
+        }
+
+        // 显示寄存器可视化
+        function displayRegisterVisualization(register, fields) {
+            // 添加空值检查
+            const sizeElement = register.querySelector('size');
+            const size = sizeElement ? parseInt(sizeElement.textContent) : 32;
+            
+            let html = `<div class="register-bits">`;
+            
+            // 创建位可视化
+            for (let i = size - 1; i >= 0; i--) {
+                let bitClass = 'bit';
+                let bitLabel = i;
+                
+                // 检查该位是否属于某个字段
+                let fieldName = '';
+                fields.forEach(field => {
+                    // 添加空值检查
+                    const bitOffsetElement = field.querySelector('bitOffset');
+                    const bitWidthElement = field.querySelector('bitWidth');
+                    const nameElement = field.querySelector('name');
+                    
+                    if (bitOffsetElement && bitWidthElement && nameElement) {
+                        const bitOffset = parseInt(bitOffsetElement.textContent);
+                        const bitWidth = parseInt(bitWidthElement.textContent);
+                        
+                        if (i >= bitOffset && i < bitOffset + bitWidth) {
+                            fieldName = nameElement.textContent;
+                            bitClass += ' field-bit';
+                        }
+                    }
+                });
+                
+                html += `
+                    <div class="${bitClass}">
+                        <div class="bit-number">${bitLabel}</div>
+                        <div class="bit-value">0</div>
+                        ${fieldName ? `<div class="bit-field">${fieldName}</div>` : ''}
+                    </div>
+                `;
+            }
+            
+            html += '</div>';
+            return html;
+        }
+
+        // 监听来自VS Code插件的消息
+        window.addEventListener('message', event => {
+            if (event.data.type === 'UPDATE_REG') {
+                if(currentRegisterName === event.data.registerName && currentPeripheralName === event.data.peripheralName) {
+                    const regValue = event.data.value;
+                    const value = parseInt(regValue, 16);
+                    updateRegisterVisualization(value);
+                }
+            }
+        });
+
+        // 更新寄存器可视化
+        function updateRegisterVisualization(value) {
+            const bitElements = document.querySelectorAll('.bit-value');
+            bitElements.forEach((bitElement, index) => {
+                // 计算该位的值（从右往左）
+                const bitValue = (value >> (bitElements.length - 1 - index)) & 1;
+                bitElement.textContent = bitValue;
+                const bitContainer = bitElement.parentElement;
+                if (bitValue === 1) {
+                    bitContainer.classList.add('bit-set');
+                } else {
+                    bitContainer.classList.remove('bit-set');
+                }
+            });
+        }
+    </script>
+</body>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
+   
+</html>
