@@ -200,7 +200,7 @@
         // 加载默认SVD文件列表
         function loadDefaultSvdFiles() {
             // 尝试加载svds文件夹中的文件
-            fetch('svds/')
+            fetch('/Blog/tools/register_visualizer/svds/')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('无法访问svds文件夹');
@@ -296,7 +296,7 @@
             const file = fileName || 'STM32G471xx.svd';
             
             // 修正路径 - 使用正确的相对路径
-            fetch('svds/' + file)
+            fetch('/Blog/tools/register_visualizer/svds/' + file)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('文件加载失败: ' + response.status);
