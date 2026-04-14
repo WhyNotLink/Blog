@@ -173,58 +173,45 @@ layout: null
 
         // 初始化寄存器可视化工具
         function initRegisterVisualizer() {
-            // 绑定文件选择事件
             document.getElementById('select-file-btn').addEventListener('click', function() {
                 document.getElementById('svd-file-input').click();
             });
-            
-            // 绑定默认文件选择事件
             document.getElementById('default-svd-select').addEventListener('change', function(e) {
                 const selectedFile = e.target.value;
                 if (selectedFile) {
                     loadSvdFile(selectedFile);
                 }
             });
-            
-            // 处理文件选择
             document.getElementById('svd-file-input').addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
-                    // 重置默认文件选择框
                     document.getElementById('default-svd-select').value = '';
                     loadSvdFileFromInput(file);
                 }
             });
             
-            // 加载默认SVD文件列表
             loadDefaultSvdFiles();
         }
 
         // 加载默认SVD文件列表
         function loadDefaultSvdFiles() {
-            // 尝试加载svds文件夹中的文件
-            fetch('/Blog/tools/register_visualizer/svds/')
+            fetch('/Blog/tools/register_visualizer/svds/svd_list.json')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('无法访问svds文件夹');
                     }
-                    return response.text();
+                    return response.json();
                 })
-                .then(html => {
-                    // 解析HTML获取文件列表
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const links = doc.querySelectorAll('a');
+                .then(files => {
                     const select = document.getElementById('default-svd-select');
-                    
-                    links.forEach(link => {
-                        const href = link.getAttribute('href');
-                        if (href && href.endsWith('.svd')) {
-                            const option = document.createElement('option');
-                            option.value = href;
-                            option.textContent = href;
-                            select.appendChild(option);
-                        }
+                    if (!select){
+                        return;
+                    }
+                    files.forEach(file => {
+                        const option = document.createElement('option');
+                        option.value = file;
+                        option.textContent = file;
+                        select.appendChild(option);
                     });
                 })
                 .catch(error => {
@@ -241,13 +228,11 @@ layout: null
                     const parser = new DOMParser();
                     const xmlDoc = parser.parseFromString(xmlText, 'application/xml');
                     
-                    // 检查解析是否成功
                     const parserError = xmlDoc.querySelector('parsererror');
                     if (parserError) {
                         throw new Error('XML解析失败: ' + parserError.textContent);
                     }
-                    
-                    // 提取设备信息（添加空值检查）
+
                     const deviceNameElement = xmlDoc.querySelector('device name');
                     
                     if (deviceNameElement) {
@@ -257,14 +242,11 @@ layout: null
                         document.getElementById('device-name').textContent = '设备信息';
                     }
                     
-                    // 清空寄存器列表和详情
                     resetRegisterViews();
                     
-                    // 提取外设列表
                     const peripherals = xmlDoc.querySelectorAll('peripheral');
                     displayPeripherals(peripherals);
                     
-                    // 保存SVD数据
                     svdData = xmlDoc;
                 } catch (error) {
                     console.error('解析SVD文件失败:', error);
@@ -280,25 +262,20 @@ layout: null
 
         // 重置寄存器视图
         function resetRegisterViews() {
-            // 清空寄存器列表
             document.getElementById('registers-list').innerHTML = '';
             document.getElementById('peripheral-title').textContent = '选择外设';
             
-            // 清空寄存器详情
             document.getElementById('register-info').innerHTML = '';
             document.getElementById('register-title').textContent = '选择寄存器';
             
-            // 重置全局变量
             currentPeripheral = null;
             currentRegister = null;
         }
 
         // 加载SVD文件
         function loadSvdFile(fileName) {
-            // 使用指定的文件名或默认文件名
             const file = fileName || 'STM32G471xx.svd';
             
-            // 修正路径 - 使用正确的相对路径
             fetch('/Blog/tools/register_visualizer/svds/' + file)
                 .then(response => {
                     if (!response.ok) {
@@ -308,17 +285,14 @@ layout: null
                 })
                 .then(xmlText => {
                     try {
-                        // 解析XML
                         const parser = new DOMParser();
                         const xmlDoc = parser.parseFromString(xmlText, 'application/xml');
                         
-                        // 检查解析是否成功
                         const parserError = xmlDoc.querySelector('parsererror');
                         if (parserError) {
                             throw new Error('XML解析失败: ' + parserError.textContent);
                         }
                         
-                        // 提取设备信息（添加空值检查）
                         const deviceNameElement = xmlDoc.querySelector('device name');
                         
                         if (deviceNameElement) {
@@ -326,14 +300,11 @@ layout: null
                             document.getElementById('device-name').textContent = deviceName;
                         }
                         
-                        // 清空寄存器列表和详情
                         resetRegisterViews();
                         
-                        // 提取外设列表
                         const peripherals = xmlDoc.querySelectorAll('peripheral');
                         displayPeripherals(peripherals);
                         
-                        // 保存SVD数据
                         svdData = xmlDoc;
                     } catch (error) {
                         console.error('解析SVD文件失败:', error);
@@ -352,7 +323,6 @@ layout: null
             peripheralsList.innerHTML = '';
             
             peripherals.forEach(peripheral => {
-                // 添加空值检查
                 const nameElement = peripheral.querySelector('name');
                 const descriptionElement = peripheral.querySelector('description');
                 const baseAddressElement = peripheral.querySelector('baseAddress');
@@ -372,11 +342,9 @@ layout: null
                     
                     peripheralItem.addEventListener('click', () => {
                         selectPeripheral(peripheral);
-                        // 移除其他外设的选中状态
                         document.querySelectorAll('.peripheral-item').forEach(item => {
                             item.classList.remove('selected');
                         });
-                        // 添加当前外设的选中状态
                         peripheralItem.classList.add('selected');
                     });
                     
@@ -389,23 +357,19 @@ layout: null
         function selectPeripheral(peripheral) {
             currentPeripheral = peripheral;
             
-            // 添加空值检查
             const nameElement = peripheral.querySelector('name');
             if (nameElement) {
                 const name = nameElement.textContent;
                 document.getElementById('peripheral-title').textContent = name;
             }
             
-            // 显示该外设的寄存器
             const registers = peripheral.querySelectorAll('register');
             displayRegisters(registers);
             
-            // 清空寄存器详情
             document.getElementById('register-title').textContent = '选择寄存器';
             document.getElementById('register-info').innerHTML = '';
         }
 
-        // 显示寄存器列表
         function displayRegisters(registers) {
             const registersList = document.getElementById('registers-list');
             registersList.innerHTML = '';
@@ -416,7 +380,6 @@ layout: null
             }
             
             registers.forEach(register => {
-                // 添加空值检查
                 const nameElement = register.querySelector('name');
                 const descriptionElement = register.querySelector('description');
                 const addressOffsetElement = register.querySelector('addressOffset');
@@ -436,11 +399,9 @@ layout: null
                     
                     registerItem.addEventListener('click', () => {
                         selectRegister(register);
-                        // 移除其他寄存器的选中状态
                         document.querySelectorAll('.register-item').forEach(item => {
                             item.classList.remove('selected');
                         });
-                        // 添加当前寄存器的选中状态
                         registerItem.classList.add('selected');
                     });
                     
@@ -453,22 +414,18 @@ layout: null
         function selectRegister(register) {
             currentRegister = register;
             
-            // 添加空值检查
             const nameElement = register.querySelector('name');
             if (nameElement) {
                 const name = nameElement.textContent;
                 document.getElementById('register-title').textContent = name;
             }
             
-            // 显示寄存器详情
             displayRegisterDetail(register);
         }
 
-        // 显示寄存器详情
         function displayRegisterDetail(register) {
             const registerInfo = document.getElementById('register-info');
             
-            // 添加空值检查
             const descriptionElement = register.querySelector('description');
             const addressOffsetElement = register.querySelector('addressOffset');
             const sizeElement = register.querySelector('size');
@@ -509,7 +466,6 @@ layout: null
             let html = '<div class="fields-list">';
             
             fields.forEach(field => {
-                // 添加空值检查
                 const nameElement = field.querySelector('name');
                 const descriptionElement = field.querySelector('description');
                 const bitOffsetElement = field.querySelector('bitOffset');
@@ -539,21 +495,17 @@ layout: null
 
         // 显示寄存器可视化
         function displayRegisterVisualization(register, fields) {
-            // 添加空值检查
             const sizeElement = register.querySelector('size');
             const size = sizeElement ? parseInt(sizeElement.textContent) : 32;
             
             let html = `<div class="register-bits">`;
             
-            // 创建位可视化
             for (let i = size - 1; i >= 0; i--) {
                 let bitClass = 'bit';
                 let bitLabel = i;
                 
-                // 检查该位是否属于某个字段
                 let fieldName = '';
                 fields.forEach(field => {
-                    // 添加空值检查
                     const bitOffsetElement = field.querySelector('bitOffset');
                     const bitWidthElement = field.querySelector('bitWidth');
                     const nameElement = field.querySelector('name');
