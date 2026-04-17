@@ -197,9 +197,15 @@ function initScrollSelection() {
     if (!listContainer || !songsContainer) return;
     
     setTimeout(() => {
-        // 先不滚动，让列表自然排列
-        // 然后调用updateActiveCard自动检测屏幕中间显示的卡片并设置为激活
-        updateActiveCard();
+        const cards = songsContainer.querySelectorAll('.song-card');
+        if (cards.length > 0) {
+            const middleIndex = Math.floor(cards.length / 2);
+            const middleCard = cards[middleIndex];
+            scrollToCard(middleCard);
+        }
+        setTimeout(() => {
+            updateActiveCard();
+        }, 100);
     }, 500);
     
     // 节流函数
@@ -243,9 +249,10 @@ function initScrollSelection() {
         
         const card = e.target.closest('.song-card');
         if (card) {
-            card.classList.add('active');
             scrollToCard(card);
-            updateLyricsDisplay(card);
+            setTimeout(() => {
+                updateActiveCard();
+            }, 50);
         }
     });
     
@@ -258,36 +265,42 @@ function initScrollSelection() {
             const audio = card.querySelector('.audio-player');
             const isPlaying = overlay.getAttribute('data-playing') === 'true';
             
-            card.classList.add('active');
             scrollToCard(card);
-            updateLyricsDisplay(card);
             
-            // 暂停所有其他音频并重置所有overlay状态
-            document.querySelectorAll('.audio-player').forEach(a => {
-                if (a !== audio) {
-                    a.pause();
-                    a.currentTime = 0;
+            setTimeout(() => {
+                const currentCard = wrapper.closest('.song-card');
+                const currentAudio = currentCard.querySelector('.audio-player');
+                const currentOverlay = currentCard.querySelector('.play-overlay');
+                
+                // 暂停所有其他音频并重置所有overlay状态
+                document.querySelectorAll('.audio-player').forEach(a => {
+                    if (a !== currentAudio) {
+                        a.pause();
+                        a.currentTime = 0;
+                    }
+                });
+                document.querySelectorAll('.play-overlay').forEach(o => {
+                    if (o !== currentOverlay) {
+                        o.setAttribute('data-playing', 'false');
+                        o.classList.remove('playing');
+                    }
+                });
+                
+                // 切换当前音频的播放状态
+                if (isPlaying) {
+                    currentAudio.pause();
+                    currentOverlay.setAttribute('data-playing', 'false');
+                    currentOverlay.classList.remove('playing');
+                    userPaused = true;
+                } else {
+                    currentAudio.play();
+                    currentOverlay.setAttribute('data-playing', 'true');
+                    currentOverlay.classList.add('playing');
+                    userPaused = false;
                 }
-            });
-            document.querySelectorAll('.play-overlay').forEach(o => {
-                if (o !== overlay) {
-                    o.setAttribute('data-playing', 'false');
-                    o.classList.remove('playing');
-                }
-            });
-            
-            // 切换当前音频的播放状态
-            if (isPlaying) {
-                audio.pause();
-                overlay.setAttribute('data-playing', 'false');
-                overlay.classList.remove('playing');
-                userPaused = true;
-            } else {
-                audio.play();
-                overlay.setAttribute('data-playing', 'true');
-                overlay.classList.add('playing');
-                userPaused = false;
-            }
+                
+                updateActiveCard();
+            }, 200);
         }
     });
     
