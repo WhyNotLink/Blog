@@ -156,6 +156,7 @@ audio::-webkit-media-controls-timeline {
     max-height: 70vh;
     overflow-y: auto;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    scroll-behavior: smooth;
 }
 
 .lyric-lines-wrapper {
@@ -185,11 +186,12 @@ audio::-webkit-media-controls-timeline {
 .lyric-line {
     padding: 5px 0;
     opacity: 0.6;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
 }
 
 .lyric-line.current {
     opacity: 1;
+    transform: scale(1.02);
 }
 
 .lyric-line.current .lyric-en {
