@@ -311,21 +311,3 @@ body {
     transform: none;
 }
 
-.status-message {
-    padding: 10px 20px;
-    border-radius: 20px;
-    margin: 0 24px;
-    text-align: center;
-    font-size: 13px;
-    transition: all 0.3s ease;
-}
-
-.status-message.success {
-    background: linear-gradient(135deg, #e8fff0 0%, #d6ffe6 100%);
-    color: #2d8a4e;
-}
-
-.status-message.error {
-    background: linear-gradient(135deg, #ffe8ec 0%, #ffd6de 100%);
-    color: #c0392b;
-}

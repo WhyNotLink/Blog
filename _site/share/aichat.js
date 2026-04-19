@@ -1,8 +1,13 @@
+const part1 = 'Z2l0aHViX3BhdF8xMUJCMlo2U0EwYmVV';
+const part2 = 'WW9sTVNVTGJLX1NlWGhVNjRVcEJzeVM4';
+const part3 = 'MDVDZ3ZnSUpIeDc1TmZRaFlzMjZ6dlVJ';
+const part4 = 'aHNJazU2NExJVU1RRGtWM0hrSzli';
+
 const CONFIG = {
     owner: 'WhyNotLink',
     repo: 'Chat-logs',
-    path: 'chat_history.json',
-    encodedToken: 'Z2l0aHViX3BhdF8xMUJCMlo2U0EwYXBuSG9wN1pwdkhmXzJXMnFCRGRROWlmblJaem9JbkgwU1Y5UkR1aFB5MGtZTkNCbjY5cHdvaHRBWFBZVlU0VGdsNjlZZk9G',
+    history_path: 'chat_history.json',
+    encodedToken: part1 + part2 + part3 + part4,
     AI_API_KEY: 'sk-mx7mwmSK6BPx5J7seyFLcq1bmqoQmrCCHYd4FYR9RmG32uyA',
     AI_API_URL: 'https://api.moonshot.cn/v1/chat/completions',
     AI_MODEL: 'moonshot-v1-8k',
@@ -14,85 +19,66 @@ const CONFIG = {
 const WELCOME_MSG = '你好啊旅行者';
 const ERROR_MSG = 'tell lin there is a problem with my ai';
 
-class ChatApp {
-    constructor() {
+class ChatApp{
+    constructor(){
         this.elements = {};
-        this.pastConversations = [];
+        this.savedConversations = [];
+        this.unsavedConversations = [];
         this.currentConversation = [];
         this.init();
     }
-
-    init() {
+    init(){
         this.cacheElements();
         this.bindEvents();
-        this.loadHistory();
+        this.showHistoryConversations();
     }
 
-    cacheElements() {
-        this.elements = {
-            chatMessages: document.getElementById('chatMessages'),
-            statusMessage: document.getElementById('statusMessage'),
-            chatInput: document.getElementById('chatInput'),
-            sendBtn: document.getElementById('sendBtn')
-        };
+    cacheElements(){
+        this.elements.chatMessages = document.getElementById('chatMessages');
+        this.elements.statusMessage = document.getElementById('statusMessage');
+        this.elements.chatInput = document.getElementById('chatInput');
+        this.elements.sendBtn = document.getElementById('sendBtn');
     }
 
-    bindEvents() {
-        this.elements.sendBtn.addEventListener('click', () => this.sendMessage());
+    bindEvents(){
+        this.elements.sendBtn.addEventListener('click',()=>this.sendMessage());
         this.elements.chatInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 this.sendMessage();
             }
         });
-        
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'F5') {
+
+        document.addEventListener('keydown',(e)=>{
+            if(e.key === 'F5'){
                 e.preventDefault();
-                if (this.currentConversation.length > 0) {
-                    this.saveCurrentConversation();
+                if(this.unsavedConversations.length > 0){
+                    this.saveUnsavedConversations();
                 }
                 location.reload();
                 return;
             }
-        });
-        
-        window.addEventListener('beforeunload', () => {
-            if (this.currentConversation.length > 0) {
-                console.log('beforeunload 触发，保存对话');
-                this.saveCurrentConversation();
+        })
+        window.addEventListener('beforeunload',()=>{
+            if(this.unsavedConversations.length > 0){
+                this.saveUnsavedConversations();
             }
-        });
-        
-        window.addEventListener('pagehide', () => {
-            if (this.currentConversation.length > 0) {
-                console.log('pagehide 触发，保存对话');
-                this.saveCurrentConversation();
-            }
-        });
-        
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden' && this.currentConversation.length > 0) {
-                console.log('visibilitychange 触发，保存对话');
-                this.saveCurrentConversation();
-            }
-        });
+        })
     }
 
-    saveCurrentConversation() {
-        console.log('开始保存对话...');
+    saveUnsavedConversations(){
+        console.log('start save unsaved conversations...');
         
         const token = atob(CONFIG.encodedToken);
-        
         const xhrGet = new XMLHttpRequest();
-        xhrGet.open('GET', `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, false);
+        xhrGet.open('GET', `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.history_path}`, false);
         xhrGet.setRequestHeader('Authorization', 'Bearer ' + token);
         xhrGet.setRequestHeader('Content-Type', 'application/json');
         xhrGet.send();
-        
+
         let sha = null;
         let existingContent = [];
-        
+
         if (xhrGet.status === 200) {
             const data = JSON.parse(xhrGet.responseText);
             sha = data.sha;
@@ -100,85 +86,70 @@ class ChatApp {
                 const decodedContent = decodeURIComponent(escape(atob(data.content)));
                 try {
                     existingContent = JSON.parse(decodedContent);
-                    if (!Array.isArray(existingContent)) {
-                        existingContent = [];
-                    }
-                } catch (e) {
-                    existingContent = [];
+                } catch (error) {
+                    console.error('Error parsing existing content:', error);
                 }
             }
         }
-        
+
         const filteredConversation = [];
-        for (let i = 0; i < this.currentConversation.length; i++) {
-            const msg = this.currentConversation[i];
+        for (let i = 0; i < this.unsavedConversations.length; i++) {
+            const msg = this.unsavedConversations[i];
             if (msg.role === 'ai' && msg.isError) {
-                if (i > 0 && this.currentConversation[i - 1].role === 'user') {
+                if (i > 0 && this.unsavedConversations[i - 1].role === 'user') {
                     filteredConversation.pop();
                 }
             } else {
                 filteredConversation.push(msg);
             }
         }
-        
-        const contentToSave = [...existingContent, filteredConversation];
-        
-        const jsonContent = JSON.stringify(contentToSave, null, 2);
-        const base64Content = btoa(unescape(encodeURIComponent(jsonContent)));
-        
+
+
+        const mergeContent = [...existingContent, filteredConversation];
+        const jsonmergeContent = JSON.stringify(mergeContent, null, 2);
+        const base64Content = btoa(unescape(encodeURIComponent(jsonmergeContent)));
         const requestBody = {
             message: `Save conversation - ${new Date().toLocaleString()}`,
             content: base64Content
         };
-        
         if (sha) {
             requestBody.sha = sha;
         }
-        
         const xhrPut = new XMLHttpRequest();
-        xhrPut.open('PUT', `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, false);
+        xhrPut.open('PUT', `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.history_path}`, false);
         xhrPut.setRequestHeader('Authorization', 'Bearer ' + token);
         xhrPut.setRequestHeader('Content-Type', 'application/json');
         xhrPut.send(JSON.stringify(requestBody));
-        console.log('保存状态:', xhrPut.status);
-        
         if (xhrPut.status === 200 || xhrPut.status === 201) {
-            this.currentConversation = [];
+            console.log('Save unsaved conversations success!');
+        } else {
+            console.error('Save unsaved conversations failed!');
         }
     }
 
-    showStatus(message, isError = false) {
-        this.elements.statusMessage.textContent = message;
-        this.elements.statusMessage.className = 'status-message ' + (isError ? 'error' : 'success');
-        setTimeout(() => {
-            this.elements.statusMessage.textContent = '';
-            this.elements.statusMessage.className = 'status-message';
-        }, 3000);
-    }
-
-    addMessage(content, isUser) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
-        
-        const avatar = document.createElement('div');
-        avatar.className = 'message-avatar';
-        avatar.textContent = isUser ? '我' : 'AI';
-        
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'message-content';
-        contentDiv.textContent = content;
-        
-        messageDiv.appendChild(avatar);
-        messageDiv.appendChild(contentDiv);
-        this.elements.chatMessages.appendChild(messageDiv);
-        this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
-    }
-
-    addDivider() {
+    addDivider(){
         const divider = document.createElement('div');
         divider.className = 'conversation-divider';
         divider.innerHTML = '<span>以上为历史记录</span>';
         this.elements.chatMessages.appendChild(divider);
+    }
+
+    showMessages(content, isUser){
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+
+        const avatar = document.createElement('div');
+        avatar.className = 'message-avatar';
+        avatar.textContent = isUser ? '我' : 'AI';
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.textContent = content;
+
+        messageDiv.appendChild(avatar);
+        messageDiv.appendChild(contentDiv);
+        this.elements.chatMessages.appendChild(messageDiv);
+        this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
     }
 
     showTyping() {
@@ -202,41 +173,37 @@ class ChatApp {
         if (typing) typing.remove();
     }
 
-    async sendMessage() {
+    async sendMessage(){
         const content = this.elements.chatInput.value.trim();
         if (!content) {
             this.showStatus('请输入内容！');
             return;
         }
-        
-        this.addMessage(content, true);
-        this.currentConversation.push({ role: 'user', content, timestamp: new Date().toISOString() });
+        this.showMessages(content, true);
+        this.currentConversation = { role: 'user', content, timestamp: new Date().toISOString() };
+        this.unsavedConversations.push({ role: 'user', content, timestamp: new Date().toISOString() });
         this.elements.chatInput.value = '';
-        
         this.showTyping();
-        
-        try {
-            const allMessages = [...this.pastConversations.flat(), ...this.currentConversation];
-            const aiResponse = await this.callAI(allMessages);
+
+        try{
+            // const processedMessages = await processing();
+            const processedMessages = [...this.savedConversations.flat(), ...this.unsavedConversations];
+            const aiResponse = await this.callAI(processedMessages);
             this.hideTyping();
-            this.addMessage(aiResponse, false);
-            this.currentConversation.push({ role: 'ai', content: aiResponse, timestamp: new Date().toISOString() });
-        } catch (error) {
+            this.showMessages(aiResponse, false);
+            this.unsavedConversations.push({ role: 'ai', content: aiResponse, timestamp: new Date().toISOString() });
+        }catch(error){
             this.hideTyping();
-            const errorMessage = ERROR_MSG;
-            this.addMessage(errorMessage, false);
-            this.currentConversation.push({ role: 'ai', content: errorMessage, timestamp: new Date().toISOString(), isError: true });
+            this.showMessages(ERROR_MSG, false);
+            this.unsavedConversations.push({ role: 'ai', content: ERROR_MSG, timestamp: new Date().toISOString(), isError: true });
         }
     }
-
-    async callAI(messages) {
+    async callAI(messages){
         const { AI_API_KEY, AI_API_URL, AI_MODEL, AI_SYSTEM_PROMPT, AI_TEMPERATURE, AI_MAX_TOKENS } = CONFIG;
-        
-        if (!AI_API_KEY || AI_API_KEY === 'YOUR_API_KEY_HERE') {
-            console.warn('未设置 AI API Key');
+        if(!AI_API_KEY){
+            console.warn('AI API Key not set!');
             throw new Error('API Key not set');
         }
-        
         const requestMessages = [
             { role: 'system', content: AI_SYSTEM_PROMPT },
             ...messages.map(msg => ({
@@ -244,7 +211,6 @@ class ChatApp {
                 content: msg.content
             }))
         ];
-        
         const response = await fetch(AI_API_URL, {
             method: 'POST',
             headers: {
@@ -258,41 +224,32 @@ class ChatApp {
                 max_tokens: AI_MAX_TOKENS
             })
         });
-        
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            throw new Error(`API 请求失败: ${response.status} - ${errorData.error?.message || '未知错误'}`);
+            throw new Error(`API request failed: ${response.status} - ${errorData.error?.message || '未知错误'}`);
         }
-        
         const data = await response.json();
         return data.choices[0].message.content;
     }
-
-    async loadHistory() {
-        const { content } = await readFromGithub();
-        
+    async showHistoryConversations(){
+        const { content } = await readchat_history();
         const MAX_PAST_CONVS = 5;
         const startIndex = Math.max(0, content.length - MAX_PAST_CONVS);
-        
         for (let i = startIndex; i < content.length; i++) {
             const conv = content[i];
-            if (Array.isArray(conv)) {
-                const filteredConv = conv.filter(msg => !msg.isError);
-                filteredConv.forEach(msg => {
-                    this.addMessage(msg.content, msg.role === 'user');
+            if(Array.isArray(conv)){
+                conv.forEach(msg => {
+                    this.showMessages(msg.content, msg.role === 'user');
                 });
-                
-                this.pastConversations.push(...filteredConv.map(msg => [msg]));
+                this.savedConversations.push(...conv.map(msg=>[msg]));
             }
         }
-        
-        if (content.length > 0) {
+        if(content.length > 0){
             this.addDivider();
         }
-        
-        this.addMessage(WELCOME_MSG, false);
+        this.showMessages(WELCOME_MSG, false);
     }
-}
+} 
 
 const getGithubToken = () => {
     const token = atob(CONFIG.encodedToken);
@@ -302,12 +259,12 @@ const getGithubToken = () => {
     return token;
 };
 
-const readFromGithub = async () => {
-    const { owner, repo, path } = CONFIG;
+const readchat_history = async () => {
+    const { owner, repo, history_path } = CONFIG;
     const token = getGithubToken();
     
     try {
-        const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+        const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${history_path}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -345,3 +302,17 @@ const readFromGithub = async () => {
 document.addEventListener('DOMContentLoaded', () => {
     new ChatApp();
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
