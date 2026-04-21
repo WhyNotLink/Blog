@@ -31,6 +31,7 @@ class ChatApp{
         this.cacheElements();
         this.bindEvents();
         this.showHistoryConversations();
+        this.processing = new Processing();
     }
 
     cacheElements(){
@@ -186,9 +187,24 @@ class ChatApp{
         this.showTyping();
 
         try{
-            // const processedMessages = await processing();
-            const processedMessages = [...this.savedConversations.flat(), ...this.unsavedConversations];
-            const aiResponse = await this.callAI(processedMessages);
+            const contextualmemory = [...this.savedConversations.flat(), ...this.unsavedConversations];
+            const processedMessages = await this.processing.patch(contextualmemory);
+            
+            const allaiResponse = await this.callAI(processedMessages);
+            const schemaMatch = allaiResponse.match(/\[upschema\]([\s\S]*?)\[\/upschema\]/);
+            console.log('schemaMatch:', schemaMatch[1]);
+            try {
+                await this.processing.readOrWrite.writefile('profile_schema.json', schemaMatch[1]);
+                console.log('文件写入完成');
+            } catch (writeError) {
+                console.error('写入文件失败:', writeError);
+                throw writeError;
+            }
+            
+            const responseMatch = allaiResponse.match(/\[response\]([\s\S]*?)\[\/response\]/);
+            const aiResponse = responseMatch[1];
+            
+    
             this.hideTyping();
             this.showMessages(aiResponse, false);
             this.unsavedConversations.push({ role: 'ai', content: aiResponse, timestamp: new Date().toISOString() });
@@ -204,13 +220,7 @@ class ChatApp{
             console.warn('AI API Key not set!');
             throw new Error('API Key not set');
         }
-        const requestMessages = [
-            { role: 'system', content: AI_SYSTEM_PROMPT },
-            ...messages.map(msg => ({
-                role: msg.role === 'user' ? 'user' : 'assistant',
-                content: msg.content
-            }))
-        ];
+
         const response = await fetch(AI_API_URL, {
             method: 'POST',
             headers: {
@@ -219,7 +229,7 @@ class ChatApp{
             },
             body: JSON.stringify({
                 model: AI_MODEL,
-                messages: requestMessages,
+                messages: messages,
                 temperature: AI_TEMPERATURE,
                 max_tokens: AI_MAX_TOKENS
             })
@@ -298,6 +308,83 @@ const readchat_history = async () => {
         return { content: [], sha: null };
     }
 };
+
+class ReadOrWrite{
+    constructor(){
+        this.token = getGithubToken();
+    }
+
+    async readfile(file_name){
+        const { owner, repo } = CONFIG;
+        const token = this.token;
+        const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${file_name}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to read: ${response.status}`);
+        }
+        const data = await response.json();
+        const decodedContent = decodeURIComponent(escape(atob(data.content)));
+        return { content: decodedContent, sha: data.sha };
+    }
+
+    async writefile(file_name, content){
+
+        const base64Content = btoa(unescape(encodeURIComponent(content)));
+        const {sha} = await this.readfile(file_name); 
+        const { owner, repo } = CONFIG;
+        const token = this.token;
+        const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${file_name}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: `Save conversation - ${new Date().toLocaleString()}`,
+                content: base64Content,
+                sha: sha
+            })
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to write: ${response.status}`);
+        }
+    }
+
+} 
+class Processing{
+    constructor(){
+        this.readOrWrite = new ReadOrWrite();
+    }
+
+    async ProcessProfile_Schema(){
+        const { content } = await this.readOrWrite.readfile('profile_schema.json');
+        console.log(content);
+        const profileSchema = JSON.parse(content);
+        //identity,preferences,goals,behavior,context
+        return profileSchema;
+    }
+
+    async patch(messages){
+        const { AI_API_KEY, AI_API_URL, AI_MODEL, AI_SYSTEM_PROMPT, AI_TEMPERATURE, AI_MAX_TOKENS } = CONFIG;
+        const part1 = await this.ProcessProfile_Schema();
+
+        const requestMessages = [
+            { role: 'system', content: AI_SYSTEM_PROMPT+'\n【重要格式要求】回复必须严格按以下格式，否则会导致系统错误：\n\n1. [upschema]标签内放完整的最新的角色信息JSON[/upschema]\n2. [response]标签内放你对用户的实际回复[/response]\n\n【正确示例】\n[upschema]\n{\n  "LIN": {\n    "identity": {"name": "LIN", "role": "旅行者", "relationship": "最好的伙伴"},\n    "preferences": {"like": ["探索"], "dislike": ["危险"]},\n    "goals": {"short_term": "暂无", "long_term": "找到神瞳"},\n    "behavior": {"style": "简短活泼", "emoji": false, "response_length": "短"},\n    "context": {"recent_events": ["打败丘丘人"], "important_memories": ["和TAKI是好朋友"]}\n  }\n}\n[/upschema]\n[response]嗨！有什么计划吗？(≖ᴗ≖✿)[/response]\n\n【注意】所有标签都是英文方括号，response标签内只放纯文本回复，不要放任何标签。\n\n当前角色基本信息：\n'+JSON.stringify(part1, null, 2) },
+            ...messages.map(msg => ({
+                role: msg.role === 'user' ? 'user' : 'assistant',
+                content: msg.content
+            }))
+        ];
+        return requestMessages;
+    }
+
+
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     new ChatApp();
