@@ -1,0 +1,16 @@
+{
+  "name": "大学英语六级",
+  "description": "大学英语六级核心词汇",
+  "words": [
+    { "word": "abandon", "phonetic": "/əˈbændən/", "meaning": "v. 放弃", "example": "They had to abandon the plan." },
+    { "word": "ability", "phonetic": "/əˈbɪləti/", "meaning": "n. 能力", "example": "The test measures your ability." },
+    { "word": "abnormal", "phonetic": "/æbˈnɔːrml/", "meaning": "adj. 异常的", "example": "This is abnormal behavior for the animal." },
+    { "word": "abolish", "phonetic": "/əˈbɑːlɪʃ/", "meaning": "v. 废除", "example": "They want to abolish the death penalty." },
+    { "word": "absence", "phonetic": "/ˈæbsəns/", "meaning": "n. 缺席", "example": "His absence was unexplained." },
+    { "word": "absolute", "phonetic": "/ˈæbsəluːt/", "meaning": "adj. 绝对的", "example": "He demanded absolute secrecy." },
+    { "word": "absorb", "phonetic": "/əbˈzɔːrb/", "meaning": "v. 吸收", "example": "The sponge absorbed all the water." },
+    { "word": "abstract", "phonetic": "/ˈæbstrækt/", "meaning": "adj. 抽象的", "example": "Philosophy deals with abstract concepts." },
+    { "word": "abundant", "phonetic": "/əˈbʌndənt/", "meaning": "adj. 丰富的", "example": "The region has abundant natural resources." },
+    { "word": "academic", "phonetic": "/ˌækəˈdemɪk/", "meaning": "adj. 学术的", "example": "She has excellent academic credentials." }
+  ]
+}

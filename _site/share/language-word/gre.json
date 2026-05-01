@@ -1,0 +1,16 @@
+{
+  "name": "GRE 词汇",
+  "description": "GRE 考试核心词汇",
+  "words": [
+    { "word": "aberrant", "phonetic": "/æˈberənt/", "meaning": "adj. 异常的", "example": "This is aberrant behavior." },
+    { "word": "abeyance", "phonetic": "/əˈbeɪəns/", "meaning": "n. 中止", "example": "The project is in abeyance." },
+    { "word": "abscond", "phonetic": "/əbˈskɑːnd/", "meaning": "v. 潜逃", "example": "He absconded with the money." },
+    { "word": "abstemious", "phonetic": "/æbˈstiːmiəs/", "meaning": "adj. 节制的", "example": "She is abstemious in her habits." },
+    { "word": "abstinence", "phonetic": "/ˈæbstɪnəns/", "meaning": "n. 节制", "example": "Abstinence from alcohol is recommended." },
+    { "word": "abstruse", "phonetic": "/æbˈstruːs/", "meaning": "adj. 深奥的", "example": "The theory is quite abstruse." },
+    { "word": "accolade", "phonetic": "/ˈækəleɪd/", "meaning": "n. 赞美", "example": "The film received accolades." },
+    { "word": "acumen", "phonetic": "/əˈkjuːmən/", "meaning": "n. 敏锐", "example": "Business acumen is essential." },
+    { "word": "admonish", "phonetic": "/ədˈmɑːnɪʃ/", "meaning": "v. 警告", "example": "She admonished him for his mistakes." },
+    { "word": "aesthetic", "phonetic": "/esˈθetɪk/", "meaning": "adj. 审美的", "example": "The building has aesthetic value." }
+  ]
+}

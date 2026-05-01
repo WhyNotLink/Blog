@@ -189,8 +189,13 @@ class ChatApp{
         try{
             const contextualmemory = [...this.savedConversations.flat(), ...this.unsavedConversations];
             const processedMessages = await this.processing.patch(contextualmemory);
-            
             const allaiResponse = await this.callAI(processedMessages);
+
+            const responseMatch = allaiResponse.match(/\[response\]([\s\S]*?)\[\/response\]/);
+            const aiResponse = responseMatch[1];
+            this.hideTyping();
+            this.showMessages(aiResponse, false);
+
             const schemaMatch = allaiResponse.match(/\[upschema\]([\s\S]*?)\[\/upschema\]/);
             console.log('schemaMatch:', schemaMatch[1]);
             try {
@@ -200,13 +205,6 @@ class ChatApp{
                 console.error('写入文件失败:', writeError);
                 throw writeError;
             }
-            
-            const responseMatch = allaiResponse.match(/\[response\]([\s\S]*?)\[\/response\]/);
-            const aiResponse = responseMatch[1];
-            
-    
-            this.hideTyping();
-            this.showMessages(aiResponse, false);
             this.unsavedConversations.push({ role: 'ai', content: aiResponse, timestamp: new Date().toISOString() });
         }catch(error){
             this.hideTyping();

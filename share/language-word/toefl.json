@@ -1,0 +1,16 @@
+{
+  "name": "托福词汇",
+  "description": "托福考试核心词汇",
+  "words": [
+    { "word": "abandon", "phonetic": "/əˈbændən/", "meaning": "v. 放弃", "example": "They abandoned the search." },
+    { "word": "ability", "phonetic": "/əˈbɪləti/", "meaning": "n. 能力", "example": "The ability to learn is important." },
+    { "word": "absorb", "phonetic": "/əbˈzɔːrb/", "meaning": "v. 吸收", "example": "The soil absorbs rainwater." },
+    { "word": "abstract", "phonetic": "/ˈæbstrækt/", "meaning": "adj. 抽象的", "example": "Abstract ideas are hard to explain." },
+    { "word": "academic", "phonetic": "/ˌækəˈdemɪk/", "meaning": "adj. 学术的", "example": "Academic research is important." },
+    { "word": "accelerate", "phonetic": "/əkˈseləreɪt/", "meaning": "v. 加速", "example": "The car accelerated quickly." },
+    { "word": "acquire", "phonetic": "/əˈkwaɪər/", "meaning": "v. 获得", "example": "They acquired new knowledge." },
+    { "word": "adapt", "phonetic": "/əˈdæpt/", "meaning": "v. 适应", "example": "Animals adapt to their environment." },
+    { "word": "adequate", "phonetic": "/ˈædɪkwət/", "meaning": "adj. 足够的", "example": "We have adequate supplies." },
+    { "word": "adjust", "phonetic": "/əˈdʒʌst/", "meaning": "v. 调整", "example": "You need to adjust your schedule." }
+  ]
+}

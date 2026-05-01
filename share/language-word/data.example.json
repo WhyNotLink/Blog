@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "settings": {
+    "wordBook": "cet4",
+    "dailyGoal": 10,
+    "reviewIntervals": [1, 2, 4, 7, 15, 30],
+    "reminderTime": "09:00",
+    "reminderEnabled": false
+  },
+  "progress": {
+    "apple": {
+      "level": 3,
+      "reviewCount": 6,
+      "lastReview": "2024-01-15",
+      "wrongCount": 0
+    },
+    "banana": {
+      "level": 2,
+      "reviewCount": 3,
+      "lastReview": "2024-01-14",
+      "wrongCount": 1
+    }
+  },
+  "words": [
+    {
+      "word": "apple",
+      "phonetic": "/ˈæpl/",
+      "meaning": "n. 苹果",
+      "example": "An apple a day keeps the doctor away.",
+      "mastery": 3
+    },
+    {
+      "word": "banana",
+      "phonetic": "/bəˈnɑːnə/",
+      "meaning": "n. 香蕉",
+      "example": "I like banana very much.",
+      "mastery": 2
+    }
+  ],
+  "stats": {
+    "totalLearned": 50,
+    "streak": 7,
+    "lastStudyDate": "2024-01-15"
+  }
+}

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单词记忆 - Word Memory</title>
+    <link rel="stylesheet" href="/Blog/share/language.css">
+    <link rel="stylesheet" href="/Blog/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="nav" id="navbar">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="/Blog/index.html">首页</a></li>
+                <li><a href="/Blog/sort.html">分类</a></li>
+                <li><a href="/Blog/history.html">归档</a></li>
+                <li><a href="/Blog/tool.html">工具</a></li>
+                <li><a href="/Blog/aboutme.html">关于我</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        <section class="login-section" id="loginSection">
+            <div class="login-card">
+                <div class="login-icon">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5"/>
+                        <path d="M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <h1 class="login-title">单词记忆</h1>
+                <p class="login-desc">使用 GitHub 登录，自动同步你的单词本</p>
+                <button class="github-login-btn" id="githubLoginBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    <span>使用 GitHub 登录</span>
+                </button>
+                <p class="login-hint">一键授权，数据自动同步到你的 GitHub</p>
+            </div>
+        </section>
+
+        <section class="app-section hidden" id="appSection">
+            <header class="app-header">
+                <div class="user-info">
+                    <img src="" alt="avatar" class="user-avatar" id="userAvatar">
+                    <span class="user-name" id="userName"></span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="syncBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 4v6h-6"/>
+                            <path d="M1 20v-6h6"/>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                        </svg>
+                        同步
+                    </button>
+                    <button class="btn btn-danger" id="logoutBtn">退出</button>
+                </div>
+            </header>
+
+            <div class="app-content">
+                <div class="main-content">
+                    <section class="content-section active" id="rememberSection">
+                        <div class="section-header">
+                            <h2 class="section-title">记忆模式</h2>
+                            <p class="section-desc">学习今日新单词</p>
+                        </div>
+                        <div class="word-list-container">
+                            
+
+                        </div>
+                        <div class="active-list-container">
+
+
+                        </div>
+                    </section>
+
+                    <section class="content-section" id="testSection">
+                        <div class="section-header">
+                            <h2 class="section-title">检验模式</h2>
+                            <p class="section-desc">检验你对今日单词的掌握程度</p>
+                        </div>
+                            <div id = "length-eq-zero-dis">
+                                <div class="flashcard-container" id="testFlashcardContainer">
+                                <div class="flashcard" id="testFlashcard">
+                                    <div class="flashcard-inner">
+                                        <div class="flashcard-front">
+                                            <span class="word-text" id="testWordText">apple</span>
+                                            <span class="word-phonetic" id="testWordPhonetic">/ˈæpl/</span>
+                                        </div>
+                                        <div class="flashcard-back">
+                                            <span class="word-meaning" id="testWordMeaning">n. 苹果</span>
+                                            <span class="word-example" id="testWordExample">例句：An apple a day keeps the doctor away.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="flashcard-hint">点击卡片查看释义</p>
+                            </div>
+
+                            <div class="test-card-controls">
+                                <button class="btn btn-nav" id="testPrevBtn">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="15 18 9 12 15 6"/>
+                                    </svg>
+                                    上一个
+                                </button>
+                                <button class="btn btn-primary" id="testFlipBtn">翻转</button>
+                                <button class="btn btn-nav" id="testNextBtn">
+                                    下一个
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="9 18 15 12 9 6"/>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div class="mastery-controls" id="testMasteryControls">
+                                <button class="btn btn-mastery" id="testMarkForgetBtn" data-level="0">
+                                    <span class="mastery-icon">😵</span>
+                                    <span>不认识</span>
+                                </button>
+                                <button class="btn btn-mastery" id="testMarkHardBtn" data-level="1">
+                                    <span class="mastery-icon">🤔</span>
+                                    <span>有点难</span>
+                                </button>
+                                <button class="btn btn-mastery" id="testMarkKnowBtn" data-level="2">
+                                    <span class="mastery-icon">😊</span>
+                                    <span>认识</span>
+                                </button>
+                                <button class="btn btn-mastery" id="testMarkEasyBtn" data-level="3">
+                                    <span class="mastery-icon">😎</span>
+                                    <span>很简单</span>
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="content-section" id="reviewSection">
+                        <div class="section-header">
+                            <h2 class="section-title">复习模式</h2>
+                            <p class="section-desc">复习过往学习的单词</p>
+                        </div>
+                        <div class="review-container" id="reviewContainer">
+                            
+                        </div>
+                        
+                    </section>
+                </div>
+
+                <aside class="word-list-panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">学习计划</h2>
+                    </div>
+
+                    <div class="plan-section">
+                        <h3 class="plan-title">今日计划</h3>
+                        <div class="today-progress">
+                            <div class="progress-info">
+                                <span class="progress-text" id="todayProgress">0 / 10</span>
+                                <span class="progress-label">今日进度</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="plan-section">
+                        <h3 class="plan-title">本周计划</h3>
+                        <div class="week-plan" id="weekPlan"></div>
+                    </div>
+
+                    <div class="plan-section">
+                        <h3 class="plan-title">复习</h3>
+                        <div class="review-info" id="reviewInfo">
+                            <div class="review-count">
+                                <span class="review-num" id="reviewCount">0</span>
+                                <span class="review-label">个单词待复习</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contribution-widget" id="contributionWidget">
+                        <div class="contribution-months" id="contributionMonths"></div>
+                        <div class="contribution-container">
+                            <div class="contribution-days">
+                                <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+                            </div>
+                            <div class="contribution-graph" id="contributionGraph"></div>
+                        </div>
+                        <div class="contribution-legend">
+                            <span>少</span>
+                            <div class="legend-scale">
+                                <span class="level-0"></span><span class="level-1"></span><span class="level-2"></span><span class="level-3"></span><span class="level-4"></span>
+                            </div>
+                            <span>多</span>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="mode-buttons">
+                    <button class="mode-btn active" id="rememberBtn">记忆</button>
+                    <button class="mode-btn" id="testBtn">检验</button>
+                    <button class="mode-btn" id="reviewBtn">复习</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay hidden" id="settingsModal">
+        <div class="modal settings-modal">
+            <div class="modal-header">
+                <h3>设置</h3>
+                <button class="modal-close" id="closeSettingsBtn" aria-label="关闭">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h4 class="settings-title">学习计划</h4>
+                    <div class="form-group">
+                        <label for="wordBook">选择单词书</label>
+                        <select id="wordBook">
+                            <option value="cet4">大学英语四级</option>
+                            <option value="cet6">大学英语六级</option>
+                            <option value="ielts">雅思词汇</option>
+                            <option value="toefl">托福词汇</option>
+                            <option value="gre">GRE 词汇</option>
+                            <option value="kaoyan">考研词汇</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dailyGoal">每日目标（个）</label>
+                        <input type="number" id="dailyGoal" min="1" max="100" value="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="maxReviewList">每日最多复习（个list）</label>
+                        <input type="number" id="maxReviewList" min="1" max="10" value="3">
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h4 class="settings-title">提醒设置</h4>
+                    <div class="form-group">
+                        <label for="reminderTime">每日提醒时间</label>
+                        <input type="time" id="reminderTime" value="09:00">
+                    </div>
+                    <div class="form-group toggle-group">
+                        <label>开启学习提醒</label>
+                        <label class="toggle">
+                            <input type="checkbox" id="reminderEnabled">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelSettingsBtn">取消</button>
+                <button class="btn btn-primary" id="saveSettingsBtn">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast hidden" id="toast">
+        <span class="toast-message" id="toastMessage"></span>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div>Copyright © 2024 - 版权归属 LIN</div>
+            <div class="sync-status" id="syncStatus">
+                <span class="status-dot"></span>
+                <span>未同步</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/Blog/share/language.js"></script>
+</body>
+</html>

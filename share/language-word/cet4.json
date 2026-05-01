@@ -1,0 +1,16 @@
+{
+  "name": "大学英语四级",
+  "description": "大学英语四级核心词汇",
+  "words": [
+    { "word": "abandon", "phonetic": "/əˈbændən/", "meaning": "v. 放弃", "example": "The crew had to abandon the ship." },
+    { "word": "ability", "phonetic": "/əˈbɪləti/", "meaning": "n. 能力", "example": "She has the ability to speak three languages." },
+    { "word": "able", "phonetic": "/ˈeɪbl/", "meaning": "adj. 能够的", "example": "He was able to finish the work on time." },
+    { "word": "about", "phonetic": "/əˈbaʊt/", "meaning": "prep. 关于", "example": "Tell me about your trip." },
+    { "word": "above", "phonetic": "/əˈbʌv/", "meaning": "prep. 在...之上", "example": "The plane flew above the clouds." },
+    { "word": "abroad", "phonetic": "/əˈbrɔːd/", "meaning": "adv. 在国外", "example": "She went abroad to study medicine." },
+    { "word": "absence", "phonetic": "/ˈæbsəns/", "meaning": "n. 缺席", "example": "His absence was noticed by the teacher." },
+    { "word": "absolute", "phonetic": "/ˈæbsəluːt/", "meaning": "adj. 绝对的", "example": "It is an absolute necessity." },
+    { "word": "absorb", "phonetic": "/əbˈzɔːrb/", "meaning": "v. 吸收", "example": "Plants absorb water from the soil." },
+    { "word": "abstract", "phonetic": "/ˈæbstrækt/", "meaning": "adj. 抽象的", "example": "The concept of beauty is abstract." }
+  ]
+}

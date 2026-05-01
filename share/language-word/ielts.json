@@ -1,0 +1,16 @@
+{
+  "name": "雅思词汇",
+  "description": "雅思考试核心词汇",
+  "words": [
+    { "word": "abandon", "phonetic": "/əˈbændən/", "meaning": "v. 放弃", "example": "The project was abandoned." },
+    { "word": "ability", "phonetic": "/əˈbɪləti/", "meaning": "n. 能力", "example": "She has the ability to succeed." },
+    { "word": "absorb", "phonetic": "/əbˈzɔːrb/", "meaning": "v. 吸收", "example": "The mind absorbs information easily." },
+    { "word": "academic", "phonetic": "/ˌækəˈdemɪk/", "meaning": "adj. 学术的", "example": "He has strong academic achievements." },
+    { "word": "accommodate", "phonetic": "/əˈkɑːmədeɪt/", "meaning": "v. 容纳", "example": "The hotel can accommodate 500 guests." },
+    { "word": "accomplish", "phonetic": "/əˈkʌmplɪʃ/", "meaning": "v. 完成", "example": "We accomplished our goals." },
+    { "word": "accurate", "phonetic": "/ˈækjərət/", "meaning": "adj. 准确的", "example": "The data must be accurate." },
+    { "word": "achieve", "phonetic": "/əˈtʃiːv/", "meaning": "v. 达到", "example": "She achieved excellent results." },
+    { "word": "acquire", "phonetic": "/əˈkwaɪər/", "meaning": "v. 获得", "example": "He acquired new skills." },
+    { "word": "adapt", "phonetic": "/əˈdæpt/", "meaning": "v. 适应", "example": "We must adapt to changes." }
+  ]
+}
