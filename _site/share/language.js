@@ -673,6 +673,72 @@ async function revisenowlist() {
 }
 
 
+
+const CONFIG = {
+    owner: 'WhyNotLink',
+    AI_API_KEY: 'sk-mx7mwmSK6BPx5J7seyFLcq1bmqoQmrCCHYd4FYR9RmG32uyA',
+    AI_API_URL: 'https://api.moonshot.cn/v1/chat/completions',
+    AI_MODEL: 'moonshot-v1-8k',
+    AI_SYSTEM_PROMPT: '你是一个专业得翻译',
+    AI_TEMPERATURE: 0.7,
+    AI_MAX_TOKENS: 2000
+};
+
+async function callAI(messages){
+    const { AI_API_KEY, AI_API_URL, AI_MODEL, AI_SYSTEM_PROMPT, AI_TEMPERATURE, AI_MAX_TOKENS } = CONFIG;
+    
+    const allMessages = [{role: 'system', content: AI_SYSTEM_PROMPT},{role: 'user', content: messages}];
+    
+    if(!AI_API_KEY){
+        console.warn('AI API Key not set!');
+        throw new Error('API Key not set');
+    }
+
+    const response = await fetch(AI_API_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${AI_API_KEY}`
+        },
+        body: JSON.stringify({
+            model: AI_MODEL,
+            messages: allMessages,
+            temperature: AI_TEMPERATURE,
+            max_tokens: AI_MAX_TOKENS
+        })
+    });
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(`API request failed: ${response.status} - ${errorData.error?.message || '未知错误'}`);
+    }
+    const data = await response.json();
+    return data.choices[0].message.content;
+}
+
+async function AIModeRefresh(github) {
+    const putdata = [];
+    start = data.nowList[data.settings.wordBook] * data.settings.dailyGoal;
+    worddata[data.nowList[data.settings.wordBook]].forEach((word, index) => {
+        putdata.push({word:word.word,originalIndex:start + index});
+    })
+    console.log(putdata);
+    const aigenerateTX = JSON.stringify(putdata) + `请用以上单词（全部或部分）组成3-5个英文句子，返回严格遵守以下JSON格式（必须是有效的JSON，不要有任何额外内容）：
+{"sentences": [{"text": "句子内容", "words": ["单词1", "单词2"]}, ...]}`;
+    const AIcontainer = document.getElementById('AIContainer');
+    AIcontainer.innerHTML = '<div class="ai-loading"><div class="ai-loading-dot"></div><div class="ai-loading-dot"></div><div class="ai-loading-dot"></div></div>';
+    const aigenerateRX = await callAI(aigenerateTX);
+    console.log(aigenerateTX);
+    console.log(aigenerateRX);
+    const result = JSON.parse(aigenerateRX);
+    AIcontainer.innerHTML = '';
+    result.sentences.forEach((sentence) => {
+        AIcontainer.innerHTML += `<div class="ai-sentence-container"><div class="ai-sentence-text">${sentence.text}</div><textarea placeholder="输入翻译..." class="chat-input ai-translate-input"></textarea></div>`;
+    })
+    
+    
+}
+
+
 async function updateLoginUI(github) {
     try {
         await github.ensureRepoAndFile();
@@ -733,6 +799,7 @@ async function updateLoginUI(github) {
                 document.getElementById('rememberBtn').classList.add('active');
                 document.getElementById('testBtn').classList.remove('active');
                 document.getElementById('reviewBtn').classList.remove('active');
+                document.getElementById('AIBtn').classList.remove('active');
                 mode = 'remember';
 
             };
@@ -740,13 +807,22 @@ async function updateLoginUI(github) {
                 document.getElementById('testBtn').classList.add('active');
                 document.getElementById('rememberBtn').classList.remove('active');
                 document.getElementById('reviewBtn').classList.remove('active');
+                document.getElementById('AIBtn').classList.remove('active');
                 mode = 'test';
             };
             document.getElementById('reviewBtn').onclick = () => {
                 document.getElementById('reviewBtn').classList.add('active');
                 document.getElementById('rememberBtn').classList.remove('active');
                 document.getElementById('testBtn').classList.remove('active');
+                document.getElementById('AIBtn').classList.remove('active');
                 mode = 'review';
+            };
+            document.getElementById('AIBtn').onclick = () => {
+                document.getElementById('AIBtn').classList.add('active');
+                document.getElementById('rememberBtn').classList.remove('active');
+                document.getElementById('testBtn').classList.remove('active');
+                document.getElementById('reviewBtn').classList.remove('active');
+                mode = 'AI';
             };
 
             document.addEventListener('keydown', async (event) => {
@@ -761,6 +837,7 @@ async function updateLoginUI(github) {
                     rememberSection.classList.remove('hidden');
                     testSection.classList.add('hidden');
                     reviewSection.classList.add('hidden');
+                    AISection.classList.add('hidden');
                     activeList = data.nowList[data.settings.wordBook];
                     await rememberModeRefresh(github);
                     await studyschduleRefresh();
@@ -773,6 +850,8 @@ async function updateLoginUI(github) {
                     testSection.classList.add('hidden');
                     reviewSection.classList.remove('active');
                     reviewSection.classList.add('hidden');
+                    AISection.classList.remove('active');
+                    AISection.classList.add('hidden');
                     await rememberModeRefresh(github);
                     await studyschduleRefresh();
 
@@ -783,6 +862,8 @@ async function updateLoginUI(github) {
                     rememberSection.classList.add('hidden');
                     reviewSection.classList.remove('active');
                     reviewSection.classList.add('hidden');
+                    AISection.classList.remove('active');
+                    AISection.classList.add('hidden');
                     await testModeRefresh(github);
 
                 } else if (mode === 'review') {
@@ -792,7 +873,19 @@ async function updateLoginUI(github) {
                     rememberSection.classList.add('hidden');
                     testSection.classList.remove('active');
                     testSection.classList.add('hidden');
+                    AISection.classList.remove('active');
+                    AISection.classList.add('hidden');
                     await reviewModeRefresh(github);
+                } else if (mode === 'AI') {
+                    AISection.classList.remove('hidden');
+                    AISection.classList.add('active');
+                    rememberSection.classList.remove('active');
+                    rememberSection.classList.add('hidden');
+                    testSection.classList.remove('active');
+                    testSection.classList.add('hidden');
+                    reviewSection.classList.remove('active');
+                    reviewSection.classList.add('hidden');
+                    await AIModeRefresh(github);
                 }
             };
         }
