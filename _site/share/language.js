@@ -715,29 +715,28 @@ async function callAI(messages){
     return data.choices[0].message.content;
 }
 
+let putdata = [];
 async function AIModeRefresh(github) {
-    const putdata = [];
+    putdata = [];
     start = data.nowList[data.settings.wordBook] * data.settings.dailyGoal;
     worddata[data.nowList[data.settings.wordBook]].forEach((word, index) => {
         putdata.push({word:word.word,originalIndex:start + index});
     })
     console.log(putdata);
-    const aigenerateTX = JSON.stringify(putdata) + `请用以上单词（全部或部分）组成3-5个英文句子，返回严格遵守以下JSON格式（必须是有效的JSON，不要有任何额外内容）：
-{"sentences": [{"text": "句子内容", "words": ["单词1", "单词2"]}, ...]}`;
+    const aigenerateTX = JSON.stringify(putdata.map((item) => item.word)) + `请用以上单词（全部或部分）组成3-4个英文长句子，每个句子要包含尽量多的单词，返回严格遵守以下JSON格式（必须是有效的JSON，不要有任何额外内容）：
+{"sentences": [{"text": "英文句子", "translate": "对应的中文翻译"}, ...]}`;
     const AIcontainer = document.getElementById('AIContainer');
     AIcontainer.innerHTML = '<div class="ai-loading"><div class="ai-loading-dot"></div><div class="ai-loading-dot"></div><div class="ai-loading-dot"></div></div>';
     const aigenerateRX = await callAI(aigenerateTX);
     console.log(aigenerateTX);
     console.log(aigenerateRX);
-    const result = JSON.parse(aigenerateRX);
+    let jsonStr = aigenerateRX.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    const result = JSON.parse(jsonStr);
     AIcontainer.innerHTML = '';
     result.sentences.forEach((sentence) => {
-        AIcontainer.innerHTML += `<div class="ai-sentence-container"><div class="ai-sentence-text">${sentence.text}</div><textarea placeholder="输入翻译..." class="chat-input ai-translate-input"></textarea></div>`;
+        AIcontainer.innerHTML += `<div class="ai-sentence-container" data-original="${sentence.text}"><div class="ai-sentence-text">${sentence.text}</div><textarea placeholder="输入翻译..." class="chat-input ai-translate-input"></textarea><div class="ai-translation">${sentence.translate || ''}</div></div>`;
     })
-    
-    
 }
-
 
 async function updateLoginUI(github) {
     try {

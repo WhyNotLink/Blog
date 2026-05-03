@@ -512,11 +512,14 @@ function initScrollSelection() {
 async function initPlayer() {
   const container = document.getElementById('songs-container');
   if (!container) return;
-  
+
+  const requestDelay = 300;
+
   for (const songId of songIds) {
     const songInfo = await getMusicInfo(songId);
     const card = createSongCard(songInfo);
     container.appendChild(card);
+    await new Promise(resolve => setTimeout(resolve, requestDelay));
   }
   
   // 初始化滚动选中效果
