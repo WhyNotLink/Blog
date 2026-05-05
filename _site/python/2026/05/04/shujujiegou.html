@@ -1,0 +1,2046 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>数据结构 - LIN's Blog</title>
+    <!-- 使用 relative_url 确保路径永远正确 -->
+    <link rel="stylesheet" href="/Blog/style.css">
+    <link rel="stylesheet" href="/Blog/post.css">
+    
+    <script>
+        // const navbar = document.getElementById('navbar');
+        // const hero = document.querySelector('.hero');
+        // const heroHeight = hero.offsetHeight;
+        const threshold = 200;
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            if (scrollY > threshold) {
+            navbar.classList.add('scrolled');
+            } else {
+            navbar.classList.remove('scrolled');
+            }
+        });
+       
+    </script>
+        <!-- Odometer 数字滚动插件 -->
+    <link rel="stylesheet" href="/Blog/odometr.css">
+    <script src="/Blog/odometr.js"></script>
+    <!-- 博客运行计时核心脚本 -->
+    <script>
+    window.pjaxLoaded = function(){
+        var blog_running_days=document.getElementById("blog_running_days");
+        var blog_running_hours=document.getElementById("blog_running_hours");
+        var blog_running_mins=document.getElementById("blog_running_mins");
+        var blog_running_secs=document.getElementById("blog_running_secs");
+        
+        function refresh_blog_running_time(){
+            // 博客起始时间：2024年10月7日（月份0-11，所以9代表10月）
+            var time = new Date() - new Date(2024, 9, 7, 0, 0, 0);
+            var d=parseInt(time/24/60/60/1000);
+            var h=parseInt(time%(24*60*60*1000)/60/60/1000);
+            var m=parseInt(time%(60*60*1000)/60/1000);
+            var s=parseInt(time%(60*1000)/1000);
+            
+            blog_running_days.innerHTML=d;
+            blog_running_hours.innerHTML=h;
+            blog_running_mins.innerHTML=m;
+            blog_running_secs.innerHTML=s;
+        };
+        
+        refresh_blog_running_time();
+        if (typeof(bottomTimeIntervalHasSet) == "undefined"){
+            var bottomTimeIntervalHasSet = true;
+            setInterval(refresh_blog_running_time,500);
+        }
+    };
+    // 初始化数字滚动
+    window.onload = function(){
+        odometer_init();
+        window.pjaxLoaded();
+        hljs.highlightAll();
+    };
+
+    function odometer_init(){
+        let el = document.getElementsByClassName('odometer');
+        for (let i = 0; i < el.length; i++) {
+            od = new Odometer({
+                el: el[i],
+                format: 'ddd',
+                duration: 200
+            });
+        }
+    }
+    </script>
+
+</head>
+<body class="fade-in-content">
+
+    <nav class="nav" id="navbar">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="/Blog/index.html">首页</a></li>
+                <li><a href="/Blog/sort.html">分类</a></li>
+                <li><a href="/Blog/history.html">归档</a></li>
+                <li><a href="/Blog/tool.html">工具</a></li>
+                <li><a href="/Blog/aboutme.html">关于我</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="container">
+            <div class="content">
+                <article class="post-detail">
+                    <h1 class="post-title">数据结构</h1>
+                    <div class="post-meta">
+                        2026年05月04日 | 分类：Python
+                    </div>
+                    
+                    <!-- Jekyll 会把 Markdown 的内容塞到这里 -->
+                    <div class="entry-content">
+                        <ul id="markdown-toc">
+  <li><a href="#数据结构" id="markdown-toc-数据结构">数据结构</a>    <ul>
+      <li><a href="#常见的数据结构" id="markdown-toc-常见的数据结构">常见的数据结构</a></li>
+      <li><a href="#常用算法" id="markdown-toc-常用算法">常用算法</a></li>
+      <li><a href="#算法的核心特征" id="markdown-toc-算法的核心特征">算法的核心特征</a></li>
+      <li><a href="#如何描述算法" id="markdown-toc-如何描述算法">如何描述算法？</a>        <ul>
+          <li><a href="#1-自然语言描述" id="markdown-toc-1-自然语言描述">1. 自然语言描述</a></li>
+          <li><a href="#2-流程图" id="markdown-toc-2-流程图">2. 流程图</a></li>
+          <li><a href="#3-伪代码" id="markdown-toc-3-伪代码">3. 伪代码</a></li>
+          <li><a href="#4-编程语言实现" id="markdown-toc-4-编程语言实现">4. 编程语言实现</a></li>
+        </ul>
+      </li>
+      <li><a href="#算法分析如何评价算法的好坏" id="markdown-toc-算法分析如何评价算法的好坏">算法分析：如何评价算法的好坏？</a>        <ul>
+          <li><a href="#1-时间复杂度" id="markdown-toc-1-时间复杂度">1. 时间复杂度</a></li>
+          <li><a href="#2-空间复杂度" id="markdown-toc-2-空间复杂度">2. 空间复杂度</a></li>
+        </ul>
+      </li>
+      <li><a href="#线性数据结构" id="markdown-toc-线性数据结构">线性数据结构</a>        <ul>
+          <li><a href="#数组array" id="markdown-toc-数组array">数组（Array）</a>            <ul>
+              <li><a href="#基本概念与特点" id="markdown-toc-基本概念与特点">基本概念与特点</a></li>
+              <li><a href="#优点与缺点" id="markdown-toc-优点与缺点">优点与缺点</a></li>
+              <li><a href="#静态数组" id="markdown-toc-静态数组">静态数组</a></li>
+              <li><a href="#动态数组" id="markdown-toc-动态数组">动态数组</a></li>
+            </ul>
+          </li>
+          <li><a href="#链表linked-list" id="markdown-toc-链表linked-list">链表（Linked List）</a>            <ul>
+              <li><a href="#基本概念与类型" id="markdown-toc-基本概念与类型">基本概念与类型</a></li>
+              <li><a href="#链表主要类型" id="markdown-toc-链表主要类型">链表主要类型：</a></li>
+              <li><a href="#优点与缺点-1" id="markdown-toc-优点与缺点-1">优点与缺点</a></li>
+              <li><a href="#单向链表" id="markdown-toc-单向链表">单向链表</a></li>
+              <li><a href="#双向链表" id="markdown-toc-双向链表">双向链表</a></li>
+            </ul>
+          </li>
+          <li><a href="#栈stack" id="markdown-toc-栈stack">栈（Stack）</a>            <ul>
+              <li><a href="#基本概念与操作后进先出" id="markdown-toc-基本概念与操作后进先出">基本概念与操作（后进先出）</a></li>
+            </ul>
+          </li>
+          <li><a href="#队列queue" id="markdown-toc-队列queue">队列（Queue）</a>            <ul>
+              <li><a href="#基本概念与操作先进先出" id="markdown-toc-基本概念与操作先进先出">基本概念与操作（先进先出）</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#总结与对比" id="markdown-toc-总结与对比">总结与对比</a>        <ul>
+          <li><a href="#如何选择" id="markdown-toc-如何选择">如何选择？</a></li>
+        </ul>
+      </li>
+      <li><a href="#哈希表" id="markdown-toc-哈希表">哈希表</a>        <ul>
+          <li><a href="#核心组件" id="markdown-toc-核心组件">核心组件</a></li>
+          <li><a href="#哈希函数设计" id="markdown-toc-哈希函数设计">哈希函数设计</a>            <ul>
+              <li><a href="#好的哈希函数特性" id="markdown-toc-好的哈希函数特性">好的哈希函数特性</a></li>
+              <li><a href="#常见哈希函数" id="markdown-toc-常见哈希函数">常见哈希函数</a></li>
+            </ul>
+          </li>
+          <li><a href="#冲突解决方法哈希碰撞" id="markdown-toc-冲突解决方法哈希碰撞">冲突解决方法(哈希碰撞)</a>            <ul>
+              <li><a href="#链地址法separate-chaining" id="markdown-toc-链地址法separate-chaining">链地址法（Separate Chaining）</a></li>
+              <li><a href="#开放定址法open-addressing" id="markdown-toc-开放定址法open-addressing">开放定址法（Open Addressing）</a></li>
+            </ul>
+          </li>
+          <li><a href="#两种方法的对比" id="markdown-toc-两种方法的对比">两种方法的对比</a></li>
+          <li><a href="#哈希表的性能与负载因子" id="markdown-toc-哈希表的性能与负载因子">哈希表的性能与负载因子</a></li>
+        </ul>
+      </li>
+      <li><a href="#树形结构" id="markdown-toc-树形结构">树形结构</a>        <ul>
+          <li><a href="#树的基本性质" id="markdown-toc-树的基本性质">树的基本性质</a></li>
+          <li><a href="#为什么需要树-树的优势与应用" id="markdown-toc-为什么需要树-树的优势与应用">为什么需要树？—— 树的优势与应用</a></li>
+          <li><a href="#二叉树树家族中最重要的一员" id="markdown-toc-二叉树树家族中最重要的一员">二叉树：树家族中最重要的一员</a></li>
+          <li><a href="#二叉树类型" id="markdown-toc-二叉树类型">二叉树类型</a></li>
+          <li><a href="#二叉树的遍历" id="markdown-toc-二叉树的遍历">二叉树的遍历</a></li>
+          <li><a href="#二分搜索树" id="markdown-toc-二分搜索树">二分搜索树</a>            <ul>
+              <li><a href="#一概念及其介绍" id="markdown-toc-一概念及其介绍">一、概念及其介绍</a></li>
+              <li><a href="#二适用说明" id="markdown-toc-二适用说明">二、适用说明</a></li>
+            </ul>
+          </li>
+          <li><a href="#哈夫曼树" id="markdown-toc-哈夫曼树">哈夫曼树</a>            <ul>
+              <li><a href="#香农范诺编码" id="markdown-toc-香农范诺编码">香农范诺编码</a></li>
+              <li><a href="#哈夫曼编码" id="markdown-toc-哈夫曼编码">哈夫曼编码</a></li>
+            </ul>
+          </li>
+          <li><a href="#avl树" id="markdown-toc-avl树">AVL树</a></li>
+          <li><a href="#红黑树" id="markdown-toc-红黑树">红黑树</a></li>
+          <li><a href="#b树" id="markdown-toc-b树">B树</a></li>
+          <li><a href="#b树-1" id="markdown-toc-b树-1">B+树</a></li>
+        </ul>
+      </li>
+      <li><a href="#图论结构" id="markdown-toc-图论结构">图论结构</a>        <ul>
+          <li><a href="#图的基本术语" id="markdown-toc-图的基本术语">图的基本术语</a></li>
+          <li><a href="#图的分类" id="markdown-toc-图的分类">图的分类</a></li>
+          <li><a href="#图的存储方式" id="markdown-toc-图的存储方式">图的存储方式</a>            <ul>
+              <li><a href="#邻接矩阵" id="markdown-toc-邻接矩阵">邻接矩阵</a></li>
+              <li><a href="#邻接表" id="markdown-toc-邻接表">邻接表</a></li>
+            </ul>
+          </li>
+          <li><a href="#图的遍历算法" id="markdown-toc-图的遍历算法">图的遍历算法</a>            <ul>
+              <li><a href="#广度优先搜索" id="markdown-toc-广度优先搜索">广度优先搜索</a></li>
+              <li><a href="#深度优先搜索" id="markdown-toc-深度优先搜索">深度优先搜索</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#算法思想" id="markdown-toc-算法思想">算法思想</a>        <ul>
+          <li><a href="#分治算法" id="markdown-toc-分治算法">分治算法</a></li>
+          <li><a href="#贪心算法" id="markdown-toc-贪心算法">贪心算法</a></li>
+          <li><a href="#动态规划" id="markdown-toc-动态规划">动态规划</a></li>
+          <li><a href="#局部最优的直观理解找零钱案例" id="markdown-toc-局部最优的直观理解找零钱案例">局部最优的直观理解：找零钱案例</a></li>
+          <li><a href="#局部最优-vs-全局最优" id="markdown-toc-局部最优-vs-全局最优">局部最优 vs. 全局最优</a></li>
+          <li><a href="#贪心与动态规划的底层决策差异" id="markdown-toc-贪心与动态规划的底层决策差异">贪心与动态规划的底层决策差异</a></li>
+        </ul>
+      </li>
+      <li><a href="#迪杰斯特拉算法" id="markdown-toc-迪杰斯特拉算法">迪杰斯特拉算法</a></li>
+    </ul>
+  </li>
+</ul>
+<hr />
+
+<h1 id="数据结构">数据结构</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">术语</th>
+      <th style="text-align: left">生活比喻</th>
+      <th style="text-align: left">技术定义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">数据</td>
+      <td style="text-align: left">物品</td>
+      <td style="text-align: left">信息的载体，是描述客观事物的符号</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">数据元素</td>
+      <td style="text-align: left">单个物品</td>
+      <td style="text-align: left">数据的基本单位</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">数据结构</td>
+      <td style="text-align: left">物品整理方式</td>
+      <td style="text-align: left">数据元素之间存在的一种或多种特定关系的集合</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">算法</td>
+      <td style="text-align: left">做事步骤</td>
+      <td style="text-align: left">解决问题的明确指令，<strong>有限时间内完成</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="常见的数据结构">常见的数据结构</h3>
+
+<ul>
+  <li><strong>栈（Stack）：</strong>栈是一种特殊的线性表，它只能在一个表的一个固定端进行数据结点的插入和删除操作。</li>
+  <li><strong>队列（Queue）：</strong>队列和栈类似，也是一种特殊的线性表。和栈不同的是，队列只允许在表的一端进行插入操作，而在另一端进行删除操作。</li>
+  <li><strong>数组（Array）：</strong>数组是一种聚合数据类型，它是将具有相同类型的若干变量有序地组织在一起的集合。</li>
+  <li><strong>链表（Linked List）：</strong>链表是一种数据元素按照链式存储结构进行存储的数据结构，这种存储结构具有在物理上存在非连续的特点。</li>
+  <li><strong>树（Tree）：</strong>树是典型的非线性结构，它是包括，2 个结点的有穷集合 K。</li>
+  <li><strong>图（Graph）：</strong>图是另一种非线性数据结构。在图结构中，数据结点一般称为顶点，而边是顶点的有序偶对。</li>
+  <li><strong>堆（Heap）：</strong>堆是一种特殊的树形数据结构，一般讨论的堆都是二叉堆。</li>
+  <li><strong>散列表（Hash table）：</strong>散列表源自于散列函数(Hash function)，其思想是如果在结构中存在关键字和T相等的记录，那么必定在F(T)的存储位置可以找到该记录，这样就可以不用进行比较操作而直接取得所查记录。</li>
+</ul>
+
+<h3 id="常用算法">常用算法</h3>
+
+<p>数据结构研究的内容：就是如何按一定的逻辑结构，把数据组织起来，并选择适当的存储表示方法把逻辑结构组织好的数据存储到计算机的存储器里。算法研究的目的是为了更有效的处理数据，提高数据运算效率。数据的运算是定义在数据的逻辑结构上，但运算的具体实现要在存储结构上进行。一般有以下几种常用运算：</p>
+
+<ul>
+  <li><strong>检索：</strong>检索就是在数据结构里查找满足一定条件的节点。一般是给定一个某字段的值，找具有该字段值的节点。</li>
+  <li><strong>插入：</strong>往数据结构中增加新的节点。</li>
+  <li><strong>删除：</strong>把指定的结点从数据结构中去掉。</li>
+  <li><strong>更新：</strong>改变指定节点的一个或多个字段的值。</li>
+  <li><strong>排序：</strong>把节点按某种指定的顺序重新排列。例如递增或递减。</li>
+</ul>
+
+<h2 id="算法的核心特征">算法的核心特征</h2>
+
+<p>一个合格的算法必须具备以下五个基本特征，我们可以用做菜的类比来理解它们：</p>
+
+<ol>
+  <li><strong>有穷性</strong>：算法必须在执行有限步之后结束。就像菜谱不能要求你无限搅拌直到宇宙尽头，它必须给出明确的停止条件。</li>
+  <li><strong>确定性</strong>：算法的每一步都必须有确切的定义，没有歧义。例如，加少许盐是不确定的，而加 5 克盐是确定的。</li>
+  <li><strong>可行性</strong>：算法中的每一个操作都必须是基本的、可以执行的。你不能在菜谱里写用意念把鸡蛋打散。</li>
+  <li><strong>输入</strong>：一个算法有零个或多个输入。这些输入是算法处理的对象，就像菜谱需要的食材。</li>
+  <li><strong>输出</strong>：一个算法有一个或多个输出。输出是与输入有特定关系的量，是算法执行的结果，就像最终做好的菜肴。</li>
+</ol>
+
+<h2 id="如何描述算法">如何描述算法？</h2>
+
+<h3 id="1-自然语言描述">1. 自然语言描述</h3>
+
+<h3 id="2-流程图">2. 流程图</h3>
+
+<h3 id="3-伪代码">3. 伪代码</h3>
+
+<h3 id="4-编程语言实现">4. 编程语言实现</h3>
+
+<h2 id="算法分析如何评价算法的好坏">算法分析：如何评价算法的好坏？</h2>
+
+<p>设计出能解决问题的算法只是第一步，我们还需要判断哪个算法更好。通常我们从两个维度来评估：</p>
+
+<h3 id="1-时间复杂度">1. 时间复杂度</h3>
+
+<p>它衡量的是<strong>算法运行所需的时间</strong>如何随着<strong>输入数据规模（n）</strong> 的增长而增长。我们关注的不是具体的秒数，而是增长的趋势（称为 <strong>渐进时间复杂度</strong>）。</p>
+
+<p><strong>常见时间复杂度对比：</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">复杂度</th>
+      <th style="text-align: left">名称</th>
+      <th style="text-align: left">举例（n=数据量）</th>
+      <th style="text-align: left">形象比喻</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">O(1)</td>
+      <td style="text-align: left">常数阶</td>
+      <td style="text-align: left">数组按索引取值</td>
+      <td style="text-align: left"><strong>“开灯”</strong>。无论房间多大，按开关的时间都一样。</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">O(log n)</td>
+      <td style="text-align: left">对数阶</td>
+      <td style="text-align: left">二分查找</td>
+      <td style="text-align: left"><strong>“翻字典”</strong>。每次排除一半，查找速度极快。</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">O(n)</td>
+      <td style="text-align: left">线性阶</td>
+      <td style="text-align: left">遍历数组</td>
+      <td style="text-align: left"><strong>“数人数”</strong>。一个人一个人地数，时间与总人数成正比。</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">O(n log n)</td>
+      <td style="text-align: left">线性对数阶</td>
+      <td style="text-align: left">快速排序、归并排序</td>
+      <td style="text-align: left"><strong>“先分后治的排序”</strong>。比 O(n²) 快很多。</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">O(n²)</td>
+      <td style="text-align: left">平方阶</td>
+      <td style="text-align: left">简单选择排序、冒泡排序</td>
+      <td style="text-align: left"><strong>“两两握手”</strong>。每个人都要和其他所有人握手一次。</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">O(2ⁿ)</td>
+      <td style="text-align: left">指数阶</td>
+      <td style="text-align: left">求解汉诺塔、暴力穷举</td>
+      <td style="text-align: left"><strong>“细胞分裂”</strong>。增长非常恐怖，稍大的 n 就无法承受。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>如何分析？</strong> 关注循环和递归。</p>
+
+<ul>
+  <li>单层循环：通常是 O(n)。</li>
+  <li>嵌套循环：通常是 O(n²)（如果两层都与 n 相关）。</li>
+  <li>二分策略：通常是 O(log n)。</li>
+</ul>
+
+<h3 id="2-空间复杂度">2. 空间复杂度</h3>
+
+<p>它衡量的是<strong>算法运行所需的内存空间</strong>如何随着<strong>输入数据规模（n）</strong> 的增长而增长。除了存储输入数据本身，还要考虑算法运行过程中额外申请的数组、变量等。</p>
+
+<h2 id="线性数据结构">线性数据结构</h2>
+
+<p><strong>线性数据结构</strong>就像是一排排队的人：</p>
+
+<ul>
+  <li>每个人（元素）都有明确的前后关系</li>
+  <li>除了第一个和最后一个，每个人都有一个前驱和一个后继</li>
+  <li>数据元素之间是一对一的线性关系</li>
+</ul>
+
+<p><strong>常见线性数据结构：</strong></p>
+
+<ol>
+  <li><strong>数组</strong>：像是一排编号的储物柜，每个柜子有固定位置</li>
+  <li><strong>链表</strong>：像是一串手拉手的人，每个人只记住前后的人</li>
+  <li><strong>栈</strong>：像是一叠盘子，只能从顶部取放</li>
+  <li><strong>队列</strong>：像是排队买票，先来先服务</li>
+</ol>
+
+<p>下图展示了线性数据结构的分类体系，每种结构都有其特定的应用场景和性能特点：</p>
+
+<pre><code class="language-mermaid">graph TD
+    %% 核心节点
+    Root(线性数据结构)
+    
+    %% 第一层分类
+    Array(数组)
+    List(链表)
+    Stack(栈)
+    Queue(队列)
+
+    %% 第二层分类 - 数组
+    SArray(静态数组)
+    DArray(动态数组)
+
+    %% 第二层分类 - 链表
+    SList(单向链表)
+    DList(双向链表)
+    CList(循环链表)
+
+    %% 第二层分类 - 队列
+    NQueue(普通队列)
+    CQueue(循环队列)
+    Deque(双端队列)
+
+    %% 建立连接
+    Root --&gt; Array
+    Root --&gt; List
+    Root --&gt; Stack
+    Root --&gt; Queue
+
+    Array --&gt; SArray
+    Array --&gt; DArray
+
+    List --&gt; SList
+    List --&gt; DList
+    List --&gt; CList
+
+    Queue --&gt; NQueue
+    Queue --&gt; CQueue
+    Queue --&gt; Deque
+
+    %% 样式美化
+    style Root fill:#E6E6FA,stroke:#9370DB,stroke-width:2px
+    style Array fill:#E6E6FA,stroke:#9370DB
+    style List fill:#E6E6FA,stroke:#9370DB
+    style Stack fill:#E6E6FA,stroke:#9370DB
+    style Queue fill:#E6E6FA,stroke:#9370DB
+</code></pre>
+
+<p>下图展示了栈的基本操作过程，栈遵循LIFO（后进先出 Last-In, First-Out）原则：</p>
+
+<pre><code class="language-mermaid">graph LR
+    %% 定义节点
+    Start("初始栈: []")
+    Push1("push(1): [1]")
+    Push2("push(2): [1, 2]")
+    Push3("push(3): [1, 2, 3]")
+    Peek("peek(): 3 (栈不变)")
+    Pop1("pop(): [1, 2]")
+    Pop2("pop(): [1]")
+    End("pop(): []")
+
+    %% 连接节点
+    Start --&gt; Push1 --&gt; Push2 --&gt; Push3 --&gt; Peek --&gt; Pop1 --&gt; Pop2 --&gt; End
+
+    %% 颜色美化
+    style Start fill:#E0F7FA,stroke:#81D4FA
+    style Push1 fill:#EDE7F6,stroke:#B39DDB
+    style Push2 fill:#EDE7F6,stroke:#B39DDB
+    style Push3 fill:#EDE7F6,stroke:#B39DDB
+    style Peek fill:#EDE7F6,stroke:#B39DDB
+    style Pop1 fill:#EDE7F6,stroke:#B39DDB
+    style Pop2 fill:#EDE7F6,stroke:#B39DDB
+    style End fill:#FFEBEE,stroke:#EF9A9A
+</code></pre>
+
+<h3 id="数组array">数组（Array）</h3>
+
+<h4 id="基本概念与特点">基本概念与特点</h4>
+
+<ul>
+  <li><strong>连续存储</strong>：数组在内存中占据一块 <strong>连续</strong> 的空间，就像公寓楼里房间是紧挨着的。</li>
+  <li><strong>固定大小</strong>：数组在创建时就需要确定其容量（长度），之后通常不能改变，就像公寓楼盖好后房间数就固定了。</li>
+  <li><strong>索引访问</strong>：每个元素（房间）都有一个唯一的编号，称为 <strong>索引</strong>。在大多数编程语言中，索引从 <code class="language-plaintext highlighter-rouge">0</code> 开始。你可以通过索引直接、快速地访问任何一个元素，时间复杂度为 <code class="language-plaintext highlighter-rouge">O(1)</code>。</li>
+</ul>
+
+<h4 id="优点与缺点">优点与缺点</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">优点</th>
+      <th style="text-align: left">缺点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>高速随机访问</strong>：通过索引可在常数时间内访问任何元素。</td>
+      <td style="text-align: left"><strong>大小固定</strong>：静态数组一旦创建，容量难以改变。</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>内存效率高</strong>：连续存储，无需额外空间存储元素间关系。</td>
+      <td style="text-align: left"><strong>插入/删除成本高</strong>：在中间插入或删除元素，需要移动大量后续元素以保持连续性。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="静态数组">静态数组</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">特性</th>
+      <th style="text-align: left">描述</th>
+      <th style="text-align: left">时间复杂度</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">访问元素</td>
+      <td style="text-align: left">通过索引直接访问</td>
+      <td style="text-align: left">O(1)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">插入元素</td>
+      <td style="text-align: left">需要移动后续元素</td>
+      <td style="text-align: left">O(n)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">删除元素</td>
+      <td style="text-align: left">需要移动后续元素</td>
+      <td style="text-align: left">O(n)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">空间分配</td>
+      <td style="text-align: left">固定大小，预先分配</td>
+      <td style="text-align: left">O(1)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="动态数组">动态数组</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">特性</th>
+      <th style="text-align: left">描述</th>
+      <th style="text-align: left">时间复杂度</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">访问元素</td>
+      <td style="text-align: left">通过索引直接访问</td>
+      <td style="text-align: left">O(1)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">插入元素</td>
+      <td style="text-align: left">可能需要扩容和复制</td>
+      <td style="text-align: left">平均O(1)，最坏O(n)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">删除元素</td>
+      <td style="text-align: left">需要移动后续元素</td>
+      <td style="text-align: left">O(n)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">空间分配</td>
+      <td style="text-align: left">自动扩容</td>
+      <td style="text-align: left">O(n)（扩容时）</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h3 id="链表linked-list">链表（Linked List）</h3>
+
+<h4 id="基本概念与类型">基本概念与类型</h4>
+
+<p>链表的每个 <strong>节点</strong> 至少包含两部分：</p>
+
+<ol>
+  <li><strong>数据域</strong>：存储实际的数据值。</li>
+  <li><strong>指针域</strong>：存储下一个节点在内存中的地址。</li>
+</ol>
+
+<pre><code class="language-mermaid">graph LR
+       subgraph NodeA ["头指针"]
+            A_Data["HEAD"]
+       end
+       subgraph NodeB ["节点A"]
+            B_Data["Data: 10"]
+            B_Next["Next: --&gt;"]
+       end
+       subgraph NodeC ["节点B"]
+            C_Data["Data: 20"]
+            C_Next["Next: --&gt;"]
+       end
+       subgraph NodeD ["节点C"]
+            D_Data["Data: 30"]
+            D_Next["Next: NULL"]
+       end
+       A_Data--&gt;B_Data
+       B_Next--&gt;C_Data
+       C_Next--&gt;D_Data
+</code></pre>
+
+<h4 id="链表主要类型">链表主要类型：</h4>
+
+<ul>
+  <li><strong>单向链表</strong>：节点只指向下一个节点。</li>
+  <li><strong>双向链表</strong>：节点同时指向前一个和后一个节点，可以双向遍历。</li>
+  <li><strong>循环链表</strong>：尾节点指向头节点，形成一个环。</li>
+</ul>
+
+<h4 id="优点与缺点-1">优点与缺点</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">优点</th>
+      <th style="text-align: left">缺点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>动态大小</strong>：无需预先分配固定空间，可以灵活地增长和缩小。</td>
+      <td style="text-align: left"><strong>内存开销</strong>：每个节点都需要额外空间存储指针。</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>高效插入/删除</strong>：在已知节点位置时，只需修改指针，无需移动大量元素。</td>
+      <td style="text-align: left"><strong>顺序访问</strong>：无法像数组一样通过索引直接访问，必须从头开始遍历。</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left"><strong>缓存不友好</strong>：节点在内存中分散存储，不利于CPU缓存预取。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="单向链表">单向链表</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">操作</th>
+      <th style="text-align: left">描述</th>
+      <th style="text-align: left">时间复杂度</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">访问元素</td>
+      <td style="text-align: left">需要从头遍历</td>
+      <td style="text-align: left">O(n)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">头部插入</td>
+      <td style="text-align: left">直接插入</td>
+      <td style="text-align: left">O(1)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">尾部插入</td>
+      <td style="text-align: left">需要遍历到尾部</td>
+      <td style="text-align: left">O(n)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">中间插入</td>
+      <td style="text-align: left">需要先找到位置</td>
+      <td style="text-align: left">O(n)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">删除元素</td>
+      <td style="text-align: left">需要先找到位置</td>
+      <td style="text-align: left">O(n)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="双向链表">双向链表</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">操作</th>
+      <th style="text-align: left">描述</th>
+      <th style="text-align: left">时间复杂度</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">访问元素</td>
+      <td style="text-align: left">需要从头或尾遍历</td>
+      <td style="text-align: left">O(n)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">头部插入</td>
+      <td style="text-align: left">直接插入</td>
+      <td style="text-align: left">O(1)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">尾部插入</td>
+      <td style="text-align: left">直接插入（如果有尾指针）</td>
+      <td style="text-align: left">O(1)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">中间插入</td>
+      <td style="text-align: left">需要先找到位置</td>
+      <td style="text-align: left">O(n)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">删除元素</td>
+      <td style="text-align: left">需要先找到位置</td>
+      <td style="text-align: left">O(n)</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h3 id="栈stack">栈（Stack）</h3>
+
+<h4 id="基本概念与操作后进先出">基本概念与操作（后进先出）</h4>
+
+<p>栈只允许在一端（称为 <strong>栈顶</strong>）进行插入（<strong>入栈</strong>）和删除（<strong>出栈</strong>）操作。另一端称为 <strong>栈底</strong>。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">操作</th>
+      <th style="text-align: left">描述</th>
+      <th style="text-align: left">时间复杂度</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">push(入栈)</td>
+      <td style="text-align: left">在栈顶添加元素</td>
+      <td style="text-align: left">O(1)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">pop(出栈)</td>
+      <td style="text-align: left">移除栈顶元素</td>
+      <td style="text-align: left">O(1)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">peek(查看)</td>
+      <td style="text-align: left">查看栈顶元素</td>
+      <td style="text-align: left">O(1)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">isEmpty(判空)</td>
+      <td style="text-align: left">检查栈是否为空</td>
+      <td style="text-align: left">O(1)</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h3 id="队列queue">队列（Queue）</h3>
+
+<h4 id="基本概念与操作先进先出">基本概念与操作（先进先出）</h4>
+
+<p>队列允许在一端（称为 <strong>队尾</strong>）进行插入（<strong>入队</strong>）操作，在另一端（称为 <strong>队头</strong>）进行删除（<strong>出队</strong>）操作。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">操作</th>
+      <th style="text-align: left">描述</th>
+      <th style="text-align: left">时间复杂度</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">enqueue(入队)</td>
+      <td style="text-align: left">在队尾添加元素</td>
+      <td style="text-align: left">O(1)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">dequeue(出队)</td>
+      <td style="text-align: left">移除队头元素</td>
+      <td style="text-align: left">O(1)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">front(查看队头)</td>
+      <td style="text-align: left">查看队头元素</td>
+      <td style="text-align: left">O(1)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">isEmpty(判空)</td>
+      <td style="text-align: left">检查队列是否为空</td>
+      <td style="text-align: left">O(1)</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="总结与对比">总结与对比</h2>
+
+<p>我们已经学习了四种基础的线性数据结构。下面这个表格帮助你快速回顾和对比它们的核心特性：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">特性</th>
+      <th style="text-align: left">数组</th>
+      <th style="text-align: left">链表</th>
+      <th style="text-align: left">栈</th>
+      <th style="text-align: left">队列</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>存储方式</strong></td>
+      <td style="text-align: left">连续内存</td>
+      <td style="text-align: left">分散内存，通过指针连接</td>
+      <td style="text-align: left">基于数组或链表实现</td>
+      <td style="text-align: left">基于数组或链表实现</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>访问方式</strong></td>
+      <td style="text-align: left">随机访问（通过索引）</td>
+      <td style="text-align: left">顺序访问（必须遍历）</td>
+      <td style="text-align: left">仅限栈顶（LIFO）</td>
+      <td style="text-align: left">仅限队头（FIFO）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>插入/删除效率</strong></td>
+      <td style="text-align: left">尾部快，中间/头部慢（需移动元素）</td>
+      <td style="text-align: left">已知位置时快（只需改指针）</td>
+      <td style="text-align: left">栈顶操作，O(1)</td>
+      <td style="text-align: left">队尾入队，队头出队，O(1)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>大小</strong></td>
+      <td style="text-align: left">固定（静态数组）</td>
+      <td style="text-align: left">动态</td>
+      <td style="text-align: left">动态</td>
+      <td style="text-align: left">动态</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>主要应用</strong></td>
+      <td style="text-align: left">快速查找、固定集合</td>
+      <td style="text-align: left">频繁插入删除、不确定大小</td>
+      <td style="text-align: left">函数调用、回溯、括号匹配</td>
+      <td style="text-align: left">任务调度、缓冲、BFS</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="如何选择">如何选择？</h3>
+
+<ul>
+  <li>需要 <strong>快速随机访问</strong> 和已知数据量时，选择 <strong>数组</strong>。</li>
+  <li>需要 <strong>频繁在任意位置插入或删除</strong> 元素，且数据量变化大时，选择 <strong>链表</strong>。</li>
+  <li>需要实现 <strong>“撤销”</strong> 功能或 <strong>反向处理</strong> 顺序时，考虑 <strong>栈</strong>。</li>
+  <li>需要按 <strong>“先来后到”</strong> 的顺序处理任务时，使用 <strong>队列</strong>。</li>
+</ul>
+
+<h2 id="哈希表">哈希表</h2>
+
+<p>哈希表（Hash Table），也叫散列表，是一种极其高效的数据结构。</p>
+
+<p>哈希表能在平均情况下，以接近 <code class="language-plaintext highlighter-rouge">O(1)</code> 的时间复杂度进行数据的插入、删除和查找，这比数组的遍历（<code class="language-plaintext highlighter-rouge">O(n)</code>）和二叉搜索树的搜索（<code class="language-plaintext highlighter-rouge">O(log n)</code>）要快得多。</p>
+
+<h3 id="核心组件">核心组件</h3>
+
+<p>一个哈希表主要由以下三个核心部分组成：</p>
+
+<ol>
+  <li><strong>键（Key）</strong>： 你要存储和查找数据时使用的标识符。比如，在电话簿中，人名就是键。</li>
+  <li><strong>值（Value）</strong>： 与键相关联的实际数据。在电话簿中，电话号码就是值。</li>
+  <li><strong>哈希函数（Hash Function）</strong>： 将键映射到数组索引的数学函数。它是哈希表的心脏。</li>
+</ol>
+
+<h3 id="哈希函数设计">哈希函数设计</h3>
+
+<h4 id="好的哈希函数特性">好的哈希函数特性</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">特性</th>
+      <th style="text-align: left">描述</th>
+      <th style="text-align: left">重要性</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>确定性</strong></td>
+      <td style="text-align: left">相同输入总是产生相同输出</td>
+      <td style="text-align: left">⭐⭐⭐⭐⭐</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>均匀分布</strong></td>
+      <td style="text-align: left">输出均匀分布在哈希表范围内</td>
+      <td style="text-align: left">⭐⭐⭐⭐⭐</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>高效计算</strong></td>
+      <td style="text-align: left">计算过程简单快速</td>
+      <td style="text-align: left">⭐⭐⭐⭐</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>雪崩效应</strong></td>
+      <td style="text-align: left">输入微小变化导致输出巨大变化</td>
+      <td style="text-align: left">⭐⭐⭐</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="常见哈希函数">常见哈希函数</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">类型</th>
+      <th style="text-align: left">示例</th>
+      <th style="text-align: left">适用场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>除法取余法</strong></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">hash = key % table_size</code></td>
+      <td style="text-align: left">整数键</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>乘法取整法</strong></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">hash = floor(key * A % 1 * table_size)</code></td>
+      <td style="text-align: left">浮点数键</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>数字分析法</strong></td>
+      <td style="text-align: left">分析数字的分布规律</td>
+      <td style="text-align: left">特定模式数据</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>平方取中法</strong></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">hash = (key * key) // 10^(n/2) % table_size</code></td>
+      <td style="text-align: left">数字键</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>字符串哈希</strong></td>
+      <td style="text-align: left">逐字符处理</td>
+      <td style="text-align: left">字符串键</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="冲突解决方法哈希碰撞">冲突解决方法(哈希碰撞)</h3>
+
+<h4 id="链地址法separate-chaining">链地址法（Separate Chaining）</h4>
+
+<p><strong>原理</strong>：就像在储物柜的同一个格子（桶）里挂了一个文件夹（链表），所有冲突的元素都存在这个文件夹里。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">特性</th>
+      <th style="text-align: left">描述</th>
+      <th style="text-align: left">时间复杂度</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>原理</strong></td>
+      <td style="text-align: left">每个哈希桶维护一个链表</td>
+      <td style="text-align: left"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>插入</strong></td>
+      <td style="text-align: left">在对应链表头部添加</td>
+      <td style="text-align: left">O(1)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>查找</strong></td>
+      <td style="text-align: left">在对应链表中搜索</td>
+      <td style="text-align: left">O(k)，k为链表长度</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>删除</strong></td>
+      <td style="text-align: left">在对应链表中删除</td>
+      <td style="text-align: left">O(k)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>空间开销</strong></td>
+      <td style="text-align: left">需要额外指针存储</td>
+      <td style="text-align: left">较大</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="开放定址法open-addressing">开放定址法（Open Addressing）</h4>
+
+<p><strong>原理</strong>：如果这个位置被人占了，就按某种规则找下一个空位。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">类型</th>
+      <th style="text-align: left">探测序列</th>
+      <th style="text-align: left">优点</th>
+      <th style="text-align: left">缺点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>线性探测</strong></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">h, h+1, h+2, ...</code></td>
+      <td style="text-align: left">简单易实现</td>
+      <td style="text-align: left">容易聚集</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>二次探测</strong></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">h, h+1², h+2², ...</code></td>
+      <td style="text-align: left">减少聚集</td>
+      <td style="text-align: left">可能无法探测所有位置</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>双重哈希</strong></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">h, h+hash2(key), h+2*hash2(key), ...</code></td>
+      <td style="text-align: left">分布均匀</td>
+      <td style="text-align: left">计算复杂</td>
+    </tr>
+  </tbody>
+</table>
+
+<pre><code class="language-mermaid">graph TD
+    %% 全局样式定义
+    classDef blueBox fill:#e1f5fe,stroke:#01579b,stroke-width:1px;
+    classDef greenBox fill:#dcedc8,stroke:#33691e,stroke-width:1px;
+    classDef pinkBox fill:#f3e5f5,stroke:#4a148c,stroke-width:1px;
+
+    %% 流程核心部分
+    Start["键值对"]:::blueBox --&gt; HashFunc["哈希函数"]:::greenBox
+    HashFunc --&gt; Index["数组索引"]:::greenBox
+    Index --&gt; HashBucket["哈希桶"]:::pinkBox
+
+    %% 桶的分支
+    HashBucket --&gt; B0["桶0: 链表1"]:::greenBox
+    HashBucket --&gt; B1["桶1: 链表2"]:::greenBox
+    HashBucket --&gt; B2["桶2: 链表3"]:::greenBox
+    HashBucket --&gt; B3["桶3: 链表4"]:::greenBox
+
+    %% 桶0的节点
+    B0 --&gt; Node1["节点1: key1 -&gt; value1"]:::greenBox
+    B0 --&gt; Node2["节点2: key2 -&gt; value2"]:::greenBox
+
+    %% 桶1的节点
+    B1 --&gt; Node3["节点3: key3 -&gt; value3"]:::greenBox
+
+    %% 桶2的节点
+    B2 --&gt; Node4["节点4: key4 -&gt; value4"]:::greenBox
+    B2 --&gt; Node5["节点5: key5 -&gt; value5"]:::greenBox
+    B2 --&gt; Node6["节点6: key6 -&gt; value6"]:::greenBox
+
+    %% 桶3的节点
+    B3 --&gt; Node7["节点7: key7 -&gt; value7"]:::greenBox
+</code></pre>
+
+<h3 id="两种方法的对比">两种方法的对比</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">特性</th>
+      <th style="text-align: left">链地址法</th>
+      <th style="text-align: left">开放地址法</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>实现难度</strong></td>
+      <td style="text-align: left">相对简单</td>
+      <td style="text-align: left">相对复杂，尤其是删除操作</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>空间开销</strong></td>
+      <td style="text-align: left">需要额外空间存储指针（链表）</td>
+      <td style="text-align: left">所有数据都在数组中，空间利用率可能更高</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>冲突影响</strong></td>
+      <td style="text-align: left">冲突只影响同一个桶（链表）的性能</td>
+      <td style="text-align: left">冲突会影响后续插入的位置，可能导致”聚集”现象</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>扩容时机</strong></td>
+      <td style="text-align: left">当平均链表长度超过阈值时扩容</td>
+      <td style="text-align: left">当负载因子（元素数/数组大小）超过阈值时扩容</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>适用场景</strong></td>
+      <td style="text-align: left">通用，更常见</td>
+      <td style="text-align: left">对缓存友好，适用于已知最大数据量或内存紧张的场景</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="哈希表的性能与负载因子">哈希表的性能与负载因子</h3>
+
+<p>哈希表的效率高度依赖于一个关键指标：<strong>负载因子</strong>。</p>
+
+<p><strong>负载因子 = 哈希表中已存储的元素数量 / 哈希表数组的总大小</strong></p>
+
+<ul>
+  <li><strong>负载因子低</strong>（如 0.5）： 意味着数组还有很多空位，冲突概率小，操作速度快。</li>
+  <li><strong>负载因子高</strong>（如 0.9）： 意味着数组快满了，冲突概率急剧增加，链表变长或探测距离变长，性能下降。</li>
+</ul>
+
+<p>为了保持高性能，当负载因子超过某个阈值（例如 0.75）时，哈希表会进行<strong>扩容</strong>操作：</p>
+
+<ol>
+  <li>创建一个新的、更大的数组（通常是原大小的两倍）。</li>
+  <li>遍历旧哈希表中的所有键值对。</li>
+  <li>根据新的数组大小，用哈希函数重新计算每个键的索引，并将其插入到新数组中。</li>
+</ol>
+
+<p>这个过程称为 <strong>Rehashing</strong>，虽然耗时，但能显著降低负载因子，使哈希表恢复高效。</p>
+
+<h2 id="树形结构">树形结构</h2>
+
+<p>树（Tree）是一种<strong>非线性</strong>的数据结构，它模拟了自然界中树的分支层次，与数组、链表这种一个接一个的线性结构不同，树中的数据元素（称为<strong>节点</strong>）之间存在明确的一对多的层次关系。</p>
+
+<pre><code class="language-mermaid">graph TD
+    %% 定义节点基础样式
+    classDef genericNode fill:#C5E1A5,stroke:#33691E,stroke-width:1.5px;
+    
+    %% 定义节点
+    Root["根节点"]:::genericNode
+    Child1["子节点"]:::genericNode
+    Child2["子节点"]:::genericNode
+    Leaf1["叶子节点"]:::genericNode
+    Leaf2["叶子节点"]:::genericNode
+    Leaf3["叶子节点"]:::genericNode
+
+    %% 简单的层级连接
+    Root --&gt; Child1
+    Root --&gt; Child2
+    Child1 --&gt; Leaf1
+    Child1 --&gt; Leaf2
+    Child2 --&gt; Leaf3
+</code></pre>
+
+<ul>
+  <li><strong>节点（Node）</strong>：树中的每一个元素。它包含存储的数据和指向其子节点的链接。</li>
+  <li><strong>根节点（Root）</strong>：位于树顶端的节点，是整棵树的起点。一棵树有且仅有一个根节点。</li>
+  <li><strong>父节点与子节点（Parent &amp; Child）</strong>：如果一个节点 A 连接到下方的节点 B，那么 A 是 B 的<strong>父节点</strong>，B 是 A 的<strong>子节点</strong>。一个父节点可以有多个子节点。</li>
+  <li><strong>兄弟节点（Siblings）</strong>：拥有同一个父节点的节点们互为兄弟节点。</li>
+  <li><strong>叶子节点（Leaf）</strong>：没有子节点的节点，也称为终端节点。</li>
+  <li><strong>边（Edge）</strong>：连接两个节点的线，表示它们之间的关系。</li>
+  <li><strong>路径（Path）</strong>：从根节点到某个特定节点所经过的节点序列。</li>
+  <li><strong>高度（Height）</strong>：从某个节点到其最远叶子节点的最长路径上的<strong>边数</strong>。树的高度即根节点的高度。</li>
+  <li><strong>深度（Depth）</strong>：从根节点到某个节点的路径上的<strong>边数</strong>。根节点的深度为 0。</li>
+  <li><strong>层（Level）</strong>：深度相同的所有节点属于同一层。根节点在第 0 层。</li>
+</ul>
+
+<h3 id="树的基本性质">树的基本性质</h3>
+
+<ol>
+  <li><strong>唯一路径</strong>：树中任意两个节点之间有且仅有一条路径。</li>
+  <li><strong>N 个节点，N-1 条边</strong>：一棵具有 N 个节点的树，总共有 N-1 条边。</li>
+  <li><strong>无环</strong>：树中不存在环（即从某个节点出发，沿着边最终又能回到该节点）。</li>
+</ol>
+
+<h3 id="为什么需要树-树的优势与应用">为什么需要树？—— 树的优势与应用</h3>
+
+<p>你可能会问，有了数组和链表，为什么还需要树？答案在于效率。</p>
+
+<ul>
+  <li><strong>数组</strong>：查找快（通过索引），但插入和删除慢（需要移动大量元素）。</li>
+  <li><strong>链表</strong>：插入和删除快，但查找慢（需要从头遍历）。</li>
+  <li><strong>树（特别是二叉搜索树）</strong>：在保持数据有序的同时，能提供比链表快得多的搜索速度，以及比数组更高效的插入/删除操作。</li>
+</ul>
+
+<h3 id="二叉树树家族中最重要的一员">二叉树：树家族中最重要的一员</h3>
+
+<p>二叉树（Binary Tree）是每个节点最多有两个子节点的树，这两个子节点通常被称为<strong>左子节点</strong>和<strong>右子节点</strong>，它是许多强大树结构（如二叉搜索树、堆、AVL 树）的基础。</p>
+
+<p>基本结构如下：</p>
+
+<pre><code class="language-mermaid">graph TD
+    %% 样式定义
+    classDef rootNode fill:#FFCDD2,stroke:#B71C1C,stroke-width:1px;
+    classDef branch fill:#C5E1A5,stroke:#33691E,stroke-width:1px;
+    classDef leaf fill:#C8E6C9,stroke:#2E7D32,stroke-width:1px;
+
+    %% 节点定义（使用双引号确保包含冒号和空格时不报错）
+    R["根节点: 50"]:::rootNode
+    L1["左子: 30"]:::branch
+    R1["右子: 70"]:::branch
+    L2L["左左: 20"]:::branch
+    L2R["左右: 40"]:::leaf
+    R2L["右左: 60"]:::leaf
+    R2R["右右: 80"]:::leaf
+    Leaf1["叶节点: 10"]:::leaf
+    Leaf2["叶节点: 25"]:::leaf
+
+    %% 连接关系
+    R --&gt; L1
+    R --&gt; R1
+    L1 --&gt; L2L
+    L1 --&gt; L2R
+    R1 --&gt; R2L
+    R1 --&gt; R2R
+    L2L --&gt; Leaf1
+    L2L --&gt; Leaf2
+</code></pre>
+
+<h3 id="二叉树类型">二叉树类型</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">类型</th>
+      <th style="text-align: left">特点</th>
+      <th style="text-align: left">时间复杂度</th>
+      <th style="text-align: left">应用场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>普通二叉树</strong></td>
+      <td style="text-align: left">每个节点最多2个子节点</td>
+      <td style="text-align: left">O(n)</td>
+      <td style="text-align: left">表达式树</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>满二叉树</strong></td>
+      <td style="text-align: left">每个节点都有0或2个子节点</td>
+      <td style="text-align: left">O(n)</td>
+      <td style="text-align: left">霍夫曼编码</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>完全二叉树</strong></td>
+      <td style="text-align: left">除最后一层外都是满的</td>
+      <td style="text-align: left">O(n)</td>
+      <td style="text-align: left">堆实现</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>二叉搜索树</strong></td>
+      <td style="text-align: left">左&lt;根&lt;右</td>
+      <td style="text-align: left">平均O(log n)</td>
+      <td style="text-align: left">搜索、排序</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>平衡二叉树</strong></td>
+      <td style="text-align: left">左右子树高度差≤1</td>
+      <td style="text-align: left">O(log n)</td>
+      <td style="text-align: left">数据库索引</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>红黑树</strong></td>
+      <td style="text-align: left">带颜色的平衡树</td>
+      <td style="text-align: left">O(log n)</td>
+      <td style="text-align: left">Linux内核</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="二叉树的遍历">二叉树的遍历</h3>
+
+<p>遍历是指按照某种规则访问树中的每一个节点，且每个节点只访问一次。这是树相关算法的基础。主要有四种方式：</p>
+
+<ol>
+  <li><strong>前序遍历（Pre-order）</strong>：<strong>根 -&gt; 左 -&gt; 右</strong>
+    <ul>
+      <li>先访问根节点，然后递归地前序遍历左子树，最后递归地前序遍历右子树。</li>
+      <li><strong>应用</strong>：复制一棵树、获取前缀表达式。</li>
+    </ul>
+  </li>
+  <li><strong>中序遍历（In-order）</strong>：<strong>左 -&gt; 根 -&gt; 右</strong>
+    <ul>
+      <li>先递归地中序遍历左子树，然后访问根节点，最后递归地中序遍历右子树。</li>
+      <li><strong>应用</strong>：在<strong>二叉搜索树</strong>中，中序遍历会以<strong>升序</strong>输出所有值。</li>
+    </ul>
+  </li>
+  <li><strong>后序遍历（Post-order）</strong>：<strong>左 -&gt; 右 -&gt; 根</strong>
+    <ul>
+      <li>先递归地后序遍历左子树，然后递归地后序遍历右子树，最后访问根节点。</li>
+      <li><strong>应用</strong>：删除一棵树、计算目录大小。</li>
+    </ul>
+  </li>
+  <li><strong>层序遍历（Level-order）</strong>：<strong>按层，从左到右</strong>
+    <ul>
+      <li>从根节点开始，一层一层地访问节点。</li>
+      <li><strong>应用</strong>：按层级处理数据（如打印组织结构图）。<strong>通常使用队列（Queue）辅助实现</strong>。</li>
+    </ul>
+  </li>
+</ol>
+
+<pre><code class="language-mermaid">graph TD
+    %% 样式定义
+    classDef greenBox fill:#C5E1A5,stroke:#33691E,stroke-width:1px;
+    classDef blueBox fill:#E1F5FE,stroke:#01579B,stroke-width:1px;
+
+    %% 根节点
+    Root["树的遍历"]:::greenBox
+
+    %% 第一层：遍历策略
+    Root --&gt; DFS["深度优先遍历"]:::greenBox
+    Root --&gt; BFS["广度优先遍历"]:::greenBox
+
+    %% 第二层：具体方法
+    DFS --&gt; PreOrder["前序遍历"]:::blueBox
+    DFS --&gt; InOrder["中序遍历"]:::blueBox
+    DFS --&gt; PostOrder["后序遍历"]:::blueBox
+    BFS --&gt; LevelOrder["层序遍历"]:::blueBox
+
+    %% 第三层：具体逻辑
+    PreOrder --&gt; L_Pre["根 → 左 → 右"]:::greenBox
+    InOrder --&gt; L_In["左 → 根 → 右"]:::greenBox
+    PostOrder --&gt; L_Post["左 → 右 → 根"]:::greenBox
+    LevelOrder --&gt; L_Level["逐层从左到右"]:::greenBox									
+</code></pre>
+
+<p><strong>示例</strong>：对于下图二叉树，遍历结果如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        1
+       / \
+      2   3
+     / \   \
+    4   5   6
+</code></pre></div></div>
+
+<ul>
+  <li><strong>前序</strong>：1, 2, 4, 5, 3, 6</li>
+  <li><strong>中序</strong>：4, 2, 5, 1, 3, 6</li>
+  <li><strong>后序</strong>：4, 5, 2, 6, 3, 1</li>
+  <li><strong>层序</strong>：1, 2, 3, 4, 5, 6</li>
+</ul>
+
+<p><img src="/Blog/post-image/image-20260505015847845.png" alt="img" /></p>
+
+<h3 id="二分搜索树">二分搜索树</h3>
+
+<h4 id="一概念及其介绍">一、概念及其介绍</h4>
+
+<p>二分搜索树（英语：Binary Search Tree），也称为 二叉查找树 、二叉搜索树 、有序二叉树或排序二叉树。满足以下几个条件：</p>
+
+<ul>
+  <li>若它的左子树不为空，左子树上所有节点的值都小于它的根节点。</li>
+  <li>若它的右子树不为空，右子树上所有的节点的值都大于它的根节点。</li>
+</ul>
+
+<pre><code class="language-mermaid">graph TD
+    33((33))
+    28((28))
+    40((40))
+    19((19))
+    31((31))
+    35((35))
+    45((45))
+
+    33 --- 28
+    33 --- 40
+    28 --- 19
+    28 --- 31
+    40 --- 35
+    40 --- 45
+
+    style 33 fill:#f9f,stroke:#333,stroke-width:2px
+</code></pre>
+
+<h4 id="二适用说明">二、适用说明</h4>
+
+<p>二分搜索树有着高效的插入、删除、查询操作。</p>
+
+<p>平均时间的时间复杂度为 <strong>O(log n)</strong>，最差情况为 <strong>O(n)</strong>。二分搜索树与堆不同，不一定是完全二叉树，底层不容易直接用数组表示故采用链表来实现二分搜索树。</p>
+
+<h3 id="哈夫曼树">哈夫曼树</h3>
+
+<hr />
+
+<h4 id="香农范诺编码">香农范诺编码</h4>
+
+<p>找到最佳分割点(接近每组概率平均)，递归分割直至每个符号每组唯一</p>
+
+<p><img src="/Blog/post-image/image-20260505015857452.png" alt="img" /></p>
+
+<p><img src="/Blog/post-image/image-20260505015912819.png" alt="img" /></p>
+
+<p><strong>最小概率的编码最长，最大概率的编码最短</strong></p>
+
+<p>香农范诺编码是按照概率之和从中间分割，这个过程并不能保证每次分割都是最优，这个选择可能并不是全局最优解</p>
+
+<p>哈夫曼编码能够保证最优解的原因，是其构建编码数的贪婪算法确保了最佳编码数是最优解的</p>
+
+<h4 id="哈夫曼编码">哈夫曼编码</h4>
+
+<p>排序符号概率，选择两个最低概率的符号组成两个节点，并将概率之和加入到未编码符号概率排序中，递归调用</p>
+
+<p><img src="/Blog/post-image/image-20260505021130639.png" alt="img" /></p>
+
+<p><img src="/Blog/post-image/image-20260505020816780.png" alt="img" /></p>
+
+<hr />
+
+<h3 id="avl树">AVL树</h3>
+
+<p>AVL树又叫平衡二叉树</p>
+
+<p>所有节点的<strong>左子树高度-右子树高度</strong>(平衡因子)的绝对值&lt;=1;</p>
+
+<p>AVL通过<strong>左右旋转节点</strong>调整树高以达到平衡</p>
+
+<p><img src="/Blog/post-image/image-20260506002459359.png" alt="img" /></p>
+
+<ul>
+  <li>
+    <p>插入结点后如果导致多个祖先结点失衡
+只需调整距离插入结点最近的失衡结点，其他失衡结点会自然平衡</p>
+  </li>
+  <li>
+    <p>删除结点后需要依次对每个祖先检查并调整</p>
+  </li>
+</ul>
+
+<h3 id="红黑树">红黑树</h3>
+
+<p>也是一种平衡二叉树，只不过与AVL树的平衡策略不一样，通过赋予节点颜色来进行平衡</p>
+
+<p>需要遵循的规则：根叶黑(根节点，和叶子节点(指的是空节点)都需要是黑色)；左根右(二叉搜索树基本)；不红红（不存在两个连续红色节点）；黑路同（任意节点到叶子节点的路径上黑色节点数量相同，这也导致树的最长路径不超过最短路径两倍）</p>
+
+<p>插入节点遵循AVL树旋转规则，但是旋转后要变色；</p>
+
+<ul>
+  <li>
+    <p>旋转前先判断叔父节点的颜色，如果是红色需要先将叔父，父，爷爷节点颜色变色（红变黑黑变红），</p>
+  </li>
+  <li>将根节点颜色变为黑色</li>
+  <li>AVL旋转</li>
+  <li>将旋转点和旋转中心(比如说RR型左旋，爷爷节点就是旋转点，父节点就是旋转中心节点；LR型先左再右，先将父节点和当前节点左旋然后再将爷爷节点右旋，这里只看最后操作，所以爷爷节点就是旋转点，当前节点就是旋转中心节点)节点颜色变色</li>
+</ul>
+
+<p>删除节点太复杂</p>
+
+<p><img src="/Blog/post-image/image-20260506010916934.png" alt="img" /></p>
+
+<ul>
+  <li>
+    <p>当只有左孩子或者右孩子的情况下，直接删除节点然后孩子节点代替并且颜色变黑</p>
+  </li>
+  <li>
+    <p>当左右都有的时候，找前驱节点或者后继节点代替，然后再删除前驱或者后继(这里注意可能会递归)</p>
+  </li>
+  <li>当删除节点没有孩子的情况，如果删除的是红色就直接删除；</li>
+  <li>如果是黑色就需要看兄弟节点，兄弟节点如果是黑色，把当前节点换成双黑（假设存在的黑色节点，也就是黑色空节点套个黑色环），继续判断兄弟节点的孩子，
+    <ul>
+      <li>如果有红色孩子，先变色(先判断红孩子这条路是什么类型
+        <ul>
+          <li>如果LL，RR红色孩子颜色变为兄弟颜色，兄弟颜色变为父颜色，父颜色变黑，然后再旋转，与插入不同之后不再变色；</li>
+          <li>如果是LR，RL则红孩子节点颜色变成父节点颜色，父节点颜色变黑，再旋转)；</li>
+        </ul>
+      </li>
+      <li>如果兄弟节点的孩子都是黑色，兄弟节点颜色变红，双黑中的黑色环上移，遇到红色节点将该红色节点颜色变成黑色</li>
+    </ul>
+  </li>
+  <li>如果兄弟节点是红色，兄弟节点和父节点变色，父节点朝向双黑节点旋转，然后递归到判断兄弟节点是黑色这一步</li>
+</ul>
+
+<h3 id="b树">B树</h3>
+
+<p>也称多叉平衡搜索树；为了减少搜索次数(与树高正相关)</p>
+
+<p>与AVL和红黑不同的是他一个节点并不是只有一个元素，也不一定只有两个分支</p>
+
+<pre><code class="language-mermaid">graph TD
+    %% 根节点
+    Root["17"]
+
+    %% 第二层节点
+    L1_Left["6 | 13"]
+    L1_Right["23 | 35 | 47 | 55"]
+
+    %% 第三层节点 (左侧分支)
+    L2_1["1 | 4"]
+    L2_2["8 | 11"]
+    L2_3["14 | 16"]
+
+    %% 第三层节点 (右侧分支)
+    L2_4["19 | 22"]
+    L2_5["27 | 34"]
+    L2_6["38 | 45"]
+    L2_7["49 | 53"]
+    L2_8["65 | 74 | 79"]
+
+    %% 连接关系
+    Root --- L1_Left
+    Root --- L1_Right
+
+    L1_Left --- L2_1
+    L1_Left --- L2_2
+    L1_Left --- L2_3
+
+    L1_Right --- L2_4
+    L1_Right --- L2_5
+    L1_Right --- L2_6
+    L1_Right --- L2_7
+    L1_Right --- L2_8
+
+    %% 样式美化
+    style Root fill:#1a3a6c,stroke:#3366ff,color:#fff,stroke-width:2px
+    style L1_Left fill:#1a3a6c,stroke:#3366ff,color:#fff,stroke-width:2px
+    style L1_Right fill:#1a3a6c,stroke:#3366ff,color:#fff,stroke-width:2px
+    classDef leaf fill:#1a3a6c,stroke:#3366ff,color:#fff,stroke-width:1px
+    class L2_1,L2_2,L2_3,L2_4,L2_5,L2_6,L2_7,L2_8 leaf
+</code></pre>
+
+<p>这个树最下层还有一堆空节点，将这些空节点成为外部节点(失败节点)（因为说法不一，本文将内部节点的最后一层叫做叶子节点），上面那些有数据的就是内部节点</p>
+
+<p>B树所有结点的关键字都有直接指向对应记录的指针</p>
+
+<p>B树规则：</p>
+
+<ul>
+  <li>平衡：所有的叶子节点都在同一层</li>
+  <li>有序：节点内有序，任意元素的左子树都小于它，右子树都大于它</li>
+  <li>多路：对于m阶B树的节点
+    <ul>
+      <li>最多：m个分支，m-1个元素</li>
+      <li>最少：根节点2个分支,1个元素；其他节点[m/2]个分支，[m/2]-1个元素</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="b树-1">B+树</h3>
+
+<p>被广泛用于数据库的索引</p>
+
+<pre><code class="language-mermaid">flowchart TD
+    %% Root
+    A["27 | 58"]
+
+    %% Level 2
+    B["14 | 18 | 27"]
+    C["36 | 58"]
+    %% Level 3
+    D["3|14"]
+    E["17|18"]
+	F["20|23|27"]
+	G["34|36"]
+	H["45|58"]
+    %% Level 4
+    q["记录"]
+    w["记录"]
+    e["记录"]
+    r["记录"]
+    t["记录"]
+    y["记录"]
+    u["记录"]
+    i["记录"]
+    o["记录"]
+    p["记录"]
+    a["记录"]
+    
+    A --&gt; B
+    A --&gt; C
+    
+    B--&gt;D
+    B--&gt;E
+    B--&gt;F
+    C--&gt;G
+    C--&gt;H
+
+    
+    D--&gt;q
+    D--&gt;w
+    E--&gt;e
+    E--&gt;r
+    F--&gt;t
+    F--&gt;y
+    F--&gt;u
+    G--&gt;i
+    G--&gt;o
+    H--&gt;p
+    H--&gt;a
+
+</code></pre>
+
+<p>B+树叶结点包含全部关键字及指向相应记录的指针，非叶结点只作索引</p>
+
+<p>B+树中m个分支有m个关键字</p>
+
+<p>B+树兼顾</p>
+
+<ul>
+  <li>
+    <p>顺序查找(叶子节点可以形成一个链表，这里我没画，从HEAD指针按照顺序访问即可)</p>
+  </li>
+  <li>
+    <p>随机查找（和B树一样从根节点往下找）</p>
+  </li>
+  <li>
+    <p>范围查找（先随机查找然后再顺序查找）</p>
+  </li>
+</ul>
+
+<h2 id="图论结构">图论结构</h2>
+
+<h3 id="图的基本术语">图的基本术语</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">术语</th>
+      <th style="text-align: left">定义</th>
+      <th style="text-align: left">生活比喻</th>
+      <th style="text-align: left">符号表示</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>顶点（Vertex）</strong></td>
+      <td style="text-align: left">图中的基本单元</td>
+      <td style="text-align: left">社交网络中的人</td>
+      <td style="text-align: left">V, u, v</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>边（Edge）</strong></td>
+      <td style="text-align: left">连接两个顶点的线</td>
+      <td style="text-align: left">两人之间的关系</td>
+      <td style="text-align: left">E, (u,v)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>度（Degree）</strong></td>
+      <td style="text-align: left">顶点连接的边数</td>
+      <td style="text-align: left">一个人的好友数量</td>
+      <td style="text-align: left">deg(v)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>路径（Path）</strong></td>
+      <td style="text-align: left">顶点的序列</td>
+      <td style="text-align: left">从A到B的路线</td>
+      <td style="text-align: left">v₁→v₂→…→vₙ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>环（Cycle）</strong></td>
+      <td style="text-align: left">起点和终点相同的路径</td>
+      <td style="text-align: left">从家出发最终回家</td>
+      <td style="text-align: left">v₁→v₂→…→v₁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>连通图</strong></td>
+      <td style="text-align: left">任意两点间都有路径</td>
+      <td style="text-align: left">所有人都能互相联系</td>
+      <td style="text-align: left"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>权重（Weight）</strong></td>
+      <td style="text-align: left">边的数值属性</td>
+      <td style="text-align: left">两城市间的距离</td>
+      <td style="text-align: left">w(u,v)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="图的分类">图的分类</h3>
+
+<pre><code class="language-mermaid">graph TD
+    %% 样式定义，确保兼容性
+    classDef blueBox fill:#e1f5fe,stroke:#01579b,stroke-width:1px;
+    classDef greenBox fill:#dcedc8,stroke:#33691e,stroke-width:1px;
+    classDef orangeBox fill:#fff3e0,stroke:#e65100,stroke-width:1px;
+    classDef purpleBox fill:#ede7f6,stroke:#311b92,stroke-width:1px;
+
+    %% 根节点
+    Root["图的基本类型"]:::blueBox
+
+    %% 分类层
+    Root --&gt; Undirected["无向图"]:::greenBox
+    Root --&gt; Directed["有向图"]:::greenBox
+    Root --&gt; Unweighted["无权图"]:::orangeBox
+    Root --&gt; Weighted["有权图"]:::orangeBox
+
+    %% 特性描述层
+    Undirected --&gt; U_Desc["边特性：(u, v) = (v, u)&lt;br/&gt;(无方向)"]:::purpleBox
+    Directed --&gt; D_Desc["边特性：(u, v) ≠ (v, u)&lt;br/&gt;(有方向)"]:::purpleBox
+    Unweighted --&gt; UnW_Desc["权重特性：所有边权重相同&lt;br/&gt;(默认1)"]:::purpleBox
+    Weighted --&gt; W_Desc["权重特性：边有不同权重&lt;br/&gt;(如距离 / 成本)"]:::purpleBox
+</code></pre>
+
+<h3 id="图的存储方式">图的存储方式</h3>
+
+<p>如何在计算机中表示一个图？主要有两种主流方法。</p>
+
+<h4 id="邻接矩阵">邻接矩阵</h4>
+
+<p>使用一个二维数组（矩阵）<code class="language-plaintext highlighter-rouge">matrix</code> 来表示图。<code class="language-plaintext highlighter-rouge">matrix[i][j]</code> 的值表示顶点 <code class="language-plaintext highlighter-rouge">i</code> 到顶点 <code class="language-plaintext highlighter-rouge">j</code> 的边的情况。</p>
+
+<ul>
+  <li>对于无向图，矩阵是对称的。</li>
+  <li>对于权重图，矩阵值存储权重（用特殊值如 <code class="language-plaintext highlighter-rouge">0</code> 或 <code class="language-plaintext highlighter-rouge">∞</code> 表示无边）。</li>
+  <li><strong>优点</strong>：检查任意两个顶点间是否有边非常快（<code class="language-plaintext highlighter-rouge">O(1)</code>）。</li>
+  <li><strong>缺点</strong>：占用空间大（<code class="language-plaintext highlighter-rouge">O(V^2)</code>），对于边数较少的”稀疏图”浪费空间。</li>
+</ul>
+
+<h4 id="邻接表">邻接表</h4>
+
+<p>为每个顶点维护一个列表（链表、数组等），记录与其直接相连的所有顶点（及权重）。</p>
+
+<ul>
+  <li><strong>优点</strong>：空间效率高（<code class="language-plaintext highlighter-rouge">O(V + E)</code>），特别适合稀疏图。能快速找到一个顶点的所有邻居。</li>
+  <li><strong>缺点</strong>：检查任意两个顶点间是否有边较慢（<code class="language-plaintext highlighter-rouge">O(degree(V))</code>）。</li>
+</ul>
+
+<hr />
+
+<h3 id="图的遍历算法">图的遍历算法</h3>
+
+<p>遍历是图算法的基础，意味着系统地访问图中的每一个顶点。</p>
+
+<p>主要有两种策略：</p>
+
+<h4 id="广度优先搜索">广度优先搜索</h4>
+
+<p>广度优先搜索（）像”水波扩散”一样，从起点开始，先访问所有直接邻居，再访问邻居的邻居，依此类推。它使用<strong>队列</strong>来实现。</p>
+
+<p><strong>算法步骤</strong>：</p>
+
+<ol>
+  <li>将起点放入队列并标记为已访问。</li>
+  <li>当队列不为空时： a. 取出队首顶点 <code class="language-plaintext highlighter-rouge">v</code>。 b. 访问 <code class="language-plaintext highlighter-rouge">v</code> 的所有未访问邻居，将它们放入队列并标记为已访问。</li>
+  <li>重复步骤2。</li>
+</ol>
+
+<h4 id="深度优先搜索">深度优先搜索</h4>
+
+<p>深度优先搜索（DFS）像”走迷宫”一样，选择一条路走到尽头，然后回溯，再走另一条路。它使用<strong>栈</strong>（或递归）来实现。</p>
+
+<p><strong>递归算法步骤</strong>：</p>
+
+<ol>
+  <li>从顶点 <code class="language-plaintext highlighter-rouge">v</code> 开始，标记为已访问。</li>
+  <li>对于 <code class="language-plaintext highlighter-rouge">v</code> 的每一个未访问邻居 <code class="language-plaintext highlighter-rouge">u</code>： a. 递归调用 <code class="language-plaintext highlighter-rouge">DFS(u)</code>。</li>
+</ol>
+
+<pre><code class="language-mermaid">graph LR
+    %% 样式定义
+    classDef blueBox fill:#E1F5FE,stroke:#01579B,stroke-width:1px;
+    classDef pinkBox fill:#F3E5F5,stroke:#7B1FA2,stroke-width:1px;
+    classDef greenBox fill:#E8F5E9,stroke:#2E7D32,stroke-width:1px;
+    classDef purpleBox fill:#EDE7F6,stroke:#311B92,stroke-width:1px;
+
+    %% 核心结构
+    Root["图遍历算法"]:::blueBox
+
+    %% DFS 分支
+    Root --&gt; DFS["深度优先搜索 DFS"]:::pinkBox
+    DFS --&gt; DFS_Data["数据结构：栈"]:::purpleBox
+    DFS --&gt; DFS_Strat["策略：深入到底再回溯"]:::purpleBox
+    DFS --&gt; DFS_App["应用：路径存在、拓扑排序"]:::purpleBox
+
+    %% BFS 分支
+    Root --&gt; BFS["广度优先搜索 BFS"]:::greenBox
+    BFS --&gt; BFS_Data["数据结构：队列"]:::purpleBox
+    BFS --&gt; BFS_Strat["策略：逐层向外扩展"]:::purpleBox
+    BFS --&gt; BFS_App["应用：最短路径、连通分量"]:::purpleBox
+</code></pre>
+
+<h2 id="算法思想">算法思想</h2>
+
+<h3 id="分治算法">分治算法</h3>
+
+<p>分治法（英语：Divide and conquer）是建基于多项分支递归的一种很重要的算法范型，字面上的解释是”分而治之”，就是把一个复杂的问题分成两个或更多的相同或相似的子问题，直到最后子问题可以简单的直接求解，原问题的解即子问题的解的合并。</p>
+
+<p>简单来说，分治就是三个步骤：<strong>分解 -&gt; 解决 -&gt; 合并</strong>。</p>
+
+<pre><code class="language-mermaid">graph TD
+    %% 样式定义
+    classDef step fill:#DCEDC8,stroke:#33691E,stroke-width:1px;
+    classDef decision fill:#C5E1A5,stroke:#33691E,stroke-width:2px;
+
+    Start["原问题"]:::step --&gt; Check{"问题是否足够简单?"}:::decision
+    
+    %% 是 分支
+    Check -- "是" --&gt; Simple["直接求解"]:::step
+    Simple --&gt; End["得到最终解"]:::step
+
+    %% 否 分支
+    Check -- "否" --&gt; Divide["分解：将原问题分解为多个子问题"]:::step
+    Divide --&gt; Solve["解决：递归地求解各个子问题"]:::step
+    Solve --&gt; Merge["合并：将子问题的解合并为原问题的解"]:::step
+    Merge --&gt; End
+</code></pre>
+
+<h3 id="贪心算法">贪心算法</h3>
+
+<p>贪心算法（英语：greedy algorithm），又称贪婪算法，是一种在每一步选择中都采取在当前状态下最好或最优（即最有利）的选择，从而希望导致结果是全局最好或最优的算法策略。</p>
+
+<p><strong>贪心算法</strong> 就像我们常说的只顾眼前利益，并不从整体最优上加以考虑，所做的选择只是在某种意义上的局部最优解。</p>
+
+<h3 id="动态规划">动态规划</h3>
+
+<p>动态规划（英语：Dynamic programming，简称 DP）通过把原问题分解为相对简单的子问题的方式求解复杂问题的方法。</p>
+
+<p>动态规划的核心是 <strong>记住求过的解</strong> 。</p>
+
+<p>动态规划通常用于解决具有以下性质的问题：</p>
+
+<ol>
+  <li><strong>重叠子问题</strong>：在递归求解过程中，同一个子问题会被多次计算。</li>
+  <li><strong>最优子结构</strong>：一个问题的最优解包含其子问题的最优解。贪心算法也依赖于此，但它在每一步直接选局部最优，而不像 DP 那样会保留所有可能的状态进行推导。</li>
+</ol>
+
+<pre><code class="language-mermaid">graph LR
+    %% 样式定义
+    classDef step fill:#DCEDC8,stroke:#33691E,stroke-width:1px;
+    
+    Step1["定义原问题"]:::step --&gt; Step2["分析问题结构&lt;br/&gt;寻找最优子结构"]:::step
+    Step2 --&gt; Step3["定义状态&lt;br/&gt;dp[i] 表示什么"]:::step
+    Step3 --&gt; Step4["建立状态转移方程&lt;br/&gt;dp[i] 与 dp[i-1] 等的关系"]:::step
+    Step4 --&gt; Step5["确定初始条件&lt;br/&gt;dp[0]、dp[1] 等"]:::step
+    Step5 --&gt; Step6["确定计算顺序&lt;br/&gt;自底向上递推"]:::step
+    Step6 --&gt; Step7["返回最终解"]:::step
+</code></pre>
+
+<hr />
+
+<h3 id="局部最优的直观理解找零钱案例">局部最优的直观理解：找零钱案例</h3>
+
+<p>假设你是一名收银员，需要给顾客找 <strong>36元</strong> 零钱，你手头有 <strong>20元、10元、5元、1元</strong> 四种面值的钞票。</p>
+
+<ul>
+  <li><strong>贪心算法的操作</strong>：
+    <ol>
+      <li><strong>第一步</strong>：看一眼 36，能给出的最大面值是 <strong>20元</strong>。给出一张。（目前剩余 16元）</li>
+      <li><strong>第二步</strong>：看一眼 16，能给出的最大面值是 <strong>10元</strong>。给出一张。（目前剩余 6元）</li>
+      <li><strong>第三步</strong>：看一眼 6，能给出的最大面值是 <strong>5元</strong>。给出一张。（目前剩余 1元）</li>
+      <li><strong>第四步</strong>：看一眼 1，能给出的最大面值是 <strong>1元</strong>。给出一张。（找零结束）</li>
+    </ol>
+  </li>
+</ul>
+
+<p><strong>结果</strong>：你用了 4 张钞票。在这个过程中，你每一步都在选<strong>当前能拿出的最大面额</strong>。这就是“局部最优”。</p>
+
+<hr />
+
+<h3 id="局部最优-vs-全局最优">局部最优 vs. 全局最优</h3>
+
+<p>贪心算法之所以被叫做“只顾眼前利益”，是因为它<strong>不回溯</strong>。</p>
+
+<p>如果我们将规则稍微改变，贪心就会失效：</p>
+
+<ul>
+  <li>假设面值变为：<strong>20元、15元、1元</strong>。</li>
+  <li><strong>贪心的选法</strong>：先拿 <strong>20</strong>，剩下的 16元只能拿 16 张 <strong>1元</strong>。总共 <strong>17张</strong>。</li>
+  <li><strong>全局最优（DP）的选法</strong>：我会先拿两张 <strong>15</strong>，剩下的 6元拿 6 张 <strong>1元</strong>。总共 <strong>8张</strong>。</li>
+</ul>
+
+<p><strong>结论</strong>：贪心算法在第一步选择 <strong>20</strong> 时，确实是“当前状态下最好”的（局部最优），但它没预见到选了 20 会导致后面必须用一堆 1 元凑数。</p>
+
+<hr />
+
+<h3 id="贪心与动态规划的底层决策差异">贪心与动态规划的底层决策差异</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>特性</strong></th>
+      <th><strong>贪心算法</strong></th>
+      <th><strong>动态规划 (DP)</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>决策顺序</strong></td>
+      <td><strong>单向选择</strong>：一旦选定，绝不反悔。</td>
+      <td><strong>全局评估</strong>：考虑所有子问题的重叠和依赖。</td>
+    </tr>
+    <tr>
+      <td><strong>计算方式</strong></td>
+      <td><strong>当下最好</strong>：仅依赖当前状态做出最优判断。</td>
+      <td><strong>记住过去</strong>：利用已求得的子问题解来推导当前最优。</td>
+    </tr>
+    <tr>
+      <td><strong>最优子结构</strong></td>
+      <td>局部最优解能推导出全局最优解（需数学证明）。</td>
+      <td>全局最优解必须包含子问题的最优解。</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="迪杰斯特拉算法">迪杰斯特拉算法</h2>
+
+<p>DJ算法(最短路径算法)</p>
+
+<p>动态的比较路径</p>
+
+<p><img src="/Blog/post-image/image-20260505074847735.png" alt="img" /></p>
+
+<p><img src="/Blog/post-image/image-20260505075725652.png" alt="img" /></p>
+
+                    </div>
+                    
+                </article>
+                
+                <div style="margin-top:30px;">
+                    <a href="/Blog/" class="post-read-more">← Back</a>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container ">
+            <!-- 版权信息 -->
+            <div>Copyright © 2024 - 版权归属 LIN</div>
+            <!-- 博客运行计时 -->
+            <div class="running-time">
+                本博客已运行 
+                <span id="blog_running_days" class="odometer"></span> days , 
+                <span id="blog_running_hours" class="odometer"></span> h , 
+                <span id="blog_running_mins" class="odometer"></span> m , 
+                <span id="blog_running_secs" class="odometer"></span> s
+            </div>
+        </div>
+    </footer>
+    <!-- 支持 Mermaid 流程图 -->
+    
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 1. 找到所有被 kramdown 标记为 mermaid 的代码块
+            const mermaidBlocks = document.querySelectorAll('pre > code.language-mermaid');
+            
+            mermaidBlocks.forEach((codeBlock) => {
+            // 2. 创建一个新的 div，类名为 mermaid
+            const container = document.createElement('div');
+            container.className = 'mermaid';
+            // 3. 将原始内容（代码）放入 div
+            container.textContent = codeBlock.textContent;
+            
+            // 4. 替换掉原本的 pre 标签
+            const pre = codeBlock.parentElement;
+            pre.parentNode.replaceChild(container, pre);
+            });
+
+            // 5. 手动启动渲染
+            mermaid.initialize({ startOnLoad: true });
+        });
+        </script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/androidstudio.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <script>
+        (function() {
+            const bgUrl = "/Blog/images/background.jpg";
+            const img = new Image();
+
+            img.src = bgUrl;
+            img.onload = function() {
+                console.log("背景图加载完毕！");
+                document.body.classList.add('loaded');
+            };
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 5000);
+        })();
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toc = document.getElementById('markdown-toc');
+            if (!toc) return;
+
+            const headingIds = [];
+            const tocLinks = toc.querySelectorAll('a');
+
+            tocLinks.forEach(function(link) {
+                const href = link.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    headingIds.push(href.substring(1));
+                }
+            });
+
+            const headings = [];
+            headingIds.forEach(function(id) {
+                const heading = document.getElementById(id);
+                if (heading) {
+                    headings.push(heading);
+                }
+            });
+
+            if (headings.length === 0) return;
+
+            let currentActive = null;
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        const link = toc.querySelector('a[href="#' + id + '"]');
+                        if (link && link !== currentActive) {
+                            currentActive = link;
+
+                            toc.querySelectorAll('a').forEach(function(a) {
+                                a.classList.remove('active');
+                            });
+                            link.classList.add('active');
+
+                            const linkTop = link.offsetTop;
+                            const linkHeight = link.offsetHeight;
+                            const tocHeight = toc.offsetHeight;
+                            const scrollTop = toc.scrollTop;
+
+                            function smoothScrollTo(element, targetTop, duration) {
+                const startTop = element.scrollTop;
+                const change = targetTop - startTop;
+                const startTime = performance.now();
+
+                function animateScroll(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easeProgress = 1 - Math.pow(1 - progress, 3);
+                    element.scrollTop = startTop + change * easeProgress;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(animateScroll);
+                    }
+                }
+
+                requestAnimationFrame(animateScroll);
+            }
+
+            if (linkTop < scrollTop || linkTop + linkHeight > scrollTop + tocHeight) {
+                smoothScrollTo(toc, linkTop - tocHeight / 2 + linkHeight / 2, 300);
+            }
+                        }
+                    }
+                });
+            }, {
+                rootMargin: '-100px 0px -60% 0px',
+                threshold: 0
+            });
+
+            headings.forEach(function(heading) {
+                observer.observe(heading);
+            });
+        });
+    </script>
+
+</body>
+    <script src="/Blog/autohighlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
+
+</html>

@@ -2464,7 +2464,7 @@ btn.onclick = function() {
         (function() {
             const bgUrl = "/Blog/images/background.jpg";
             const img = new Image();
-            
+
             img.src = bgUrl;
             img.onload = function() {
                 console.log("背景图加载完毕！");
@@ -2474,6 +2474,86 @@ btn.onclick = function() {
                 document.body.classList.add('loaded');
             }, 5000);
         })();
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toc = document.getElementById('markdown-toc');
+            if (!toc) return;
+
+            const headingIds = [];
+            const tocLinks = toc.querySelectorAll('a');
+
+            tocLinks.forEach(function(link) {
+                const href = link.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    headingIds.push(href.substring(1));
+                }
+            });
+
+            const headings = [];
+            headingIds.forEach(function(id) {
+                const heading = document.getElementById(id);
+                if (heading) {
+                    headings.push(heading);
+                }
+            });
+
+            if (headings.length === 0) return;
+
+            let currentActive = null;
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        const link = toc.querySelector('a[href="#' + id + '"]');
+                        if (link && link !== currentActive) {
+                            currentActive = link;
+
+                            toc.querySelectorAll('a').forEach(function(a) {
+                                a.classList.remove('active');
+                            });
+                            link.classList.add('active');
+
+                            const linkTop = link.offsetTop;
+                            const linkHeight = link.offsetHeight;
+                            const tocHeight = toc.offsetHeight;
+                            const scrollTop = toc.scrollTop;
+
+                            function smoothScrollTo(element, targetTop, duration) {
+                const startTop = element.scrollTop;
+                const change = targetTop - startTop;
+                const startTime = performance.now();
+
+                function animateScroll(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easeProgress = 1 - Math.pow(1 - progress, 3);
+                    element.scrollTop = startTop + change * easeProgress;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(animateScroll);
+                    }
+                }
+
+                requestAnimationFrame(animateScroll);
+            }
+
+            if (linkTop < scrollTop || linkTop + linkHeight > scrollTop + tocHeight) {
+                smoothScrollTo(toc, linkTop - tocHeight / 2 + linkHeight / 2, 300);
+            }
+                        }
+                    }
+                });
+            }, {
+                rootMargin: '-100px 0px -60% 0px',
+                threshold: 0
+            });
+
+            headings.forEach(function(heading) {
+                observer.observe(heading);
+            });
+        });
     </script>
 
 </body>
