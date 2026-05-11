@@ -126,7 +126,7 @@ class GitHubService {
 
     getDefaultData() {
         return {
-            settings: { wordBook: 'cet4', dailyGoal: 10, maxReviewList: 3, reminderTime: '09:00', reminderEnabled: false },
+            settings: { wordBook: 'kaoyan', dailyGoal: 30, maxReviewList: 3, reminderTime: '09:00', reminderEnabled: false },
             //用户现在正在学习的单词组;nowList: {'cet4': 1},
             nowList: {},
             //0:未学习, 1:不认识, 2:有点难, 3:认识, 4:很简单;wordsLevel: {'cet4': [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},   

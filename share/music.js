@@ -15,6 +15,7 @@ const songIds = ['1413795920',
     '1913268601',
     '509106775'];
 
+
 // 解析歌词
 function parseLyric(lyricText) {
   if (!lyricText) return [];
@@ -86,10 +87,40 @@ function updateLyricHighlight(currentTime) {
     }
 }
 
+
+// // 获取歌曲信息
+// async function getMusicInfo(songId) {
+//   try {
+//     const url = `https://api.paugram.com/netease/?id=${songId}`;
+//     const response = await fetch(url);
+//     const data = await response.json();
+//     return {
+//       id: songId,
+//       name: data.title || `歌曲 ${songId}`,
+//       artist: data.artist || '未知艺术家',
+//       url: data.link || `https://music.163.com/song/media/outer/url?id=${songId}.mp3`,
+//       cover: data.cover || 'https://picsum.photos/300/200',
+//       lyric: data.lyric || '',
+//       subLyric: data.sub_lyric || ''
+//     };
+//   } catch (error) {
+//     console.error('获取歌曲信息失败:', error);
+//     return {
+//       id: songId,
+//       name: `歌曲 ${songId}`,
+//       artist: '未知艺术家',
+//       url: `https://music.163.com/song/media/outer/url?id=${songId}.mp3`,
+//       cover: 'https://picsum.photos/300/200',
+//       lyric: '',
+//       subLyric: ''
+//     };
+//   }
+// }
+
 // 获取歌曲信息
 async function getMusicInfo(songId) {
   try {
-    const url = `https://api.paugram.com/netease/?id=${songId}`;
+    const url = `./music/${songId}.json`;
     const response = await fetch(url);
     const data = await response.json();
     return {
@@ -513,7 +544,7 @@ async function initPlayer() {
   const container = document.getElementById('songs-container');
   if (!container) return;
 
-  const requestDelay = 300;
+  const requestDelay = 10;
 
   for (const songId of songIds) {
     const songInfo = await getMusicInfo(songId);

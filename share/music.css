@@ -116,6 +116,26 @@
     width: 100%;
     margin-top: 10px;
     display: none;
+    background: transparent;
+}
+
+audio {
+    background: transparent !important;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+audio::-webkit-media-controls-panel {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+audio::-webkit-media-controls-enclosure {
+    background-color: transparent !important;
+}
+
+audio * {
+    background-color: transparent !important;
 }
 
 .song-card.active .audio-player {
@@ -145,6 +165,22 @@ audio::-webkit-media-controls-time-remaining-display {
 audio::-webkit-media-controls-timeline {
     display: block !important;
     width: 100%;
+}
+
+audio::-webkit-media-controls-timeline-container {
+    background-color: transparent !important;
+}
+
+audio::-webkit-media-controls-timeline {
+    background-color: transparent !important;
+}
+
+audio::-webkit-slider-runnable-track {
+    background-color: transparent !important;
+}
+
+audio::-webkit-media-slider-container {
+    background-color: transparent !important;
 }
 
 .song-lyrics {
