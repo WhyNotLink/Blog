@@ -164,6 +164,9 @@ body {
 .tool-item[data-cat="register_debug_visualizer"] {
     --tool-grad: linear-gradient(135deg, #f093fb, #f5576c);
 }
+.tool-item[data-cat="chuankou"] {
+    --tool-grad: linear-gradient(135deg, #b4fb93, #a2d48b);
+}
 
 /* 暗色主题适配 */
 [data-theme="dark"] .tool-item {
