@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安装ARCH - LIN's Blog</title>
+
+    <link rel="stylesheet" href="/Blog/style.css">
+    <link rel="stylesheet" href="/Blog/post.css">
+
+    <!-- Odometer 数字滚动插件 -->
+    <link rel="stylesheet" href="/Blog/odometr.css">
+    <script src="/Blog/odometr.js"></script>
+
+    <!-- 代码高亮主题 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/androidstudio.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
+    <!-- 博客运行计时核心脚本 -->
+    <script>
+    window.pjaxLoaded = function(){
+        var blog_running_days=document.getElementById("blog_running_days");
+        var blog_running_hours=document.getElementById("blog_running_hours");
+        var blog_running_mins=document.getElementById("blog_running_mins");
+        var blog_running_secs=document.getElementById("blog_running_secs");
+
+        function refresh_blog_running_time(){
+            var time = new Date() - new Date(2024, 9, 7, 0, 0, 0);
+            var d=parseInt(time/24/60/60/1000);
+            var h=parseInt(time%(24*60*60*1000)/60/60/1000);
+            var m=parseInt(time%(60*60*1000)/60/1000);
+            var s=parseInt(time%(60*1000)/1000);
+            blog_running_days.innerHTML=d;
+            blog_running_hours.innerHTML=h;
+            blog_running_mins.innerHTML=m;
+            blog_running_secs.innerHTML=s;
+        };
+        refresh_blog_running_time();
+        if (typeof(bottomTimeIntervalHasSet) == "undefined"){
+            var bottomTimeIntervalHasSet = true;
+            setInterval(refresh_blog_running_time,500);
+        }
+    };
+
+    window.onload = function(){
+        odometer_init();
+        window.pjaxLoaded();
+        if (window.hljs) hljs.highlightAll();
+    };
+
+    function odometer_init(){
+        let el = document.getElementsByClassName('odometer');
+        for (let i = 0; i < el.length; i++) {
+            new Odometer({
+                el: el[i],
+                format: 'ddd',
+                duration: 200
+            });
+        }
+    }
+    </script>
+</head>
+<body class="fade-in-content">
+
+    <!-- 顶部导航 -->
+    <header class="topbar" id="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="/Blog/index.html">
+                <span class="brand-name">LIN的博客</span>
+            </a>
+
+            <nav class="topnav">
+                <a href="/Blog/sort.html">分类</a>
+                <a href="/Blog/history.html">归档</a>
+                <a href="/Blog/tool.html">工具</a>
+                <a href="/Blog/aboutmehtml">关于我</a>
+            </nav>
+
+            <div class="topbar-tools">
+                <button class="theme-toggle" id="themeToggle" title="切换主题">◐</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 三栏主体 -->
+    <main class="post-layout">
+        <!-- 左侧栏：作者 + 分类 + 标签 -->
+        <aside class="post-left">
+            <div class="card author-card">
+                <div class="author-info">
+                    <img class="author-avatar" src="/Blog/images/touxiang.jpg" alt="avatar">
+                    <div class="author-text">
+                        <div class="author-name">LIN</div>
+                        <div class="author-bio">摸鱼?摸鱼.摸鱼!</div>
+                    </div>
+                </div>
+                <a class="author-github" href="#" target="_blank">
+                    <span class="gh-icon"></span> GitHub
+                </a>
+            </div>
+
+            <div class="card widget-card">
+                <div class="widget-title">分类</div>
+                <ul class="cat-list">
+                
+                
+                    
+                    <li><a href="/Blog/sort.html">Linux<span class="cat-count">1</span></a></li>
+                
+                </ul>
+            </div>
+
+            <div class="card widget-card">
+                <div class="widget-title">标签</div>
+                <div class="tag-list">
+                
+                    <span class="tag-empty">暂无标签</span>
+                
+                </div>
+            </div>
+        </aside>
+
+        <!-- 中间内容 -->
+        <article class="post-main">
+            <div class="post-header">
+                
+                
+
+                <div class="post-meta-top">
+                    <span class="meta-badge">
+                        <span class="meta-icon meta-icon-gray">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></svg>
+                        </span>
+                        <span>4422 字</span>
+                    </span>
+                    <span class="meta-badge">
+                        <span class="meta-icon meta-icon-gray">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </span>
+                        <span>13 分钟</span>
+                    </span>
+                </div>
+
+                <h1 class="post-title">安装ARCH</h1>
+
+                <div class="post-meta-bar">
+                    <span class="meta-pill">
+                        <span class="meta-icon meta-icon-amber">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        </span>
+                        2026-06-30
+                    </span>
+                    <span class="meta-pill">
+                        <span class="meta-icon meta-icon-amber">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v4H4z"/><path d="M4 12h16v4H4z"/><path d="M4 20h16"/></svg>
+                        </span>
+                        Linux
+                    </span>
+                    
+                        
+                    
+                </div>
+            </div>
+
+            <div class="post-body">
+                <ul id="markdown-toc">
+  <li><a href="#安装arch" id="markdown-toc-安装arch">安装ARCH</a>    <ul>
+      <li><a href="#准备iso" id="markdown-toc-准备iso">准备ISO</a></li>
+      <li><a href="#验证引导模式" id="markdown-toc-验证引导模式">验证引导模式</a></li>
+      <li><a href="#验证网络" id="markdown-toc-验证网络">验证网络</a></li>
+      <li><a href="#更新系统时间" id="markdown-toc-更新系统时间">更新系统时间</a></li>
+      <li><a href="#创建硬盘分区" id="markdown-toc-创建硬盘分区">创建硬盘分区</a></li>
+      <li><a href="#格式化分区" id="markdown-toc-格式化分区">格式化分区</a></li>
+      <li><a href="#挂载分区" id="markdown-toc-挂载分区">挂载分区</a></li>
+      <li><a href="#安装必需的软件包" id="markdown-toc-安装必需的软件包">安装必需的软件包</a></li>
+      <li><a href="#生成-fstab-文件" id="markdown-toc-生成-fstab-文件">生成 fstab 文件</a></li>
+      <li><a href="#chroot-到新安装的系统" id="markdown-toc-chroot-到新安装的系统"><strong>chroot 到新安装的系统</strong></a></li>
+      <li><a href="#设置时间和时区" id="markdown-toc-设置时间和时区">设置时间和时区</a></li>
+      <li><a href="#区域和本地化设置" id="markdown-toc-区域和本地化设置">区域和本地化设置</a></li>
+      <li><a href="#网络配置" id="markdown-toc-网络配置">网络配置</a></li>
+      <li><a href="#设置-root-密码" id="markdown-toc-设置-root-密码">设置 root 密码</a></li>
+      <li><a href="#安装grub引导" id="markdown-toc-安装grub引导">安装Grub引导</a></li>
+      <li><a href="#重启" id="markdown-toc-重启">重启</a></li>
+      <li><a href="#添加个人用户" id="markdown-toc-添加个人用户">添加个人用户</a></li>
+    </ul>
+  </li>
+  <li><a href="#安装hyprland" id="markdown-toc-安装hyprland">安装Hyprland</a>    <ul>
+      <li><a href="#安装aur" id="markdown-toc-安装aur">安装AUR</a></li>
+      <li><a href="#自动安装caelestia" id="markdown-toc-自动安装caelestia">自动安装caelestia</a></li>
+      <li><a href="#手动clone-caelestia-仓库" id="markdown-toc-手动clone-caelestia-仓库">手动Clone caelestia 仓库</a></li>
+    </ul>
+  </li>
+</ul>
+<hr />
+
+<p><a href="https://wiki.archlinuxcn.org/wiki/安装指南">安装指南 - Arch Linux 中文维基</a></p>
+
+<h1 id="安装arch">安装ARCH</h1>
+
+<h2 id="准备iso">准备ISO</h2>
+
+<p><a href="https://archlinux.org/download/#:~:text=China">Arch Linux - Downloads</a></p>
+
+<h2 id="验证引导模式">验证引导模式</h2>
+
+<p>要验证系统目前的引导模式，请检查 <a href="https://wiki.archlinuxcn.org/wiki/UEFI#UEFI_固件位数">UEFI 固件位数</a>：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cat /sys/firmware/efi/fw_platform_size
+</code></pre></div></div>
+
+<ul>
+  <li>如果命令结果为 <code class="language-plaintext highlighter-rouge">64</code>，则系统是以 UEFI 模式引导且使用 64 位 x64 UEFI。</li>
+  <li>如果命令结果为 <code class="language-plaintext highlighter-rouge">32</code>，则系统是以 UEFI 模式引导且使用 32 位 IA32 UEFI，虽然其受支持，但引导加载程序只能使用 <a href="https://wiki.archlinuxcn.org/wiki/Systemd-boot">systemd-boot</a> 和 <a href="https://wiki.archlinuxcn.org/wiki/GRUB">GRUB</a>。</li>
+  <li>如果命令结果为<code class="language-plaintext highlighter-rouge">No such file or directory</code>，则系统可能是以 <a href="https://zh.wikipedia.org/wiki/BIOS">BIOS</a> 模式（或 <a href="https://en.wikipedia.org/wiki/Compatibility_Support_Module">CSM</a> 模式，这两种模式通常出现在<strong>老旧</strong>的电脑或<strong>未经配置的虚拟机</strong>上）引导。</li>
+</ul>
+
+<p>如果系统没有以您想要的模式（UEFI 或 BIOS）引导启动，请您参考自己的计算机或主板说明书。</p>
+
+<h2 id="验证网络">验证网络</h2>
+
+<p>确保系统已经列出并启用了<a href="https://wiki.archlinuxcn.org/wiki/网络配置#网络接口">网络接口</a>，用 <a href="https://man.archlinux.org/man/ip-link.8">ip-link(8)</a> 检查：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ip link
+</code></pre></div></div>
+
+<p>对于无线局域网（Wi-Fi）和无线广域网（WWAN），请确保网卡未被 <a href="https://wiki.archlinuxcn.org/wiki/Rfkill">rfkill</a> 禁用。</p>
+
+<p>连接到网络：</p>
+
+<ul>
+  <li>有线以太网——连接网线。</li>
+  <li>WiFi——使用 <a href="https://wiki.archlinuxcn.org/wiki/Iwd#iwctl">iwctl</a> 认证无线网络。</li>
+  <li>移动宽带调制解调器（移动网卡） - 使用 <a href="https://wiki.archlinuxcn.org/wzh/index.php?title=Mmcli&amp;action=edit&amp;redlink=1">mmcli</a> 连接到移动网络。</li>
+</ul>
+
+<p>配置网络连接：</p>
+
+<ul>
+  <li><a href="https://wiki.archlinuxcn.org/wiki/网络配置#DHCP">DHCP</a>：对于有线以太网、无线局域网（WLAN）和无线广域网（WWAN）网络接口来说，动态 IP 地址和 DNS 服务器分配（由 <a href="https://wiki.archlinuxcn.org/wiki/Systemd-networkd">systemd-networkd</a> 和 <a href="https://wiki.archlinuxcn.org/wiki/Systemd-resolved">systemd-resolved</a> 提供功能）能够开箱即用。</li>
+  <li>静态 IP 地址：按照<a href="https://wiki.archlinuxcn.org/wiki/网络配置#静态_IP_地址">网络配置#静态 IP 地址</a>进行操作。</li>
+</ul>
+
+<p>用 <a href="https://wiki.archlinuxcn.org/wiki/网络配置#Ping">ping</a> 检查网络连接：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ping ping.archlinux.org
+</code></pre></div></div>
+
+<h2 id="更新系统时间">更新系统时间</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># timedatectl
+</code></pre></div></div>
+
+<h2 id="创建硬盘分区">创建硬盘分区</h2>
+
+<p>系统如果识别到计算机的内置硬盘、U盘或者移动硬盘等类型磁盘，就会将其分配为一个<a href="https://wiki.archlinuxcn.org/wiki/设备文件#块设备">块设备</a>，如 <code class="language-plaintext highlighter-rouge">/dev/sda</code>、<code class="language-plaintext highlighter-rouge">/dev/nvme0n1</code> 或 <code class="language-plaintext highlighter-rouge">/dev/mmcblk0</code>。可以使用 <a href="https://wiki.archlinuxcn.org/wiki/Lsblk">lsblk</a> 或者 <a href="https://wiki.archlinuxcn.org/wiki/Fdisk">fdisk</a> 等工具查看：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># fdisk -l	#此处为小写字母l
+</code></pre></div></div>
+
+<p>结果中以 <code class="language-plaintext highlighter-rouge">rom</code>、<code class="language-plaintext highlighter-rouge">loop</code> 或者 <code class="language-plaintext highlighter-rouge">airootfs</code> 结尾的设备可以被忽略。结果中以 <code class="language-plaintext highlighter-rouge">rpmb</code>、<code class="language-plaintext highlighter-rouge">boot0</code> 或者 <code class="language-plaintext highlighter-rouge">boot1</code> 结尾的 <code class="language-plaintext highlighter-rouge">mmcblk*</code> 设备也可以被忽略。</p>
+
+<p>对于一个选定的设备，以下分区是<strong>必需</strong>的：</p>
+
+<ul>
+  <li>一个根分区（挂载在<a href="https://wiki.archlinuxcn.org/wiki/分区#根分区">根目录</a>）<code class="language-plaintext highlighter-rouge">/</code>；</li>
+  <li>要在 <a href="https://wiki.archlinuxcn.org/wiki/Unified_Extensible_Firmware_Interface">UEFI</a> 模式中启动，还需要一个 <a href="https://wiki.archlinuxcn.org/wiki/EFI_系统分区">EFI 系统分区</a>。</li>
+</ul>
+
+<p>请使用分区工具（<a href="https://wiki.archlinuxcn.org/wiki/Fdisk">fdisk</a> 、<a href="https://wiki.archlinuxcn.org/wiki/Parted">parted</a>、<a href="https://wiki.archlinuxcn.org/wiki/Cfdisk">cfdisk</a> 等等）修改分区表。例如：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cfdisk /dev/要被分区的磁盘
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">已安装系统上的挂载点</th>
+      <th style="text-align: center">分区</th>
+      <th style="text-align: center"><a href="https://en.wikipedia.org/wiki/GUID_Partition_Table#Partition_type_GUIDs">分区类型</a></th>
+      <th style="text-align: center">注释</th>
+      <th style="text-align: center">建议大小</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">/boot</code>1</td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">/dev/*efi_system_partition*</code></td>
+      <td style="text-align: center">EFI System</td>
+      <td style="text-align: center"><a href="https://wiki.archlinuxcn.org/wiki/EFI_系统分区">EFI 系统分区</a></td>
+      <td style="text-align: center">1 GiB</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">[SWAP]</code></td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">/dev/*swap_partition*</code></td>
+      <td style="text-align: center">Linux swap</td>
+      <td style="text-align: center"><a href="https://wiki.archlinuxcn.org/wiki/Swap">交换空间</a></td>
+      <td style="text-align: center">至少 4 GiB</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">/</code></td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">/dev/*root_partition*</code></td>
+      <td style="text-align: center">Linux root (x86-64)</td>
+      <td style="text-align: center">根目录</td>
+      <td style="text-align: center">设备剩余空间，至少 23-32 GiB</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="格式化分区">格式化分区</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># mkfs.ext4 /dev/root_partition（根分区）
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># mkfs.fat -F 32 /dev/efi_system_partition（EFI 系统分区）
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># mkswap /dev/swap_partition（交换空间分区）
+</code></pre></div></div>
+
+<h2 id="挂载分区">挂载分区</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># mount /dev/root_partition（根分区） /mnt
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># mount --mkdir /dev/efi_system_partition /mnt/boot
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># swapon /dev/swap_partition（交换空间分区）
+</code></pre></div></div>
+
+<h2 id="安装必需的软件包">安装必需的软件包</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># pacstrap -K /mnt base linux linux-firmware git wget curl networkmanager vim
+</code></pre></div></div>
+
+<h2 id="生成-fstab-文件">生成 fstab 文件</h2>
+
+<p>为使需要的文件系统（如启动目录 <code class="language-plaintext highlighter-rouge">/boot</code>）在启动时被自动挂载，请使用 <a href="https://man.archlinux.org/man/genfstab.8">genfstab(8)</a> 生成一个具有<a href="https://wiki.archlinuxcn.org/wiki/持久化块设备命名">持久化块设备命名</a>的 <a href="https://wiki.archlinuxcn.org/wiki/Fstab">fstab</a> 文件。例如，使用 <code class="language-plaintext highlighter-rouge">-U</code> 选项来通过 <a href="https://wiki.archlinuxcn.org/wiki/UUID">UUID</a> 指定文件系统：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># genfstab -U /mnt &gt; /mnt/etc/fstab
+</code></pre></div></div>
+
+<h2 id="chroot-到新安装的系统"><strong>chroot 到新安装的系统</strong></h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># arch-chroot /mnt
+</code></pre></div></div>
+
+<h2 id="设置时间和时区">设置时间和时区</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># hwclock --systohc
+</code></pre></div></div>
+
+<h2 id="区域和本地化设置">区域和本地化设置</h2>
+
+<p>程序和库如果需要本地化文本，都依赖<a href="https://wiki.archlinuxcn.org/wiki/Locale">区域设置</a>，后者明确规定了地域、货币、时区日期的格式、字符排列方式和其他本地化标准。</p>
+
+<p>需要设置这两个文件：<code class="language-plaintext highlighter-rouge">locale.gen</code> 与 <code class="language-plaintext highlighter-rouge">locale.conf</code>。</p>
+
+<p><a href="https://wiki.archlinuxcn.org/wiki/编辑">编辑</a> <code class="language-plaintext highlighter-rouge">/etc/locale.gen</code>，然后取消掉 <code class="language-plaintext highlighter-rouge">en_US.UTF-8 UTF-8</code> 和其他需要的 UTF-8 <a href="https://wiki.archlinuxcn.org/wiki/Locale">区域设置</a>前的注释（<strong>#</strong>）。</p>
+
+<p>接着执行 <code class="language-plaintext highlighter-rouge">locale-gen</code> 以生成 locale 信息：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># locale-gen
+</code></pre></div></div>
+
+<p>然后创建 <a href="https://man.archlinux.org/man/locale.conf.5">locale.conf(5)</a> 文件，并<a href="https://wiki.archlinuxcn.org/wiki/Locale#系统区域设置">编辑设定 LANG 变量</a>，比如：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/etc/locale.conf
+LANG=en_US.UTF-8
+</code></pre></div></div>
+
+<h2 id="网络配置">网络配置</h2>
+
+<p>为您的系统设置一个固定且易于辨识的名称（在联网环境中尤其有用），请<a href="https://wiki.archlinuxcn.org/wiki/创建">创建</a> <a href="https://wiki.archlinuxcn.org/wiki/网络配置#设置计算机名">hostname</a> 文件：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/etc/hostname
+主机名
+</code></pre></div></div>
+
+<p><strong>提示：</strong>请参阅 <a href="https://tools.ietf.org/html/rfc1178">RFC 1178</a> 以获取一些关于为计算机取名的建议。如 <a href="https://man.archlinux.org/man/hostname.7">hostname(7)</a> 所述，其必须包含 1-63 个字符，仅使用小写的 <code class="language-plaintext highlighter-rouge">a-z</code>、<code class="language-plaintext highlighter-rouge">0-9</code> 以及 <code class="language-plaintext highlighter-rouge">-</code>，但不得以 <code class="language-plaintext highlighter-rouge">-</code> 开头。</p>
+
+<p>在系统内部启动网络管理器服务（开机自启）</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl enable NetworkManager
+</code></pre></div></div>
+
+<p>代理设置</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 设置 HTTP 代理
+export http_proxy="http://代理IP:端口"
+# 设置 HTTPS 代理
+export https_proxy="http://代理IP:端口"
+</code></pre></div></div>
+
+<h2 id="设置-root-密码">设置 root 密码</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># passwd
+</code></pre></div></div>
+
+<h2 id="安装grub引导">安装Grub引导</h2>
+
+<p># A. 安装 GRUB 工具包</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pacman -S grub efibootmgr
+</code></pre></div></div>
+
+<p># B. 将 GRUB 安装到 EFI 分区</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+</code></pre></div></div>
+
+<p># C. 生成启动配置文件</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>grub-mkconfig -o /boot/grub/grub.cfg
+</code></pre></div></div>
+
+<h2 id="重启">重启</h2>
+
+<p>输入 <code class="language-plaintext highlighter-rouge">exit</code> 或按 <code class="language-plaintext highlighter-rouge">Ctrl+d</code> 退出 chroot 环境。</p>
+
+<p>可选用 <code class="language-plaintext highlighter-rouge">umount -R /mnt</code> 手动卸载被挂载的分区：这有助于发现任何“繁忙”的分区，并通过 <a href="https://man.archlinux.org/man/fuser.1">fuser(1)</a> 查找原因。</p>
+
+<p>最后，通过执行 <code class="language-plaintext highlighter-rouge">reboot</code> 重启系统，<em>systemd</em> 将自动卸载仍然挂载的任何分区。这时候不要忘记移除安装介质，然后使用 <a href="https://wiki.archlinuxcn.org/wiki/Root">root</a> 账户登录到新系统。</p>
+
+<h2 id="添加个人用户">添加个人用户</h2>
+
+<p>最好不要一直用root账户</p>
+
+<p>创建普通用户</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>useradd -m -G wheel yourname
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>passwd yourname
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pacman -S sudo
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>EDITOR=vim visudo
+</code></pre></div></div>
+
+<p>去掉# %wheel ALL=(ALL:ALL) ALL的注释</p>
+
+<h1 id="安装hyprland">安装Hyprland</h1>
+
+<p>选用Rice为caelestia-shell，https://github.com/caelestia-dots/shell</p>
+
+<h2 id="安装aur">安装AUR</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo pacman -Syu
+sudo pacman -S --needed base-devel
+cd /tmp
+git clone https://aur.archlinux.org/paru.git
+cd paru
+makepkg -si
+</code></pre></div></div>
+
+<h2 id="自动安装caelestia">自动安装caelestia</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>paru -S caelestia-cli
+caelestia install
+</code></pre></div></div>
+
+<h2 id="手动clone-caelestia-仓库">手动Clone caelestia 仓库</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 1. 进入目录
+cd caelestia
+
+# 2. 安装 Hyprland 核心依赖
+sudo pacman -S --needed hyprland xdg-desktop-portal-hyprland xdg-desktop-portal-gtk ttf-jetbrains-mono-nerd
+
+# 3. 确保配置目录存在（使用 ~/.config 更稳妥）
+mkdir -p ~/.config/hypr
+
+# 4. 复制 hypr 配置文件
+cp -r hypr/. ~/.config/hypr/
+</code></pre></div></div>
+
+
+            </div>
+
+        </article>
+
+        <!-- 右侧栏：目录 -->
+        <aside class="post-right">
+            <nav id="toc-nav" class="toc-nav"></nav>
+        </aside>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div>Copyright © 2024 - 版权归属 LIN</div>
+            <div class="running-time">
+                本博客已运行
+                <span id="blog_running_days" class="odometer"></span> days ,
+                <span id="blog_running_hours" class="odometer"></span> h ,
+                <span id="blog_running_mins" class="odometer"></span> m ,
+                <span id="blog_running_secs" class="odometer"></span> s
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mermaid 流程图 -->
+    
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const mermaidBlocks = document.querySelectorAll('pre > code.language-mermaid');
+        mermaidBlocks.forEach((codeBlock) => {
+            const container = document.createElement('div');
+            container.className = 'mermaid';
+            container.textContent = codeBlock.textContent;
+            const pre = codeBlock.parentElement;
+            pre.parentNode.replaceChild(container, pre);
+        });
+        mermaid.initialize({ startOnLoad: true });
+    });
+    </script>
+    
+
+    <script>
+    // 自动生成右侧目录（同时兼容 Jekyll 的 {:toc} 标记）
+    (function initToc() {
+        const build = () => {
+            const toc = document.getElementById('toc-nav');
+            if (!toc) return;
+            const body = document.querySelector('.post-body');
+            if (!body) return;
+
+            // 清空占位文案
+            toc.innerHTML = '';
+
+            // 1) 优先使用 Jekyll 已经渲染好的 TOC 列表
+            const generated = body.querySelector('ul#markdown-toc, ul#toc, #markdown-toc');
+            if (generated) {
+                toc.innerHTML = generated.innerHTML;
+                generated.remove();
+            } else {
+                // 2) 否则从正文的 h1-h6 自动生成
+                const headings = body.querySelectorAll('h1, h2, h3, h4, h5, h6');
+                if (headings.length === 0) {
+                    toc.innerHTML = '<div class="toc-empty">本篇文章暂无目录</div>';
+                    return;
+                }
+                headings.forEach((h, i) => {
+                    if (!h.id) h.id = 'heading-' + i + '-' + (h.textContent || '').trim().replace(/\s+/g, '-').slice(0, 20);
+                });
+                const ul = document.createElement('ul');
+                headings.forEach(h => {
+                    const li = document.createElement('li');
+                    li.className = 'toc-level-' + h.tagName.toLowerCase();
+                    const a = document.createElement('a');
+                    a.href = '#' + h.id;
+                    a.textContent = (h.textContent || '').trim();
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                });
+                toc.appendChild(ul);
+            }
+
+            // 2.5) 给各级目录项加编号（兼容 {:toc} 生成的无 class 目录）
+            (function numberToc() {
+                // 先尝试用类名定位
+                let items = toc.querySelectorAll('li[class*="toc-level-h"]');
+                if (items.length === 0) {
+                    // 否则遍历所有 li，根据 ul 嵌套深度算级别（最外层 = 1）
+                    const allLis = toc.querySelectorAll('li');
+                    allLis.forEach(li => {
+                        let depth = 0;
+                        let p = li.parentElement;
+                        while (p && p !== toc) {
+                            if (p.tagName === 'UL') depth++;
+                            p = p.parentElement;
+                        }
+                        li.dataset.tocDepth = String(depth);
+                    });
+                    items = allLis;
+                }
+
+                if (items.length === 0) return;
+
+                // 找到实际出现的最高级（depth 最小 = 1）
+                const allDepths = Array.from(items).map(li => {
+                    if (li.dataset.tocDepth) return parseInt(li.dataset.tocDepth, 10);
+                    const m = li.className.match(/toc-level-h([1-6])/);
+                    return m ? parseInt(m[1], 10) : 1;
+                });
+                const topDepth = Math.min.apply(null, allDepths);
+
+                const c = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+                items.forEach(li => {
+                    let depth;
+                    if (li.dataset.tocDepth) {
+                        depth = parseInt(li.dataset.tocDepth, 10);
+                    } else {
+                        const m = li.className.match(/toc-level-h([1-6])/);
+                        depth = m ? parseInt(m[1], 10) : 1;
+                    }
+                    c[depth]++;
+                    for (let k = depth + 1; k <= 6; k++) c[k] = 0;
+                    const a = li.querySelector('a');
+                    if (!a || a.querySelector('.toc-num')) return;
+                    const num = document.createElement('span');
+                    num.className = 'toc-num';
+                    // 三级及更深：不编号，改用实心圆点
+                    if (depth - topDepth >= 2) {
+                        num.classList.add('toc-dot');
+                        num.textContent = '●';
+                    } else {
+                        const parts = [];
+                        for (let k = topDepth; k <= depth; k++) {
+                            if (c[k] > 0) parts.push(c[k]);
+                        }
+                        num.textContent = parts.join('.') + ' ';
+                    }
+                    a.insertBefore(num, a.firstChild);
+                });
+            })();
+
+            // 3) 滚动联动高亮
+            const links = toc.querySelectorAll('a');
+            if (links.length === 0) return;
+
+            const map = new Map();
+            links.forEach(a => {
+                const id = a.getAttribute('href');
+                if (id && id.startsWith('#')) {
+                    const target = document.getElementById(id.substring(1));
+                    if (target) map.set(target, a);
+                }
+            });
+
+            const setActive = (a) => {
+                links.forEach(x => x.classList.remove('active'));
+                a.classList.add('active');
+                const top = a.offsetTop - toc.clientHeight / 2 + a.clientHeight / 2;
+                toc.scrollTo({ top, behavior: 'smooth' });
+            };
+
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver(entries => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const a = map.get(entry.target);
+                            if (a) setActive(a);
+                        }
+                    });
+                }, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+                map.forEach((_, target) => observer.observe(target));
+            }
+        };
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', build);
+        } else {
+            build();
+        }
+    })();
+    </script>
+
+    <script>
+    // 主题切换（明/暗）
+    (function(){
+        const btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        const saved = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', saved);
+        btn.addEventListener('click', () => {
+            const cur = document.documentElement.getAttribute('data-theme');
+            const next = cur === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+    })();
+    </script>
+
+    <script>
+    // 顶部栏滚动毛玻璃
+    (function(){
+        const top = document.getElementById('topbar');
+        if (!top) return;
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 30) top.classList.add('scrolled');
+            else top.classList.remove('scrolled');
+        });
+    })();
+    </script>
+
+    <script>
+    // 背景图加载
+    (function() {
+        const bgUrl = "/Blog/images/background.jpg";
+        const img = new Image();
+        img.src = bgUrl;
+        img.onload = function() {
+            document.body.classList.add('loaded');
+        };
+        setTimeout(() => document.body.classList.add('loaded'), 5000);
+    })();
+    </script>
+
+    <script src="/Blog/autohighlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
+    <script src="/Blog/copy.js"></script>
+</body>
+</html>

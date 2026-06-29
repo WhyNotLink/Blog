@@ -2,30 +2,20 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>前端开发 - LIN's Blog</title>
-    <!-- 使用 relative_url 确保路径永远正确 -->
+
     <link rel="stylesheet" href="/Blog/style.css">
     <link rel="stylesheet" href="/Blog/post.css">
-    
-    <script>
-        // const navbar = document.getElementById('navbar');
-        // const hero = document.querySelector('.hero');
-        // const heroHeight = hero.offsetHeight;
-        const threshold = 200;
 
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            if (scrollY > threshold) {
-            navbar.classList.add('scrolled');
-            } else {
-            navbar.classList.remove('scrolled');
-            }
-        });
-       
-    </script>
-        <!-- Odometer 数字滚动插件 -->
+    <!-- Odometer 数字滚动插件 -->
     <link rel="stylesheet" href="/Blog/odometr.css">
     <script src="/Blog/odometr.js"></script>
+
+    <!-- 代码高亮主题 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/androidstudio.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
     <!-- 博客运行计时核心脚本 -->
     <script>
     window.pjaxLoaded = function(){
@@ -33,38 +23,35 @@
         var blog_running_hours=document.getElementById("blog_running_hours");
         var blog_running_mins=document.getElementById("blog_running_mins");
         var blog_running_secs=document.getElementById("blog_running_secs");
-        
+
         function refresh_blog_running_time(){
-            // 博客起始时间：2024年10月7日（月份0-11，所以9代表10月）
             var time = new Date() - new Date(2024, 9, 7, 0, 0, 0);
             var d=parseInt(time/24/60/60/1000);
             var h=parseInt(time%(24*60*60*1000)/60/60/1000);
             var m=parseInt(time%(60*60*1000)/60/1000);
             var s=parseInt(time%(60*1000)/1000);
-            
             blog_running_days.innerHTML=d;
             blog_running_hours.innerHTML=h;
             blog_running_mins.innerHTML=m;
             blog_running_secs.innerHTML=s;
         };
-        
         refresh_blog_running_time();
         if (typeof(bottomTimeIntervalHasSet) == "undefined"){
             var bottomTimeIntervalHasSet = true;
             setInterval(refresh_blog_running_time,500);
         }
     };
-    // 初始化数字滚动
+
     window.onload = function(){
         odometer_init();
         window.pjaxLoaded();
-        hljs.highlightAll();
+        if (window.hljs) hljs.highlightAll();
     };
 
     function odometer_init(){
         let el = document.getElementsByClassName('odometer');
         for (let i = 0; i < el.length; i++) {
-            od = new Odometer({
+            new Odometer({
                 el: el[i],
                 format: 'ddd',
                 duration: 200
@@ -72,180 +59,257 @@
         }
     }
     </script>
-
 </head>
 <body class="fade-in-content">
 
-    <nav class="nav" id="navbar">
-        <div class="container">
-            <ul class="nav-menu">
-                <li><a href="/Blog/index.html">首页</a></li>
-                <li><a href="/Blog/sort.html">分类</a></li>
-                <li><a href="/Blog/history.html">归档</a></li>
-                <li><a href="/Blog/tool.html">工具</a></li>
-                <li><a href="/Blog/aboutme.html">关于我</a></li>
-            </ul>
-        </div>
-    </nav>
+    <!-- 顶部导航 -->
+    <header class="topbar" id="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="/Blog/index.html">
+                <span class="brand-name">LIN的博客</span>
+            </a>
 
-    <main class="main">
-        <div class="container">
-            <div class="content">
-                <article class="post-detail">
-                    <h1 class="post-title">前端开发</h1>
-                    <div class="post-meta">
-                        2026年04月05日 | 分类：Web
+            <nav class="topnav">
+                <a href="/Blog/sort.html">分类</a>
+                <a href="/Blog/history.html">归档</a>
+                <a href="/Blog/tool.html">工具</a>
+                <a href="/Blog/aboutmehtml">关于我</a>
+            </nav>
+
+            <div class="topbar-tools">
+                <button class="theme-toggle" id="themeToggle" title="切换主题">◐</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 三栏主体 -->
+    <main class="post-layout">
+        <!-- 左侧栏：作者 + 分类 + 标签 -->
+        <aside class="post-left">
+            <div class="card author-card">
+                <div class="author-info">
+                    <img class="author-avatar" src="/Blog/images/touxiang.jpg" alt="avatar">
+                    <div class="author-text">
+                        <div class="author-name">LIN</div>
+                        <div class="author-bio">摸鱼?摸鱼.摸鱼!</div>
                     </div>
+                </div>
+                <a class="author-github" href="#" target="_blank">
+                    <span class="gh-icon"></span> GitHub
+                </a>
+            </div>
+
+            <div class="card widget-card">
+                <div class="widget-title">分类</div>
+                <ul class="cat-list">
+                
+                
                     
-                    <!-- Jekyll 会把 Markdown 的内容塞到这里 -->
-                    <div class="entry-content">
-                        <ul id="markdown-toc">
-  <li><a href="#一html超文本标记语言-页面结构骨架" id="markdown-toc-一html超文本标记语言-页面结构骨架">一、HTML（超文本标记语言）—— 页面结构骨架</a>    <ul>
-      <li><a href="#11-基础结构" id="markdown-toc-11-基础结构">1.1 基础结构</a></li>
-      <li><a href="#12-核心标签分类" id="markdown-toc-12-核心标签分类">1.2 核心标签分类</a>        <ul>
-          <li><a href="#121-语义化标签利于seo和可读性" id="markdown-toc-121-语义化标签利于seo和可读性">1.2.1 语义化标签（利于SEO和可读性）</a></li>
-          <li><a href="#122-文本标签" id="markdown-toc-122-文本标签">1.2.2 文本标签</a></li>
-          <li><a href="#123-图片与链接标签" id="markdown-toc-123-图片与链接标签">1.2.3 图片与链接标签</a>            <ul>
+                    <li><a href="/Blog/sort.html">Web<span class="cat-count">1</span></a></li>
+                
+                </ul>
+            </div>
+
+            <div class="card widget-card">
+                <div class="widget-title">标签</div>
+                <div class="tag-list">
+                
+                    <span class="tag-empty">暂无标签</span>
+                
+                </div>
+            </div>
+        </aside>
+
+        <!-- 中间内容 -->
+        <article class="post-main">
+            <div class="post-header">
+                
+                
+
+                <div class="post-meta-top">
+                    <span class="meta-badge">
+                        <span class="meta-icon meta-icon-gray">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></svg>
+                        </span>
+                        <span>46118 字</span>
+                    </span>
+                    <span class="meta-badge">
+                        <span class="meta-icon meta-icon-gray">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </span>
+                        <span>132 分钟</span>
+                    </span>
+                </div>
+
+                <h1 class="post-title">前端开发</h1>
+
+                <div class="post-meta-bar">
+                    <span class="meta-pill">
+                        <span class="meta-icon meta-icon-amber">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        </span>
+                        2026-04-05
+                    </span>
+                    <span class="meta-pill">
+                        <span class="meta-icon meta-icon-amber">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v4H4z"/><path d="M4 12h16v4H4z"/><path d="M4 20h16"/></svg>
+                        </span>
+                        Web
+                    </span>
+                    
+                        
+                    
+                </div>
+            </div>
+
+            <div class="post-body">
+                <ul id="markdown-toc">
+  <li><a href="#html超文本标记语言-页面结构骨架" id="markdown-toc-html超文本标记语言-页面结构骨架">HTML（超文本标记语言）—— 页面结构骨架</a>    <ul>
+      <li><a href="#基础结构" id="markdown-toc-基础结构">基础结构</a></li>
+      <li><a href="#核心标签分类" id="markdown-toc-核心标签分类">核心标签分类</a>        <ul>
+          <li><a href="#语义化标签利于seo和可读性" id="markdown-toc-语义化标签利于seo和可读性">语义化标签（利于SEO和可读性）</a></li>
+          <li><a href="#文本标签" id="markdown-toc-文本标签">文本标签</a></li>
+          <li><a href="#图片与链接标签" id="markdown-toc-图片与链接标签">图片与链接标签</a>            <ul>
               <li><a href="#图片标签img单标签核心用于展示图片" id="markdown-toc-图片标签img单标签核心用于展示图片">图片标签：<code class="language-plaintext highlighter-rouge">&lt;img&gt;</code>（单标签，核心用于展示图片）</a></li>
               <li><a href="#链接标签a双标签核心用于页面跳转" id="markdown-toc-链接标签a双标签核心用于页面跳转">链接标签：<code class="language-plaintext highlighter-rouge">&lt;a&gt;</code>（双标签，核心用于页面跳转）</a></li>
             </ul>
           </li>
-          <li><a href="#124-列表标签" id="markdown-toc-124-列表标签">1.2.4 列表标签</a></li>
-          <li><a href="#125-表单标签用于收集用户输入" id="markdown-toc-125-表单标签用于收集用户输入">1.2.5 表单标签（用于收集用户输入）</a>            <ul>
+          <li><a href="#列表标签" id="markdown-toc-列表标签">列表标签</a></li>
+          <li><a href="#表单标签用于收集用户输入" id="markdown-toc-表单标签用于收集用户输入">表单标签（用于收集用户输入）</a>            <ul>
               <li><a href="#常用表单元素" id="markdown-toc-常用表单元素">常用表单元素</a></li>
             </ul>
           </li>
-          <li><a href="#126-html5-新特性" id="markdown-toc-126-html5-新特性">1.2.6 HTML5 新特性</a></li>
-          <li><a href="#13-常用属性与规范" id="markdown-toc-13-常用属性与规范">1.3 常用属性与规范</a></li>
+          <li><a href="#html5-新特性" id="markdown-toc-html5-新特性">HTML5 新特性</a></li>
+          <li><a href="#常用属性与规范" id="markdown-toc-常用属性与规范">常用属性与规范</a></li>
         </ul>
       </li>
     </ul>
   </li>
-  <li><a href="#二css层叠样式表-页面样式与布局" id="markdown-toc-二css层叠样式表-页面样式与布局">二、CSS（层叠样式表）—— 页面样式与布局</a>    <ul>
-      <li><a href="#21-css-引入方式3种按优先级从高到低" id="markdown-toc-21-css-引入方式3种按优先级从高到低">2.1 CSS 引入方式（3种，按优先级从高到低）</a>        <ul>
-          <li><a href="#211-内联样式行内样式" id="markdown-toc-211-内联样式行内样式">2.1.1 内联样式（行内样式）</a></li>
-          <li><a href="#212-内部样式嵌入样式" id="markdown-toc-212-内部样式嵌入样式">2.1.2 内部样式（嵌入样式）</a></li>
-          <li><a href="#213-外部样式链接样式" id="markdown-toc-213-外部样式链接样式">2.1.3 外部样式（链接样式）</a></li>
+  <li><a href="#css层叠样式表-页面样式与布局" id="markdown-toc-css层叠样式表-页面样式与布局">CSS（层叠样式表）—— 页面样式与布局</a>    <ul>
+      <li><a href="#css-引入方式3种按优先级从高到低" id="markdown-toc-css-引入方式3种按优先级从高到低">CSS 引入方式（3种，按优先级从高到低）</a>        <ul>
+          <li><a href="#内联样式行内样式" id="markdown-toc-内联样式行内样式">内联样式（行内样式）</a></li>
+          <li><a href="#内部样式嵌入样式" id="markdown-toc-内部样式嵌入样式">内部样式（嵌入样式）</a></li>
+          <li><a href="#外部样式链接样式" id="markdown-toc-外部样式链接样式">外部样式（链接样式）</a></li>
         </ul>
       </li>
-      <li><a href="#22-选择器找到要样式化的html元素" id="markdown-toc-22-选择器找到要样式化的html元素">2.2 选择器（找到要样式化的HTML元素）</a>        <ul>
-          <li><a href="#221-基础选择器" id="markdown-toc-221-基础选择器">2.2.1 基础选择器</a></li>
-          <li><a href="#222-组合选择器" id="markdown-toc-222-组合选择器">2.2.2 组合选择器</a></li>
-          <li><a href="#223-伪类选择器用于元素的特殊状态" id="markdown-toc-223-伪类选择器用于元素的特殊状态">2.2.3 伪类选择器（用于元素的特殊状态）</a></li>
-          <li><a href="#224-伪元素选择器用于创建虚拟元素" id="markdown-toc-224-伪元素选择器用于创建虚拟元素">2.2.4 伪元素选择器（用于创建虚拟元素）</a></li>
-          <li><a href="#225-选择器优先级解决样式冲突" id="markdown-toc-225-选择器优先级解决样式冲突">2.2.5 选择器优先级（解决样式冲突）</a></li>
+      <li><a href="#选择器找到要样式化的html元素" id="markdown-toc-选择器找到要样式化的html元素">选择器（找到要样式化的HTML元素）</a>        <ul>
+          <li><a href="#基础选择器" id="markdown-toc-基础选择器">基础选择器</a></li>
+          <li><a href="#组合选择器" id="markdown-toc-组合选择器">组合选择器</a></li>
+          <li><a href="#伪类选择器用于元素的特殊状态" id="markdown-toc-伪类选择器用于元素的特殊状态">伪类选择器（用于元素的特殊状态）</a></li>
+          <li><a href="#伪元素选择器用于创建虚拟元素" id="markdown-toc-伪元素选择器用于创建虚拟元素">伪元素选择器（用于创建虚拟元素）</a></li>
+          <li><a href="#选择器优先级解决样式冲突" id="markdown-toc-选择器优先级解决样式冲突">选择器优先级（解决样式冲突）</a></li>
         </ul>
       </li>
-      <li><a href="#23-核心样式属性" id="markdown-toc-23-核心样式属性">2.3 核心样式属性</a>        <ul>
-          <li><a href="#231-盒模型所有元素都有盒模型" id="markdown-toc-231-盒模型所有元素都有盒模型">2.3.1 盒模型（所有元素都有盒模型）</a></li>
-          <li><a href="#232-字体与文本样式" id="markdown-toc-232-字体与文本样式">2.3.2 字体与文本样式</a>            <ul>
+      <li><a href="#核心样式属性" id="markdown-toc-核心样式属性">核心样式属性</a>        <ul>
+          <li><a href="#盒模型所有元素都有盒模型" id="markdown-toc-盒模型所有元素都有盒模型">盒模型（所有元素都有盒模型）</a></li>
+          <li><a href="#字体与文本样式" id="markdown-toc-字体与文本样式">字体与文本样式</a>            <ul>
               <li><a href="#字体样式" id="markdown-toc-字体样式">字体样式</a></li>
               <li><a href="#文本样式" id="markdown-toc-文本样式">文本样式</a></li>
             </ul>
           </li>
-          <li><a href="#233-背景样式" id="markdown-toc-233-背景样式">2.3.3 背景样式</a></li>
-          <li><a href="#234-元素显示与定位" id="markdown-toc-234-元素显示与定位">2.3.4 元素显示与定位</a>            <ul>
+          <li><a href="#背景样式" id="markdown-toc-背景样式">背景样式</a></li>
+          <li><a href="#元素显示与定位" id="markdown-toc-元素显示与定位">元素显示与定位</a>            <ul>
               <li><a href="#元素显示模式display属性" id="markdown-toc-元素显示模式display属性">元素显示模式（display属性）</a></li>
               <li><a href="#定位position属性核心布局方式" id="markdown-toc-定位position属性核心布局方式">定位（position属性，核心布局方式）</a></li>
             </ul>
           </li>
-          <li><a href="#235-浮动float属性传统布局方式" id="markdown-toc-235-浮动float属性传统布局方式">2.3.5 浮动（float属性，传统布局方式）</a></li>
-          <li><a href="#236-弹性布局flex布局现代布局方式" id="markdown-toc-236-弹性布局flex布局现代布局方式">2.3.6 弹性布局（Flex布局，现代布局方式）</a>            <ul>
-              <li><a href="#1-开启flex布局" id="markdown-toc-1-开启flex布局">1. 开启Flex布局</a></li>
-              <li><a href="#2-容器属性作用于父容器" id="markdown-toc-2-容器属性作用于父容器">2. 容器属性（作用于父容器）</a></li>
-              <li><a href="#3-项目属性作用于子项目" id="markdown-toc-3-项目属性作用于子项目">3. 项目属性（作用于子项目）</a></li>
+          <li><a href="#浮动float属性传统布局方式" id="markdown-toc-浮动float属性传统布局方式">浮动（float属性，传统布局方式）</a></li>
+          <li><a href="#弹性布局flex布局现代布局方式" id="markdown-toc-弹性布局flex布局现代布局方式">弹性布局（Flex布局，现代布局方式）</a>            <ul>
+              <li><a href="#开启flex布局" id="markdown-toc-开启flex布局">开启Flex布局</a></li>
+              <li><a href="#容器属性作用于父容器" id="markdown-toc-容器属性作用于父容器">容器属性（作用于父容器）</a></li>
+              <li><a href="#项目属性作用于子项目" id="markdown-toc-项目属性作用于子项目">项目属性（作用于子项目）</a></li>
             </ul>
           </li>
-          <li><a href="#237-网格布局grid布局现代布局方式补充" id="markdown-toc-237-网格布局grid布局现代布局方式补充">2.3.7 网格布局（Grid布局，现代布局方式，补充）</a>            <ul>
-              <li><a href="#1-开启grid布局" id="markdown-toc-1-开启grid布局">1. 开启Grid布局</a></li>
-              <li><a href="#2-容器属性作用于父容器-1" id="markdown-toc-2-容器属性作用于父容器-1">2. 容器属性（作用于父容器）</a></li>
-              <li><a href="#3-项目属性作用于子项目-1" id="markdown-toc-3-项目属性作用于子项目-1">3. 项目属性（作用于子项目）</a></li>
+          <li><a href="#网格布局grid布局现代布局方式补充" id="markdown-toc-网格布局grid布局现代布局方式补充">网格布局（Grid布局，现代布局方式，补充）</a>            <ul>
+              <li><a href="#开启grid布局" id="markdown-toc-开启grid布局">开启Grid布局</a></li>
+              <li><a href="#容器属性作用于父容器-1" id="markdown-toc-容器属性作用于父容器-1">容器属性（作用于父容器）</a></li>
+              <li><a href="#项目属性作用于子项目-1" id="markdown-toc-项目属性作用于子项目-1">项目属性（作用于子项目）</a></li>
             </ul>
           </li>
-          <li><a href="#238-css3-其他常用新特性" id="markdown-toc-238-css3-其他常用新特性">2.3.8 CSS3 其他常用新特性</a></li>
-          <li><a href="#24-响应式布局核心适配移动端平板pc" id="markdown-toc-24-响应式布局核心适配移动端平板pc">2.4 响应式布局（核心，适配移动端、平板、PC）</a>            <ul>
-              <li><a href="#1-媒体查询基础语法" id="markdown-toc-1-媒体查询基础语法">1. 媒体查询基础语法</a></li>
-              <li><a href="#2-响应式布局注意事项" id="markdown-toc-2-响应式布局注意事项">2. 响应式布局注意事项</a></li>
+          <li><a href="#css3-其他常用新特性" id="markdown-toc-css3-其他常用新特性">CSS3 其他常用新特性</a></li>
+          <li><a href="#响应式布局核心适配移动端平板pc" id="markdown-toc-响应式布局核心适配移动端平板pc">响应式布局（核心，适配移动端、平板、PC）</a>            <ul>
+              <li><a href="#媒体查询基础语法" id="markdown-toc-媒体查询基础语法">媒体查询基础语法</a></li>
+              <li><a href="#响应式布局注意事项" id="markdown-toc-响应式布局注意事项">响应式布局注意事项</a></li>
             </ul>
           </li>
-          <li><a href="#25-css-常见问题与解决方案" id="markdown-toc-25-css-常见问题与解决方案">2.5 CSS 常见问题与解决方案</a></li>
+          <li><a href="#css-常见问题与解决方案" id="markdown-toc-css-常见问题与解决方案">CSS 常见问题与解决方案</a></li>
         </ul>
       </li>
     </ul>
   </li>
-  <li><a href="#三javascriptjs-页面交互与逻辑" id="markdown-toc-三javascriptjs-页面交互与逻辑">三、JavaScript（JS）—— 页面交互与逻辑</a>    <ul>
-      <li><a href="#31-javascript-引入方式3种与css类似" id="markdown-toc-31-javascript-引入方式3种与css类似">3.1 JavaScript 引入方式（3种，与CSS类似）</a>        <ul>
-          <li><a href="#311-内联脚本行内脚本不推荐" id="markdown-toc-311-内联脚本行内脚本不推荐">3.1.1 内联脚本（行内脚本，不推荐）</a></li>
-          <li><a href="#312-内部脚本嵌入脚本" id="markdown-toc-312-内部脚本嵌入脚本">3.1.2 内部脚本（嵌入脚本）</a></li>
-          <li><a href="#313-外部脚本链接脚本最推荐" id="markdown-toc-313-外部脚本链接脚本最推荐">3.1.3 外部脚本（链接脚本，最推荐）</a></li>
+  <li><a href="#javascriptjs-页面交互与逻辑" id="markdown-toc-javascriptjs-页面交互与逻辑">JavaScript（JS）—— 页面交互与逻辑</a>    <ul>
+      <li><a href="#javascript-引入方式3种与css类似" id="markdown-toc-javascript-引入方式3种与css类似">JavaScript 引入方式（3种，与CSS类似）</a>        <ul>
+          <li><a href="#内联脚本行内脚本不推荐" id="markdown-toc-内联脚本行内脚本不推荐">内联脚本（行内脚本，不推荐）</a></li>
+          <li><a href="#内部脚本嵌入脚本" id="markdown-toc-内部脚本嵌入脚本">内部脚本（嵌入脚本）</a></li>
+          <li><a href="#外部脚本链接脚本最推荐" id="markdown-toc-外部脚本链接脚本最推荐">外部脚本（链接脚本，最推荐）</a></li>
         </ul>
       </li>
-      <li><a href="#32-javascript-基础语法" id="markdown-toc-32-javascript-基础语法">3.2 JavaScript 基础语法</a>        <ul>
-          <li><a href="#321-变量与常量存储数据" id="markdown-toc-321-变量与常量存储数据">3.2.1 变量与常量（存储数据）</a></li>
-          <li><a href="#322-数据类型6种基本类型--1种引用类型" id="markdown-toc-322-数据类型6种基本类型--1种引用类型">3.2.2 数据类型（6种基本类型 + 1种引用类型）</a>            <ul>
-              <li><a href="#1-基本数据类型值类型直接存储值" id="markdown-toc-1-基本数据类型值类型直接存储值">1. 基本数据类型（值类型，直接存储值）</a></li>
-              <li><a href="#2-引用数据类型引用类型存储内存地址" id="markdown-toc-2-引用数据类型引用类型存储内存地址">2. 引用数据类型（引用类型，存储内存地址）</a></li>
-              <li><a href="#3-数据类型判断" id="markdown-toc-3-数据类型判断">3. 数据类型判断</a></li>
+      <li><a href="#javascript-基础语法" id="markdown-toc-javascript-基础语法">JavaScript 基础语法</a>        <ul>
+          <li><a href="#变量与常量存储数据" id="markdown-toc-变量与常量存储数据">变量与常量（存储数据）</a></li>
+          <li><a href="#数据类型6种基本类型--1种引用类型" id="markdown-toc-数据类型6种基本类型--1种引用类型">数据类型（6种基本类型 + 1种引用类型）</a>            <ul>
+              <li><a href="#基本数据类型值类型直接存储值" id="markdown-toc-基本数据类型值类型直接存储值">基本数据类型（值类型，直接存储值）</a></li>
+              <li><a href="#引用数据类型引用类型存储内存地址" id="markdown-toc-引用数据类型引用类型存储内存地址">引用数据类型（引用类型，存储内存地址）</a></li>
+              <li><a href="#数据类型判断" id="markdown-toc-数据类型判断">数据类型判断</a></li>
             </ul>
           </li>
-          <li><a href="#323-运算符用于数据运算逻辑判断" id="markdown-toc-323-运算符用于数据运算逻辑判断">3.2.3 运算符（用于数据运算、逻辑判断）</a>            <ul>
-              <li><a href="#1-算术运算符用于数值运算" id="markdown-toc-1-算术运算符用于数值运算">1. 算术运算符（用于数值运算）</a></li>
-              <li><a href="#2-赋值运算符用于给变量赋值简化代码" id="markdown-toc-2-赋值运算符用于给变量赋值简化代码">2. 赋值运算符（用于给变量赋值，简化代码）</a></li>
-              <li><a href="#3-比较运算符用于判断两个值的关系返回布尔值truefalse" id="markdown-toc-3-比较运算符用于判断两个值的关系返回布尔值truefalse">3. 比较运算符（用于判断两个值的关系，返回布尔值true/false）</a></li>
-              <li><a href="#4-逻辑运算符用于逻辑判断返回布尔值或原始值常用在条件判断中" id="markdown-toc-4-逻辑运算符用于逻辑判断返回布尔值或原始值常用在条件判断中">4. 逻辑运算符（用于逻辑判断，返回布尔值或原始值，常用在条件判断中）</a></li>
-              <li><a href="#5-三元运算符三目运算符简化if-else条件判断语法条件--成立时执行--不成立时执行" id="markdown-toc-5-三元运算符三目运算符简化if-else条件判断语法条件--成立时执行--不成立时执行">5. 三元运算符（三目运算符，简化if-else条件判断，语法：条件 ? 成立时执行 : 不成立时执行）</a></li>
+          <li><a href="#运算符用于数据运算逻辑判断" id="markdown-toc-运算符用于数据运算逻辑判断">运算符（用于数据运算、逻辑判断）</a>            <ul>
+              <li><a href="#算术运算符用于数值运算" id="markdown-toc-算术运算符用于数值运算">算术运算符（用于数值运算）</a></li>
+              <li><a href="#赋值运算符用于给变量赋值简化代码" id="markdown-toc-赋值运算符用于给变量赋值简化代码">赋值运算符（用于给变量赋值，简化代码）</a></li>
+              <li><a href="#比较运算符用于判断两个值的关系返回布尔值truefalse" id="markdown-toc-比较运算符用于判断两个值的关系返回布尔值truefalse">比较运算符（用于判断两个值的关系，返回布尔值true/false）</a></li>
+              <li><a href="#逻辑运算符用于逻辑判断返回布尔值或原始值常用在条件判断中" id="markdown-toc-逻辑运算符用于逻辑判断返回布尔值或原始值常用在条件判断中">逻辑运算符（用于逻辑判断，返回布尔值或原始值，常用在条件判断中）</a></li>
+              <li><a href="#三元运算符三目运算符简化if-else条件判断语法条件--成立时执行--不成立时执行" id="markdown-toc-三元运算符三目运算符简化if-else条件判断语法条件--成立时执行--不成立时执行">三元运算符（三目运算符，简化if-else条件判断，语法：条件 ? 成立时执行 : 不成立时执行）</a></li>
             </ul>
           </li>
-          <li><a href="#324-条件语句用于根据不同条件执行不同代码" id="markdown-toc-324-条件语句用于根据不同条件执行不同代码">3.2.4 条件语句（用于根据不同条件执行不同代码）</a>            <ul>
-              <li><a href="#1-if-else-语句适用于多种条件判断" id="markdown-toc-1-if-else-语句适用于多种条件判断">1. if-else 语句（适用于多种条件判断）</a></li>
-              <li><a href="#2-switch-case-语句适用于固定值的判断如菜单选择状态判断" id="markdown-toc-2-switch-case-语句适用于固定值的判断如菜单选择状态判断">2. switch-case 语句（适用于固定值的判断，如菜单选择、状态判断）</a></li>
+          <li><a href="#条件语句用于根据不同条件执行不同代码" id="markdown-toc-条件语句用于根据不同条件执行不同代码">条件语句（用于根据不同条件执行不同代码）</a>            <ul>
+              <li><a href="#if-else-语句适用于多种条件判断" id="markdown-toc-if-else-语句适用于多种条件判断">if-else 语句（适用于多种条件判断）</a></li>
+              <li><a href="#switch-case-语句适用于固定值的判断如菜单选择状态判断" id="markdown-toc-switch-case-语句适用于固定值的判断如菜单选择状态判断">switch-case 语句（适用于固定值的判断，如菜单选择、状态判断）</a></li>
             </ul>
           </li>
-          <li><a href="#325-循环语句用于重复执行一段代码减少冗余" id="markdown-toc-325-循环语句用于重复执行一段代码减少冗余">3.2.5 循环语句（用于重复执行一段代码，减少冗余）</a>            <ul>
-              <li><a href="#1-for-循环适用于已知循环次数的场景" id="markdown-toc-1-for-循环适用于已知循环次数的场景">1. for 循环（适用于已知循环次数的场景）</a></li>
-              <li><a href="#2-while-循环适用于未知循环次数只知道循环条件的场景" id="markdown-toc-2-while-循环适用于未知循环次数只知道循环条件的场景">2. while 循环（适用于未知循环次数，只知道循环条件的场景）</a></li>
-              <li><a href="#3-do-while-循环与while循环类似区别先执行一次循环体再判断条件" id="markdown-toc-3-do-while-循环与while循环类似区别先执行一次循环体再判断条件">3. do-while 循环（与while循环类似，区别：先执行一次循环体，再判断条件）</a></li>
-              <li><a href="#4-循环控制语句breakcontinue" id="markdown-toc-4-循环控制语句breakcontinue">4. 循环控制语句（break、continue）</a></li>
+          <li><a href="#循环语句用于重复执行一段代码减少冗余" id="markdown-toc-循环语句用于重复执行一段代码减少冗余">循环语句（用于重复执行一段代码，减少冗余）</a>            <ul>
+              <li><a href="#for-循环适用于已知循环次数的场景" id="markdown-toc-for-循环适用于已知循环次数的场景">for 循环（适用于已知循环次数的场景）</a></li>
+              <li><a href="#while-循环适用于未知循环次数只知道循环条件的场景" id="markdown-toc-while-循环适用于未知循环次数只知道循环条件的场景">while 循环（适用于未知循环次数，只知道循环条件的场景）</a></li>
+              <li><a href="#do-while-循环与while循环类似区别先执行一次循环体再判断条件" id="markdown-toc-do-while-循环与while循环类似区别先执行一次循环体再判断条件">do-while 循环（与while循环类似，区别：先执行一次循环体，再判断条件）</a></li>
+              <li><a href="#循环控制语句breakcontinue" id="markdown-toc-循环控制语句breakcontinue">循环控制语句（break、continue）</a></li>
             </ul>
           </li>
-          <li><a href="#326-数组array常用引用类型用于存储多个数据" id="markdown-toc-326-数组array常用引用类型用于存储多个数据">3.2.6 数组（Array，常用引用类型，用于存储多个数据）</a>            <ul>
-              <li><a href="#1-数组的创建方式3种常用" id="markdown-toc-1-数组的创建方式3种常用">1. 数组的创建方式（3种常用）</a></li>
-              <li><a href="#2-数组的核心属性与方法" id="markdown-toc-2-数组的核心属性与方法">2. 数组的核心属性与方法</a>                <ul>
-                  <li><a href="#1增删改查" id="markdown-toc-1增删改查">（1）增删改查</a></li>
-                  <li><a href="#2数组遍历" id="markdown-toc-2数组遍历">（2）数组遍历</a></li>
-                  <li><a href="#3其他常用方法" id="markdown-toc-3其他常用方法">（3）其他常用方法</a></li>
+          <li><a href="#数组array常用引用类型用于存储多个数据" id="markdown-toc-数组array常用引用类型用于存储多个数据">数组（Array，常用引用类型，用于存储多个数据）</a>            <ul>
+              <li><a href="#数组的创建方式3种常用" id="markdown-toc-数组的创建方式3种常用">数组的创建方式（3种常用）</a></li>
+              <li><a href="#数组的核心属性与方法" id="markdown-toc-数组的核心属性与方法">数组的核心属性与方法</a>                <ul>
+                  <li><a href="#增删改查" id="markdown-toc-增删改查">增删改查</a></li>
+                  <li><a href="#数组遍历" id="markdown-toc-数组遍历">数组遍历</a></li>
+                  <li><a href="#其他常用方法" id="markdown-toc-其他常用方法">其他常用方法</a></li>
                 </ul>
               </li>
             </ul>
           </li>
-          <li><a href="#327-函数function用于封装可复用的代码" id="markdown-toc-327-函数function用于封装可复用的代码">3.2.7 函数（Function，用于封装可复用的代码）</a>            <ul>
-              <li><a href="#1-函数的创建方式3种常用" id="markdown-toc-1-函数的创建方式3种常用">1. 函数的创建方式（3种常用）</a></li>
-              <li><a href="#2-函数的参数与返回值" id="markdown-toc-2-函数的参数与返回值">2. 函数的参数与返回值</a></li>
-              <li><a href="#3-函数的作用域与作用域链" id="markdown-toc-3-函数的作用域与作用域链">3. 函数的作用域与作用域链</a></li>
+          <li><a href="#函数function用于封装可复用的代码" id="markdown-toc-函数function用于封装可复用的代码">函数（Function，用于封装可复用的代码）</a>            <ul>
+              <li><a href="#函数的创建方式3种常用" id="markdown-toc-函数的创建方式3种常用">函数的创建方式（3种常用）</a></li>
+              <li><a href="#函数的参数与返回值" id="markdown-toc-函数的参数与返回值">函数的参数与返回值</a></li>
+              <li><a href="#函数的作用域与作用域链" id="markdown-toc-函数的作用域与作用域链">函数的作用域与作用域链</a></li>
             </ul>
           </li>
-          <li><a href="#328-对象object核心引用类型用于存储多个相关数据和方法" id="markdown-toc-328-对象object核心引用类型用于存储多个相关数据和方法">3.2.8 对象（Object，核心引用类型，用于存储多个相关数据和方法）</a>            <ul>
-              <li><a href="#1-对象的创建方式3种常用" id="markdown-toc-1-对象的创建方式3种常用">1. 对象的创建方式（3种常用）</a></li>
-              <li><a href="#2-对象的属性访问与修改" id="markdown-toc-2-对象的属性访问与修改">2. 对象的属性访问与修改</a></li>
-              <li><a href="#3-对象的遍历" id="markdown-toc-3-对象的遍历">3. 对象的遍历</a></li>
+          <li><a href="#对象object核心引用类型用于存储多个相关数据和方法" id="markdown-toc-对象object核心引用类型用于存储多个相关数据和方法">对象（Object，核心引用类型，用于存储多个相关数据和方法）</a>            <ul>
+              <li><a href="#对象的创建方式3种常用" id="markdown-toc-对象的创建方式3种常用">对象的创建方式（3种常用）</a></li>
+              <li><a href="#对象的属性访问与修改" id="markdown-toc-对象的属性访问与修改">对象的属性访问与修改</a></li>
+              <li><a href="#对象的遍历" id="markdown-toc-对象的遍历">对象的遍历</a></li>
             </ul>
           </li>
-          <li><a href="#33-dom-操作js操作html元素的基础" id="markdown-toc-33-dom-操作js操作html元素的基础">3.3 DOM 操作（JS操作HTML元素的基础）</a>            <ul>
-              <li><a href="#1-获取dom元素先获取才能操作" id="markdown-toc-1-获取dom元素先获取才能操作">1. 获取DOM元素（先获取才能操作）</a></li>
-              <li><a href="#2-操作dom元素的内容" id="markdown-toc-2-操作dom元素的内容">2. 操作DOM元素的内容</a></li>
-              <li><a href="#3-操作dom元素的样式" id="markdown-toc-3-操作dom元素的样式">3. 操作DOM元素的样式</a></li>
-              <li><a href="#4-操作dom元素增删改" id="markdown-toc-4-操作dom元素增删改">4. 操作DOM元素（增删改）</a></li>
+          <li><a href="#dom-操作js操作html元素的基础" id="markdown-toc-dom-操作js操作html元素的基础">DOM 操作（JS操作HTML元素的基础）</a>            <ul>
+              <li><a href="#获取dom元素先获取才能操作" id="markdown-toc-获取dom元素先获取才能操作">获取DOM元素（先获取才能操作）</a></li>
+              <li><a href="#操作dom元素的内容" id="markdown-toc-操作dom元素的内容">操作DOM元素的内容</a></li>
+              <li><a href="#操作dom元素的样式" id="markdown-toc-操作dom元素的样式">操作DOM元素的样式</a></li>
+              <li><a href="#操作dom元素增删改" id="markdown-toc-操作dom元素增删改">操作DOM元素（增删改）</a></li>
             </ul>
           </li>
-          <li><a href="#34-事件处理实现页面交互" id="markdown-toc-34-事件处理实现页面交互">3.4 事件处理（实现页面交互）</a>            <ul>
-              <li><a href="#1-常用事件类型" id="markdown-toc-1-常用事件类型">1. 常用事件类型</a></li>
-              <li><a href="#2-事件绑定方式3种常用" id="markdown-toc-2-事件绑定方式3种常用">2. 事件绑定方式（3种常用）</a></li>
-              <li><a href="#3-事件对象event" id="markdown-toc-3-事件对象event">3. 事件对象（event）</a></li>
-              <li><a href="#4-事件冒泡与事件捕获补充" id="markdown-toc-4-事件冒泡与事件捕获补充">4. 事件冒泡与事件捕获（补充）</a></li>
+          <li><a href="#事件处理实现页面交互" id="markdown-toc-事件处理实现页面交互">事件处理（实现页面交互）</a>            <ul>
+              <li><a href="#常用事件类型" id="markdown-toc-常用事件类型">常用事件类型</a></li>
+              <li><a href="#事件绑定方式3种常用" id="markdown-toc-事件绑定方式3种常用">事件绑定方式（3种常用）</a></li>
+              <li><a href="#事件对象event" id="markdown-toc-事件对象event">事件对象（event）</a></li>
+              <li><a href="#事件冒泡与事件捕获补充" id="markdown-toc-事件冒泡与事件捕获补充">事件冒泡与事件捕获（补充）</a></li>
             </ul>
           </li>
-          <li><a href="#35-表单校验结合dom和事件" id="markdown-toc-35-表单校验结合dom和事件">3.5 表单校验（结合DOM和事件）</a></li>
-          <li><a href="#36-javascript-常见问题与解决方案" id="markdown-toc-36-javascript-常见问题与解决方案">3.6 JavaScript 常见问题与解决方案</a></li>
+          <li><a href="#表单校验结合dom和事件" id="markdown-toc-表单校验结合dom和事件">表单校验（结合DOM和事件）</a></li>
+          <li><a href="#javascript-常见问题与解决方案" id="markdown-toc-javascript-常见问题与解决方案">JavaScript 常见问题与解决方案</a></li>
         </ul>
       </li>
     </ul>
@@ -253,11 +317,11 @@
 </ul>
 <hr />
 
-<h1 id="一html超文本标记语言-页面结构骨架">一、HTML（超文本标记语言）—— 页面结构骨架</h1>
+<h1 id="html超文本标记语言-页面结构骨架">HTML（超文本标记语言）—— 页面结构骨架</h1>
 
 <p>核心作用：定义网页的结构和内容，告诉浏览器“显示什么”，不负责样式和交互，所有标签遵循“闭合原则”（单标签除外），标签不区分大小写，但推荐小写。</p>
 
-<h2 id="11-基础结构">1.1 基础结构</h2>
+<h2 id="基础结构">基础结构</h2>
 
 <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="ni">&amp;lt;</span>!DOCTYPE html<span class="ni">&amp;gt;</span> <span class="c">&lt;!-- 声明文档类型为HTML5，必须放在第一行 --&gt;</span>
 <span class="ni">&amp;lt;</span>html lang="zh-CN"<span class="ni">&amp;gt;</span> <span class="c">&lt;!-- 根标签，lang指定语言（zh-CN为中文） --&gt;</span>
@@ -274,9 +338,9 @@
 <span class="nt">&lt;/html&gt;</span>
 </code></pre></div></div>
 
-<h2 id="12-核心标签分类">1.2 核心标签分类</h2>
+<h2 id="核心标签分类">核心标签分类</h2>
 
-<h3 id="121-语义化标签利于seo和可读性">1.2.1 语义化标签（利于SEO和可读性）</h3>
+<h3 id="语义化标签利于seo和可读性">语义化标签（利于SEO和可读性）</h3>
 
 <p>语义化标签本质是“有含义的标签”，替代传统的div，让结构更清晰，搜索引擎能更好识别内容。</p>
 
@@ -327,7 +391,7 @@
   </tbody>
 </table>
 
-<h3 id="122-文本标签">1.2.2 文本标签</h3>
+<h3 id="文本标签">文本标签</h3>
 
 <table>
   <thead>
@@ -376,7 +440,7 @@
   </tbody>
 </table>
 
-<h3 id="123-图片与链接标签">1.2.3 图片与链接标签</h3>
+<h3 id="图片与链接标签">图片与链接标签</h3>
 
 <h4 id="图片标签img单标签核心用于展示图片">图片标签：<code class="language-plaintext highlighter-rouge">&lt;img&gt;</code>（单标签，核心用于展示图片）</h4>
 
@@ -408,7 +472,7 @@
   <li>特殊跳转：mailto:邮箱地址（打开邮件客户端）、tel:手机号（打开拨号界面）</li>
 </ul>
 
-<h3 id="124-列表标签">1.2.4 列表标签</h3>
+<h3 id="列表标签">列表标签</h3>
 
 <ul>
   <li>无序列表<code class="language-plaintext highlighter-rouge">&lt;ul&gt;</code>：默认列表项前有圆点</li>
@@ -442,7 +506,7 @@
 &lt;/dl&gt;
 </code></pre></div></div>
 
-<h3 id="125-表单标签用于收集用户输入">1.2.5 表单标签（用于收集用户输入）</h3>
+<h3 id="表单标签用于收集用户输入">表单标签（用于收集用户输入）</h3>
 
 <p>核心标签：<code class="language-plaintext highlighter-rouge">&lt;form&gt;</code>（表单容器），所有表单元素必须放在form内，用于提交数据到后端。</p>
 
@@ -617,7 +681,7 @@
 &lt;/fieldset&gt;
 </code></pre></div></div>
 
-<h3 id="126-html5-新特性">1.2.6 HTML5 新特性</h3>
+<h3 id="html5-新特性">HTML5 新特性</h3>
 
 <ul>
   <li>
@@ -687,7 +751,7 @@ localStorage.removeItem("username")（删）
   <li>表单新类型：email、tel、number、date、time、color等，自带基础校验和输入提示</li>
 </ul>
 
-<h3 id="13-常用属性与规范">1.3 常用属性与规范</h3>
+<h3 id="常用属性与规范">常用属性与规范</h3>
 
 <ul>
   <li>id：唯一标识，一个页面中id不能重复，用于锚点跳转、JS获取元素</li>
@@ -696,20 +760,20 @@ localStorage.removeItem("username")（删）
   <li>规范：标签嵌套要合理（如块级标签可嵌套行内标签，p标签不能嵌套div、h1等块级标签）；属性值必须加引号（单引号、双引号均可，推荐双引号）</li>
 </ul>
 
-<h1 id="二css层叠样式表-页面样式与布局">二、CSS（层叠样式表）—— 页面样式与布局</h1>
+<h1 id="css层叠样式表-页面样式与布局">CSS（层叠样式表）—— 页面样式与布局</h1>
 
 <p>核心作用：控制HTML元素的样式（颜色、大小、位置、间距等），实现页面美化，支持“层叠”（多个样式叠加）、“继承”（子元素继承父元素部分样式）、“优先级”（解决样式冲突）。</p>
 
-<h2 id="21-css-引入方式3种按优先级从高到低">2.1 CSS 引入方式（3种，按优先级从高到低）</h2>
+<h2 id="css-引入方式3种按优先级从高到低">CSS 引入方式（3种，按优先级从高到低）</h2>
 
-<h3 id="211-内联样式行内样式">2.1.1 内联样式（行内样式）</h3>
+<h3 id="内联样式行内样式">内联样式（行内样式）</h3>
 
 <p>直接在HTML标签内通过style属性写CSS，仅作用于当前标签，优先级最高，不利于样式复用。</p>
 
 <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">"width: 100px; height: 100px; background-color: red;"</span><span class="nt">&gt;&lt;/div&gt;</span>
 </code></pre></div></div>
 
-<h3 id="212-内部样式嵌入样式">2.1.2 内部样式（嵌入样式）</h3>
+<h3 id="内部样式嵌入样式">内部样式（嵌入样式）</h3>
 
 <p>在HTML的head标签内，通过<code class="language-plaintext highlighter-rouge">&lt;style&gt;</code>标签写CSS，作用于当前整个页面，优先级次之。</p>
 
@@ -724,7 +788,7 @@ localStorage.removeItem("username")（删）
 <span class="nt">&lt;/head&gt;</span>
 </code></pre></div></div>
 
-<h3 id="213-外部样式链接样式">2.1.3 外部样式（链接样式）</h3>
+<h3 id="外部样式链接样式">外部样式（链接样式）</h3>
 
 <p>创建独立的.css文件，通过<code class="language-plaintext highlighter-rouge">&lt;link&gt;</code>标签引入HTML，作用于多个页面，优先级最低，最推荐使用（利于样式复用和维护）。</p>
 
@@ -739,11 +803,11 @@ div {
 }
 </code></pre></div></div>
 
-<h2 id="22-选择器找到要样式化的html元素">2.2 选择器（找到要样式化的HTML元素）</h2>
+<h2 id="选择器找到要样式化的html元素">选择器（找到要样式化的HTML元素）</h2>
 
 <p>选择器的核心是“匹配元素”，不同选择器有不同优先级，优先级高的样式会覆盖优先级低的样式。</p>
 
-<h3 id="221-基础选择器">2.2.1 基础选择器</h3>
+<h3 id="基础选择器">基础选择器</h3>
 
 <table>
   <thead>
@@ -782,7 +846,7 @@ div {
   </tbody>
 </table>
 
-<h3 id="222-组合选择器">2.2.2 组合选择器</h3>
+<h3 id="组合选择器">组合选择器</h3>
 
 <table>
   <thead>
@@ -833,7 +897,7 @@ div {
   </tbody>
 </table>
 
-<h3 id="223-伪类选择器用于元素的特殊状态">2.2.3 伪类选择器（用于元素的特殊状态）</h3>
+<h3 id="伪类选择器用于元素的特殊状态">伪类选择器（用于元素的特殊状态）</h3>
 
 <p>伪类以“:”开头，用于描述元素的状态（如hover、active）或位置（如first-child）。</p>
 
@@ -865,7 +929,7 @@ div {
   <li>其他常用伪类：<code class="language-plaintext highlighter-rouge">:hover</code>（所有元素都可使用，如<code class="language-plaintext highlighter-rouge">div:hover</code>）、<code class="language-plaintext highlighter-rouge">:not</code>(选择器)（排除指定选择器的元素，如<code class="language-plaintext highlighter-rouge">div:not(.box)</code>）</li>
 </ul>
 
-<h3 id="224-伪元素选择器用于创建虚拟元素">2.2.4 伪元素选择器（用于创建虚拟元素）</h3>
+<h3 id="伪元素选择器用于创建虚拟元素">伪元素选择器（用于创建虚拟元素）</h3>
 
 <p>伪元素以“::”开头，用于在元素内部添加虚拟内容（如before、after），需配合content属性使用。</p>
 
@@ -885,7 +949,7 @@ div {
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h3 id="225-选择器优先级解决样式冲突">2.2.5 选择器优先级（解决样式冲突）</h3>
+<h3 id="选择器优先级解决样式冲突">选择器优先级（解决样式冲突）</h3>
 
 <p>优先级规则： specificity（ specificity 值越高，优先级越高），计算方式如下（从高到低）：</p>
 
@@ -899,9 +963,9 @@ div {
 
 <p>补充：!important 可强制提升样式优先级（最高），但不推荐滥用（会破坏优先级规则，难以维护），用法：属性值后加 !important（如 <code class="language-plaintext highlighter-rouge">color: red !important;</code>）。</p>
 
-<h2 id="23-核心样式属性">2.3 核心样式属性</h2>
+<h2 id="核心样式属性">核心样式属性</h2>
 
-<h3 id="231-盒模型所有元素都有盒模型">2.3.1 盒模型（所有元素都有盒模型）</h3>
+<h3 id="盒模型所有元素都有盒模型">盒模型（所有元素都有盒模型）</h3>
 
 <p>盒模型组成（从内到外）：content（内容区）→ padding（内边距）→ border（边框）→ margin（外边距），决定元素的实际大小。</p>
 
@@ -1056,7 +1120,7 @@ div {
   </li>
 </ul>
 
-<h3 id="232-字体与文本样式">2.3.2 字体与文本样式</h3>
+<h3 id="字体与文本样式">字体与文本样式</h3>
 
 <h4 id="字体样式">字体样式</h4>
 
@@ -1079,7 +1143,7 @@ div {
 <span class="nt">text-transform</span><span class="o">:</span> <span class="nt">none</span><span class="o">;</span> <span class="c">/* 文本大小写，none=默认、uppercase=全大写、lowercase=全小写、capitalize=首字母大写（英文有效） */</span>
 </code></pre></div></div>
 
-<h3 id="233-背景样式">2.3.3 背景样式</h3>
+<h3 id="背景样式">背景样式</h3>
 
 <div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">background-color</span><span class="o">:</span> <span class="nf">#f5f5f5</span><span class="o">;</span> <span class="c">/* 背景颜色，与text-color取值一致 */</span>
 <span class="nt">background-image</span><span class="o">:</span> <span class="nt">url</span><span class="o">(</span><span class="s1">"图片路径"</span><span class="o">);</span> <span class="c">/* 背景图片 */</span>
@@ -1099,7 +1163,7 @@ div {
 <span class="nt">background</span><span class="o">:</span> <span class="nt">radial-gradient</span><span class="o">(</span><span class="nt">red</span><span class="o">,</span> <span class="nt">blue</span><span class="o">);</span>
 </code></pre></div></div>
 
-<h3 id="234-元素显示与定位">2.3.4 元素显示与定位</h3>
+<h3 id="元素显示与定位">元素显示与定位</h3>
 
 <h4 id="元素显示模式display属性">元素显示模式（display属性）</h4>
 
@@ -1193,7 +1257,7 @@ div {
 
 <p>补充：定位偏移属性（top、right、bottom、left），用于控制定位元素的具体位置，单位常用px、%。</p>
 
-<h3 id="235-浮动float属性传统布局方式">2.3.5 浮动（float属性，传统布局方式）</h3>
+<h3 id="浮动float属性传统布局方式">浮动（float属性，传统布局方式）</h3>
 
 <p>浮动用于让元素脱离正常文档流，向左或向右浮动，围绕浮动元素的内容会自动环绕，常用于传统的多列布局。</p>
 
@@ -1217,11 +1281,11 @@ div {
 }
 </code></pre></div></div>
 
-<h3 id="236-弹性布局flex布局现代布局方式">2.3.6 弹性布局（Flex布局，现代布局方式）</h3>
+<h3 id="弹性布局flex布局现代布局方式">弹性布局（Flex布局，现代布局方式）</h3>
 
 <p>Flex布局（弹性布局）是目前最常用的布局方式，简单灵活，适用于各种布局场景（如居中、多列、对齐等），核心是“容器”和“项目”（容器内的子元素）。</p>
 
-<h4 id="1-开启flex布局">1. 开启Flex布局</h4>
+<h4 id="开启flex布局">开启Flex布局</h4>
 
 <div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.container</span> <span class="p">{</span>
   <span class="nl">display</span><span class="p">:</span> <span class="nb">flex</span><span class="p">;</span> <span class="c">/* 给父容器开启Flex布局，子元素自动成为Flex项目 */</span>
@@ -1229,7 +1293,7 @@ div {
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="2-容器属性作用于父容器">2. 容器属性（作用于父容器）</h4>
+<h4 id="容器属性作用于父容器">容器属性（作用于父容器）</h4>
 
 <ul>
   <li>flex-direction：设置主轴方向（项目排列方向）
@@ -1270,7 +1334,7 @@ div {
   <li>align-content：设置多行项目在交叉轴上的对齐方式（仅当项目换行时有效）</li>
 </ul>
 
-<h4 id="3-项目属性作用于子项目">3. 项目属性（作用于子项目）</h4>
+<h4 id="项目属性作用于子项目">项目属性（作用于子项目）</h4>
 
 <ul>
   <li>flex-grow：项目的放大比例，默认0（不放大），值为数字（无单位），所有项目的flex-grow之和决定放大比例。例如：3个项目flex-grow分别为1、1、2，剩余空间按1:1:2的比例分配给3个项目。</li>
@@ -1281,11 +1345,11 @@ div {
   <li>order：控制项目的排列顺序，默认值为0，数值越小，项目排列越靠前，可设置负数（如order: -1，优先排列）。</li>
 </ul>
 
-<h3 id="237-网格布局grid布局现代布局方式补充">2.3.7 网格布局（Grid布局，现代布局方式，补充）</h3>
+<h3 id="网格布局grid布局现代布局方式补充">网格布局（Grid布局，现代布局方式，补充）</h3>
 
 <p>Grid布局（网格布局）是比Flex布局更强大的布局方式，适用于二维布局（行+列），可快速实现复杂的多列多行布局，核心同样是“容器”和“项目”。</p>
 
-<h4 id="1-开启grid布局">1. 开启Grid布局</h4>
+<h4 id="开启grid布局">开启Grid布局</h4>
 
 <div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.container</span> <span class="p">{</span>
   <span class="nl">display</span><span class="p">:</span> <span class="nb">grid</span><span class="p">;</span> <span class="c">/* 给父容器开启Grid布局，子元素自动成为Grid项目 */</span>
@@ -1293,7 +1357,7 @@ div {
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="2-容器属性作用于父容器-1">2. 容器属性（作用于父容器）</h4>
+<h4 id="容器属性作用于父容器-1">容器属性（作用于父容器）</h4>
 
 <ul>
   <li>grid-template-columns：设置列数和每列宽度（核心）</li>
@@ -1353,7 +1417,7 @@ gap: 10px 20px; /* 行间距10px，列间距20px */
   <li>align-items：设置项目在单元格内的垂直对齐方式（类似Flex的align-items），取值与justify-items一致</li>
 </ul>
 
-<h4 id="3-项目属性作用于子项目-1">3. 项目属性（作用于子项目）</h4>
+<h4 id="项目属性作用于子项目-1">项目属性（作用于子项目）</h4>
 
 <ul>
   <li>grid-column：控制项目占据的列数（列起始位置 + 列结束位置）</li>
@@ -1381,7 +1445,7 @@ grid-row: span 2;
   <li>align-self：单独设置某个项目在单元格内的垂直对齐方式，覆盖容器的align-items</li>
 </ul>
 
-<h3 id="238-css3-其他常用新特性">2.3.8 CSS3 其他常用新特性</h3>
+<h3 id="css3-其他常用新特性">CSS3 其他常用新特性</h3>
 
 <ul>
   <li>过渡（transition）：实现元素样式的平滑变化，避免生硬切换，需配合hover、active等状态使用</li>
@@ -1458,11 +1522,11 @@ border-radius: 50% 30%; /* 椭圆圆角 */
 height: calc(50px + 10px); /* 高度 = 50px + 10px */
 </code></pre></div></div>
 
-<h3 id="24-响应式布局核心适配移动端平板pc">2.4 响应式布局（核心，适配移动端、平板、PC）</h3>
+<h3 id="响应式布局核心适配移动端平板pc">响应式布局（核心，适配移动端、平板、PC）</h3>
 
 <p>核心思想：根据不同设备的屏幕宽度，应用不同的CSS样式，实现“一套代码，多端适配”，核心工具是「媒体查询（Media Query）」。</p>
 
-<h4 id="1-媒体查询基础语法">1. 媒体查询基础语法</h4>
+<h4 id="媒体查询基础语法">媒体查询基础语法</h4>
 
 <div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">/* 当屏幕宽度 ≤ 768px 时，应用以下样式（适配移动端） */</span>
 <span class="k">@media</span> <span class="p">(</span><span class="n">max-width</span><span class="p">:</span> <span class="m">768px</span><span class="p">)</span> <span class="p">{</span>
@@ -1495,7 +1559,7 @@ height: calc(50px + 10px); /* 高度 = 50px + 10px */
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="2-响应式布局注意事项">2. 响应式布局注意事项</h4>
+<h4 id="响应式布局注意事项">响应式布局注意事项</h4>
 
 <ul>
   <li>必须在HTML头部添加视口配置（前文HTML基础结构已提及），否则媒体查询无效：</li>
@@ -1524,7 +1588,7 @@ height: calc(50px + 10px); /* 高度 = 50px + 10px */
 
 <p>图片自适应：给图片设置<code class="language-plaintext highlighter-rouge">max-width: 100%; height: auto;</code>，避免图片超出容器。</p>
 
-<h3 id="25-css-常见问题与解决方案">2.5 CSS 常见问题与解决方案</h3>
+<h3 id="css-常见问题与解决方案">CSS 常见问题与解决方案</h3>
 
 <ul>
   <li>问题1：margin塌陷（前文盒模型已提及）
@@ -1560,20 +1624,20 @@ height: calc(50px + 10px); /* 高度 = 50px + 10px */
   </li>
 </ul>
 
-<h1 id="三javascriptjs-页面交互与逻辑">三、JavaScript（JS）—— 页面交互与逻辑</h1>
+<h1 id="javascriptjs-页面交互与逻辑">JavaScript（JS）—— 页面交互与逻辑</h1>
 
 <p>核心作用：控制HTML元素的行为和交互，实现页面动态效果（如点击事件、表单校验、数据请求等），是网页的“大脑”，可操作HTML（DOM）和CSS（CSSOM），实现前后端数据交互。</p>
 
-<h2 id="31-javascript-引入方式3种与css类似">3.1 JavaScript 引入方式（3种，与CSS类似）</h2>
+<h2 id="javascript-引入方式3种与css类似">JavaScript 引入方式（3种，与CSS类似）</h2>
 
-<h3 id="311-内联脚本行内脚本不推荐">3.1.1 内联脚本（行内脚本，不推荐）</h3>
+<h3 id="内联脚本行内脚本不推荐">内联脚本（行内脚本，不推荐）</h3>
 
 <p>直接在HTML标签内通过事件属性写JS代码，仅作用于当前标签，不利于代码维护和复用。</p>
 
 <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;button</span> <span class="na">onclick=</span><span class="s">"alert('点击成功！')"</span><span class="nt">&gt;</span>点击我<span class="nt">&lt;/button&gt;</span>
 </code></pre></div></div>
 
-<h3 id="312-内部脚本嵌入脚本">3.1.2 内部脚本（嵌入脚本）</h3>
+<h3 id="内部脚本嵌入脚本">内部脚本（嵌入脚本）</h3>
 
 <p>在HTML的head或body标签内，通过<script>标签写JS代码，作用于当前整个页面，适合写少量JS代码。</script></p>
 
@@ -1591,7 +1655,7 @@ height: calc(50px + 10px); /* 高度 = 50px + 10px */
 
 <p>注意：若脚本写在head标签内，需等待页面元素加载完成后再操作元素（可使用window.onload事件），否则会获取不到元素。</p>
 
-<h3 id="313-外部脚本链接脚本最推荐">3.1.3 外部脚本（链接脚本，最推荐）</h3>
+<h3 id="外部脚本链接脚本最推荐">外部脚本（链接脚本，最推荐）</h3>
 
 <p>创建独立的.js文件，通过<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>标签的src属性引入HTML，作用于多个页面，利于代码复用和维护，适合写大量JS代码。</p>
 
@@ -1612,9 +1676,9 @@ btn.onclick = function() {
 
 <p>​            defer：脚本延迟执行，等待页面完全加载完成后再执行，不阻塞页面加载，多个defer脚本按顺序执行。			async：脚本异步加载，加载完成后立即执行，不阻塞页面加载，多个async脚本执行顺序不确定。</p>
 
-<h2 id="32-javascript-基础语法">3.2 JavaScript 基础语法</h2>
+<h2 id="javascript-基础语法">JavaScript 基础语法</h2>
 
-<h3 id="321-变量与常量存储数据">3.2.1 变量与常量（存储数据）</h3>
+<h3 id="变量与常量存储数据">变量与常量（存储数据）</h3>
 
 <p>JS中使用var、let、const声明变量/常量，推荐使用let和const（ES6新特性，解决var的缺陷）。</p>
 
@@ -1637,9 +1701,9 @@ btn.onclick = function() {
 
 <p>补充：块级作用域（ES6新特性）：变量/常量仅在当前代码块（{}内）有效，避免全局污染。</p>
 
-<h3 id="322-数据类型6种基本类型--1种引用类型">3.2.2 数据类型（6种基本类型 + 1种引用类型）</h3>
+<h3 id="数据类型6种基本类型--1种引用类型">数据类型（6种基本类型 + 1种引用类型）</h3>
 
-<h4 id="1-基本数据类型值类型直接存储值">1. 基本数据类型（值类型，直接存储值）</h4>
+<h4 id="基本数据类型值类型直接存储值">基本数据类型（值类型，直接存储值）</h4>
 
 <ul>
   <li>string（字符串）：用单引号、双引号或反引号包裹，如 ‘abc’、”123”、<code class="language-plaintext highlighter-rouge">Hello ${name}</code>（模板字符串，ES6新特性）。</li>
@@ -1650,14 +1714,14 @@ btn.onclick = function() {
   <li>symbol（符号，ES6新特性）：唯一值，用于对象属性名，避免属性名冲突。</li>
 </ul>
 
-<h4 id="2-引用数据类型引用类型存储内存地址">2. 引用数据类型（引用类型，存储内存地址）</h4>
+<h4 id="引用数据类型引用类型存储内存地址">引用数据类型（引用类型，存储内存地址）</h4>
 
 <ul>
   <li>object（对象）：最常用的引用类型，用于存储多个相关数据和方法，如 { name: ‘张三’, age: 18, sayHi: function() {} }。</li>
   <li>补充：数组（Array）、函数（Function）、日期（Date）、正则（RegExp）等本质上都是object类型的子集。</li>
 </ul>
 
-<h4 id="3-数据类型判断">3. 数据类型判断</h4>
+<h4 id="数据类型判断">数据类型判断</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 1. typeof：判断基本数据类型（除null外）、函数</span>
 <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="k">typeof</span> <span class="dl">'</span><span class="s1">abc</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// string</span>
@@ -1676,11 +1740,11 @@ btn.onclick = function() {
 <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toString</span><span class="p">.</span><span class="nf">call</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]));</span> <span class="c1">// [object Array]</span>
 </code></pre></div></div>
 
-<h3 id="323-运算符用于数据运算逻辑判断">3.2.3 运算符（用于数据运算、逻辑判断）</h3>
+<h3 id="运算符用于数据运算逻辑判断">运算符（用于数据运算、逻辑判断）</h3>
 
 <p>运算符是JS中用于处理数据的核心工具，按功能分为5大类，重点掌握常用运算符及使用场景，避免踩坑。</p>
 
-<h4 id="1-算术运算符用于数值运算">1. 算术运算符（用于数值运算）</h4>
+<h4 id="算术运算符用于数值运算">算术运算符（用于数值运算）</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 基本算术运算符</span>
 <span class="kd">let</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
@@ -1700,7 +1764,7 @@ btn.onclick = function() {
 
 <p>注意：1. 加法运算符（+）可用于拼接字符串（如 ‘Hello’ + ‘World’ → ‘HelloWorld’），若一方是字符串，另一方会自动转为字符串；2. 除法运算中，0除以0结果为NaN，非0数除以0结果为Infinity。</p>
 
-<h4 id="2-赋值运算符用于给变量赋值简化代码">2. 赋值运算符（用于给变量赋值，简化代码）</h4>
+<h4 id="赋值运算符用于给变量赋值简化代码">赋值运算符（用于给变量赋值，简化代码）</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
 <span class="nx">x</span> <span class="o">+=</span> <span class="mi">5</span><span class="p">;</span> <span class="c1">// 等价于 x = x + 5 → x = 15</span>
@@ -1710,7 +1774,7 @@ btn.onclick = function() {
 <span class="nx">x</span> <span class="o">%=</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">// 等价于 x = x % 2 → x = 0</span>
 </code></pre></div></div>
 
-<h4 id="3-比较运算符用于判断两个值的关系返回布尔值truefalse">3. 比较运算符（用于判断两个值的关系，返回布尔值true/false）</h4>
+<h4 id="比较运算符用于判断两个值的关系返回布尔值truefalse">比较运算符（用于判断两个值的关系，返回布尔值true/false）</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">m</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="nx">n</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">5</span><span class="dl">'</span><span class="p">;</span>
 <span class="c1">// 相等/不相等（会自动转换数据类型，不推荐）</span>
@@ -1729,7 +1793,7 @@ btn.onclick = function() {
 
 <p>重点：推荐使用全等（===）和不全等（!==），避免自动类型转换导致的判断错误（如 0 == false 会返回true，不符合预期）。</p>
 
-<h4 id="4-逻辑运算符用于逻辑判断返回布尔值或原始值常用在条件判断中">4. 逻辑运算符（用于逻辑判断，返回布尔值或原始值，常用在条件判断中）</h4>
+<h4 id="逻辑运算符用于逻辑判断返回布尔值或原始值常用在条件判断中">逻辑运算符（用于逻辑判断，返回布尔值或原始值，常用在条件判断中）</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">flag1</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">flag2</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
 <span class="c1">// 逻辑与（&amp;&amp;）：两个都为true，结果才为true；有一个为false，结果为false</span>
@@ -1749,7 +1813,7 @@ btn.onclick = function() {
 <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="o">!</span><span class="mi">0</span><span class="p">);</span> <span class="c1">// true（0、''、null、undefined、NaN 会被转为false，取反后为true）</span>
 </code></pre></div></div>
 
-<h4 id="5-三元运算符三目运算符简化if-else条件判断语法条件--成立时执行--不成立时执行">5. 三元运算符（三目运算符，简化if-else条件判断，语法：条件 ? 成立时执行 : 不成立时执行）</h4>
+<h4 id="三元运算符三目运算符简化if-else条件判断语法条件--成立时执行--不成立时执行">三元运算符（三目运算符，简化if-else条件判断，语法：条件 ? 成立时执行 : 不成立时执行）</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 示例1：判断年龄是否成年</span>
 <span class="kd">let</span> <span class="nx">age</span> <span class="o">=</span> <span class="mi">19</span><span class="p">;</span>
@@ -1764,11 +1828,11 @@ btn.onclick = function() {
 
 <p>注意：三元运算符可嵌套，但嵌套层数不宜过多（建议不超过2层），否则会影响代码可读性。</p>
 
-<h3 id="324-条件语句用于根据不同条件执行不同代码">3.2.4 条件语句（用于根据不同条件执行不同代码）</h3>
+<h3 id="条件语句用于根据不同条件执行不同代码">条件语句（用于根据不同条件执行不同代码）</h3>
 
 <p>条件语句的核心是“判断”，根据条件的真假，执行对应的代码块，常用有if-else和switch-case两种。</p>
 
-<h4 id="1-if-else-语句适用于多种条件判断">1. if-else 语句（适用于多种条件判断）</h4>
+<h4 id="if-else-语句适用于多种条件判断">if-else 语句（适用于多种条件判断）</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 基本语法：if（条件）{ 条件成立执行的代码 }</span>
 <span class="kd">let</span> <span class="nx">score</span> <span class="o">=</span> <span class="mi">75</span><span class="p">;</span>
@@ -1785,7 +1849,7 @@ btn.onclick = function() {
 
 <p>补充：if后面的条件必须是布尔值（true/false），若不是，JS会自动将其转为布尔值（0、’‘、null、undefined、NaN 转为false，其余转为true）。</p>
 
-<h4 id="2-switch-case-语句适用于固定值的判断如菜单选择状态判断">2. switch-case 语句（适用于固定值的判断，如菜单选择、状态判断）</h4>
+<h4 id="switch-case-语句适用于固定值的判断如菜单选择状态判断">switch-case 语句（适用于固定值的判断，如菜单选择、状态判断）</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 基本语法：switch（变量）{ case 值1: 执行代码; break; ... default: 默认执行代码; }</span>
 <span class="kd">let</span> <span class="nx">week</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
@@ -1818,11 +1882,11 @@ btn.onclick = function() {
 
 <p>注意：1. switch判断是“全等判断”（===），变量和case值的类型必须一致；2. break关键字不可省略（除非需要利用穿透现象），否则会执行所有后续case的代码。</p>
 
-<h3 id="325-循环语句用于重复执行一段代码减少冗余">3.2.5 循环语句（用于重复执行一段代码，减少冗余）</h3>
+<h3 id="循环语句用于重复执行一段代码减少冗余">循环语句（用于重复执行一段代码，减少冗余）</h3>
 
 <p>循环语句适用于需要重复执行的场景（如遍历数组、计算累加和等），常用有for、while、do-while三种，重点掌握for循环。</p>
 
-<h4 id="1-for-循环适用于已知循环次数的场景">1. for 循环（适用于已知循环次数的场景）</h4>
+<h4 id="for-循环适用于已知循环次数的场景">for 循环（适用于已知循环次数的场景）</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 基本语法：for（初始化变量; 循环条件; 变量更新）{ 循环执行的代码 }</span>
 <span class="c1">// 示例1：计算1-10的累加和</span>
@@ -1841,7 +1905,7 @@ btn.onclick = function() {
 
 <p>补充：for循环的三个部分都可省略（如 for(;;) 会变成无限循环），但分号不能省略，实际开发中避免无限循环（会导致页面卡死）。</p>
 
-<h4 id="2-while-循环适用于未知循环次数只知道循环条件的场景">2. while 循环（适用于未知循环次数，只知道循环条件的场景）</h4>
+<h4 id="while-循环适用于未知循环次数只知道循环条件的场景">while 循环（适用于未知循环次数，只知道循环条件的场景）</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 基本语法：while（循环条件）{ 循环执行的代码; 变量更新 }</span>
 <span class="c1">// 示例：计算1-100中所有偶数的和</span>
@@ -1856,7 +1920,7 @@ btn.onclick = function() {
 
 <p>注意：while循环必须在循环体内更新变量，否则会导致无限循环。</p>
 
-<h4 id="3-do-while-循环与while循环类似区别先执行一次循环体再判断条件">3. do-while 循环（与while循环类似，区别：先执行一次循环体，再判断条件）</h4>
+<h4 id="do-while-循环与while循环类似区别先执行一次循环体再判断条件">do-while 循环（与while循环类似，区别：先执行一次循环体，再判断条件）</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 基本语法：do { 循环执行的代码; 变量更新 } while（循环条件）;</span>
 <span class="c1">// 示例：无论条件是否成立，先执行一次循环体</span>
@@ -1869,7 +1933,7 @@ btn.onclick = function() {
 
 <p>特点：循环体至少执行一次，适用于“必须执行一次”的场景（如用户输入校验，先获取一次输入，再判断是否符合要求）。</p>
 
-<h4 id="4-循环控制语句breakcontinue">4. 循环控制语句（break、continue）</h4>
+<h4 id="循环控制语句breakcontinue">循环控制语句（break、continue）</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 1. break：终止整个循环，跳出循环体</span>
 <span class="k">for </span><span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
@@ -1888,11 +1952,11 @@ btn.onclick = function() {
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h3 id="326-数组array常用引用类型用于存储多个数据">3.2.6 数组（Array，常用引用类型，用于存储多个数据）</h3>
+<h3 id="数组array常用引用类型用于存储多个数据">数组（Array，常用引用类型，用于存储多个数据）</h3>
 
 <p>数组是JS中最常用的数据结构之一，可存储任意类型的数据（数字、字符串、对象、函数等），长度可动态变化，核心是“批量管理数据”。</p>
 
-<h4 id="1-数组的创建方式3种常用">1. 数组的创建方式（3种常用）</h4>
+<h4 id="数组的创建方式3种常用">数组的创建方式（3种常用）</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 方式1：字面量创建（最推荐，简洁高效）</span>
 <span class="kd">let</span> <span class="nx">arr1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="dl">'</span><span class="s1">hello</span><span class="dl">'</span><span class="p">,</span> <span class="kc">true</span><span class="p">];</span> <span class="c1">// 可存储多种类型数据</span>
@@ -1904,7 +1968,7 @@ btn.onclick = function() {
 <span class="kd">let</span> <span class="nx">arr5</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">);</span> <span class="c1">// [10,20,30]</span>
 </code></pre></div></div>
 
-<h4 id="2-数组的核心属性与方法">2. 数组的核心属性与方法</h4>
+<h4 id="数组的核心属性与方法">数组的核心属性与方法</h4>
 
 <p>核心属性：length（获取/设置数组长度）</p>
 
@@ -1916,7 +1980,7 @@ btn.onclick = function() {
 
 <p>常用方法（按功能分类，配实操示例）：</p>
 
-<h5 id="1增删改查">（1）增删改查</h5>
+<h5 id="增删改查">增删改查</h5>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">];</span>
 
@@ -1939,7 +2003,7 @@ btn.onclick = function() {
 <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">.</span><span class="nf">includes</span><span class="p">(</span><span class="mi">30</span><span class="p">));</span> <span class="c1">// 判断元素是否存在，返回true（ES6新特性）</span>
 </code></pre></div></div>
 
-<h5 id="2数组遍历">（2）数组遍历</h5>
+<h5 id="数组遍历">数组遍历</h5>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">];</span>
 
@@ -1963,7 +2027,7 @@ btn.onclick = function() {
 <span class="kd">let</span> <span class="nx">newArr</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="nx">item</span> <span class="o">=&gt;</span> <span class="nx">item</span> <span class="o">*</span> <span class="mi">2</span><span class="p">);</span> <span class="c1">// 每个元素乘2，newArr为[20,40,60,80]，原arr不变</span>
 </code></pre></div></div>
 
-<h5 id="3其他常用方法">（3）其他常用方法</h5>
+<h5 id="其他常用方法">其他常用方法</h5>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">];</span>
 
@@ -1990,11 +2054,11 @@ btn.onclick = function() {
 <span class="kd">let</span> <span class="nx">concatArr</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nf">concat</span><span class="p">(</span><span class="nx">arr2</span><span class="p">);</span> <span class="c1">// [40,30,20,10,50,60]</span>
 </code></pre></div></div>
 
-<h3 id="327-函数function用于封装可复用的代码">3.2.7 函数（Function，用于封装可复用的代码）</h3>
+<h3 id="函数function用于封装可复用的代码">函数（Function，用于封装可复用的代码）</h3>
 
 <p>函数是JS的核心组件，本质是“可复用的代码块”，用于封装逻辑、简化代码、提高复用性，可接收参数、返回结果。</p>
 
-<h4 id="1-函数的创建方式3种常用">1. 函数的创建方式（3种常用）</h4>
+<h4 id="函数的创建方式3种常用">函数的创建方式（3种常用）</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 方式1：函数声明（最常用，有函数提升，可在声明前调用）</span>
 <span class="kd">function</span> <span class="nf">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
@@ -2020,7 +2084,7 @@ btn.onclick = function() {
 <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nf">divide</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span> <span class="c1">// 5</span>
 </code></pre></div></div>
 
-<h4 id="2-函数的参数与返回值">2. 函数的参数与返回值</h4>
+<h4 id="函数的参数与返回值">函数的参数与返回值</h4>
 
 <p>（1）参数：分为形参（函数声明时定义的参数）和实参（函数调用时传入的参数），JS中参数个数可不一致（不报错）。</p>
 
@@ -2054,7 +2118,7 @@ btn.onclick = function() {
 <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nf">test2</span><span class="p">());</span> <span class="c1">// undefined</span>
 </code></pre></div></div>
 
-<h4 id="3-函数的作用域与作用域链">3. 函数的作用域与作用域链</h4>
+<h4 id="函数的作用域与作用域链">函数的作用域与作用域链</h4>
 
 <p>作用域：函数内声明的变量/函数，仅在函数内部有效（局部作用域）；函数外声明的变量（全局作用域），整个页面有效。</p>
 
@@ -2073,11 +2137,11 @@ btn.onclick = function() {
 
 <p>作用域链：当访问一个变量时，JS会先在当前作用域查找，找不到则向上查找父级作用域，直到找到全局作用域，找不到则报错。</p>
 
-<h3 id="328-对象object核心引用类型用于存储多个相关数据和方法">3.2.8 对象（Object，核心引用类型，用于存储多个相关数据和方法）</h3>
+<h3 id="对象object核心引用类型用于存储多个相关数据和方法">对象（Object，核心引用类型，用于存储多个相关数据和方法）</h3>
 
 <p>对象是JS中最核心的引用类型，本质是“键值对的集合”，键（key）是字符串（可省略引号），值（value）可是任意类型（数字、字符串、函数、对象等）。</p>
 
-<h4 id="1-对象的创建方式3种常用">1. 对象的创建方式（3种常用）</h4>
+<h4 id="对象的创建方式3种常用">对象的创建方式（3种常用）</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 方式1：字面量创建（最推荐，简洁高效）</span>
 <span class="kd">let</span> <span class="nx">person</span> <span class="o">=</span> <span class="p">{</span>
@@ -2110,7 +2174,7 @@ btn.onclick = function() {
 <span class="p">};</span>
 </code></pre></div></div>
 
-<h4 id="2-对象的属性访问与修改">2. 对象的属性访问与修改</h4>
+<h4 id="对象的属性访问与修改">对象的属性访问与修改</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">person</span> <span class="o">=</span> <span class="p">{</span>
   <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">张三</span><span class="dl">'</span><span class="p">,</span>
@@ -2136,7 +2200,7 @@ btn.onclick = function() {
 <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">person</span><span class="p">);</span> <span class="c1">// {name: '张小三', age: 19, gender: '男'}</span>
 </code></pre></div></div>
 
-<h4 id="3-对象的遍历">3. 对象的遍历</h4>
+<h4 id="对象的遍历">对象的遍历</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">person</span> <span class="o">=</span> <span class="p">{</span>
   <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">张三</span><span class="dl">'</span><span class="p">,</span>
@@ -2156,11 +2220,11 @@ btn.onclick = function() {
 <span class="p">});</span>
 </code></pre></div></div>
 
-<h3 id="33-dom-操作js操作html元素的基础">3.3 DOM 操作（JS操作HTML元素的基础）</h3>
+<h3 id="dom-操作js操作html元素的基础">DOM 操作（JS操作HTML元素的基础）</h3>
 
 <p>DOM（文档对象模型）：将HTML文档解析为一个树形结构，每个HTML元素都是一个“DOM节点”，JS通过DOM操作，可实现对HTML元素的增删改查、样式修改等交互效果。</p>
 
-<h4 id="1-获取dom元素先获取才能操作">1. 获取DOM元素（先获取才能操作）</h4>
+<h4 id="获取dom元素先获取才能操作">获取DOM元素（先获取才能操作）</h4>
 
 <p>常用获取方法（按使用频率排序）：</p>
 
@@ -2181,7 +2245,7 @@ btn.onclick = function() {
 
 <p>注意：获取DOM元素必须在元素加载完成后执行（可将脚本放在body末尾，或使用window.onload事件）。</p>
 
-<h4 id="2-操作dom元素的内容">2. 操作DOM元素的内容</h4>
+<h4 id="操作dom元素的内容">操作DOM元素的内容</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">box</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">.box</span><span class="dl">'</span><span class="p">);</span>
 
@@ -2201,7 +2265,7 @@ btn.onclick = function() {
 <span class="nx">input</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">默认输入内容</span><span class="dl">'</span><span class="p">;</span> <span class="c1">// 设置输入框内容</span>
 </code></pre></div></div>
 
-<h4 id="3-操作dom元素的样式">3. 操作DOM元素的样式</h4>
+<h4 id="操作dom元素的样式">操作DOM元素的样式</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">box</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">.box</span><span class="dl">'</span><span class="p">);</span>
 
@@ -2222,7 +2286,7 @@ btn.onclick = function() {
 <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">box</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nf">contains</span><span class="p">(</span><span class="dl">'</span><span class="s1">active</span><span class="dl">'</span><span class="p">));</span> <span class="c1">// 返回true/false</span>
 </code></pre></div></div>
 
-<h4 id="4-操作dom元素增删改">4. 操作DOM元素（增删改）</h4>
+<h4 id="操作dom元素增删改">操作DOM元素（增删改）</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 1. 创建新元素</span>
 <span class="kd">let</span> <span class="nx">newDiv</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">createElement</span><span class="p">(</span><span class="dl">'</span><span class="s1">div</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// 创建div元素</span>
@@ -2244,11 +2308,11 @@ btn.onclick = function() {
 <span class="nx">newDiv</span><span class="p">.</span><span class="nf">remove</span><span class="p">();</span>
 </code></pre></div></div>
 
-<h3 id="34-事件处理实现页面交互">3.4 事件处理（实现页面交互）</h3>
+<h3 id="事件处理实现页面交互">事件处理（实现页面交互）</h3>
 
 <p>事件：用户在页面上的操作（如点击、鼠标悬浮、输入等），JS通过“绑定事件”，监听用户操作，执行对应的代码（事件处理函数）。</p>
 
-<h4 id="1-常用事件类型">1. 常用事件类型</h4>
+<h4 id="常用事件类型">常用事件类型</h4>
 
 <ul>
   <li>点击事件：click（鼠标点击元素）</li>
@@ -2258,7 +2322,7 @@ btn.onclick = function() {
   <li>页面事件：load（页面加载完成）、resize（窗口大小改变）</li>
 </ul>
 
-<h4 id="2-事件绑定方式3种常用">2. 事件绑定方式（3种常用）</h4>
+<h4 id="事件绑定方式3种常用">事件绑定方式（3种常用）</h4>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">btn</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">btn</span><span class="dl">'</span><span class="p">);</span>
 
@@ -2287,7 +2351,7 @@ btn.onclick = function() {
 <span class="nx">btn</span><span class="p">.</span><span class="nf">removeEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">,</span> <span class="nx">clickHandler</span><span class="p">);</span>
 </code></pre></div></div>
 
-<h4 id="3-事件对象event">3. 事件对象（event）</h4>
+<h4 id="事件对象event">事件对象（event）</h4>
 
 <p>事件触发时，会自动生成一个“事件对象”，包含事件相关的信息（如点击位置、触发事件的元素等），可在事件处理函数中接收。</p>
 
@@ -2307,7 +2371,7 @@ btn.onclick = function() {
 <span class="p">});</span>
 </code></pre></div></div>
 
-<h4 id="4-事件冒泡与事件捕获补充">4. 事件冒泡与事件捕获（补充）</h4>
+<h4 id="事件冒泡与事件捕获补充">事件冒泡与事件捕获（补充）</h4>
 
 <p>事件冒泡：事件从触发元素（子元素）向上传播到父元素、祖先元素，直到document（默认行为）。</p>
 
@@ -2333,7 +2397,7 @@ btn.onclick = function() {
 <span class="c1">// 点击子元素，仅输出“子元素被点击”，父元素不触发</span>
 </code></pre></div></div>
 
-<h3 id="35-表单校验结合dom和事件">3.5 表单校验（结合DOM和事件）</h3>
+<h3 id="表单校验结合dom和事件">表单校验（结合DOM和事件）</h3>
 
 <p>表单校验是前端常见需求，用于验证用户输入的内容是否符合要求（如手机号、邮箱格式、密码长度等），避免无效数据提交。</p>
 
@@ -2395,7 +2459,7 @@ btn.onclick = function() {
 <span class="p">});</span>
 </code></pre></div></div>
 
-<h3 id="36-javascript-常见问题与解决方案">3.6 JavaScript 常见问题与解决方案</h3>
+<h3 id="javascript-常见问题与解决方案">JavaScript 常见问题与解决方案</h3>
 
 <ul>
   <li>问题1：获取DOM元素为null，无法操作？ 解决方案：确保脚本在元素加载完成后执行（放在body末尾，或使用window.onload事件）。</li>
@@ -2406,159 +2470,231 @@ btn.onclick = function() {
 </ul>
 
 
-                    </div>
-                    
-                </article>
-                
-                <div style="margin-top:30px;">
-                    <a href="/Blog/" class="post-read-more">← Back</a>
-                </div>
             </div>
-            
-        </div>
+
+        </article>
+
+        <!-- 右侧栏：目录 -->
+        <aside class="post-right">
+            <nav id="toc-nav" class="toc-nav"></nav>
+        </aside>
     </main>
 
     <!-- 页脚 -->
     <footer class="footer">
-        <div class="container ">
-            <!-- 版权信息 -->
+        <div class="container">
             <div>Copyright © 2024 - 版权归属 LIN</div>
-            <!-- 博客运行计时 -->
             <div class="running-time">
-                本博客已运行 
-                <span id="blog_running_days" class="odometer"></span> days , 
-                <span id="blog_running_hours" class="odometer"></span> h , 
-                <span id="blog_running_mins" class="odometer"></span> m , 
+                本博客已运行
+                <span id="blog_running_days" class="odometer"></span> days ,
+                <span id="blog_running_hours" class="odometer"></span> h ,
+                <span id="blog_running_mins" class="odometer"></span> m ,
                 <span id="blog_running_secs" class="odometer"></span> s
             </div>
         </div>
     </footer>
-    <!-- 支持 Mermaid 流程图 -->
+
+    <!-- Mermaid 流程图 -->
     
-        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-        <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // 1. 找到所有被 kramdown 标记为 mermaid 的代码块
-            const mermaidBlocks = document.querySelectorAll('pre > code.language-mermaid');
-            
-            mermaidBlocks.forEach((codeBlock) => {
-            // 2. 创建一个新的 div，类名为 mermaid
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const mermaidBlocks = document.querySelectorAll('pre > code.language-mermaid');
+        mermaidBlocks.forEach((codeBlock) => {
             const container = document.createElement('div');
             container.className = 'mermaid';
-            // 3. 将原始内容（代码）放入 div
             container.textContent = codeBlock.textContent;
-            
-            // 4. 替换掉原本的 pre 标签
             const pre = codeBlock.parentElement;
             pre.parentNode.replaceChild(container, pre);
-            });
-
-            // 5. 手动启动渲染
-            mermaid.initialize({ startOnLoad: true });
         });
-        </script>
+        mermaid.initialize({ startOnLoad: true });
+    });
+    </script>
     
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/androidstudio.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-    <script>
-        (function() {
-            const bgUrl = "/Blog/images/background.jpg";
-            const img = new Image();
 
-            img.src = bgUrl;
-            img.onload = function() {
-                console.log("背景图加载完毕！");
-                document.body.classList.add('loaded');
-            };
-            setTimeout(() => {
-                document.body.classList.add('loaded');
-            }, 5000);
-        })();
-    </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const toc = document.getElementById('markdown-toc');
+    // 自动生成右侧目录（同时兼容 Jekyll 的 {:toc} 标记）
+    (function initToc() {
+        const build = () => {
+            const toc = document.getElementById('toc-nav');
             if (!toc) return;
+            const body = document.querySelector('.post-body');
+            if (!body) return;
 
-            const headingIds = [];
-            const tocLinks = toc.querySelectorAll('a');
+            // 清空占位文案
+            toc.innerHTML = '';
 
-            tocLinks.forEach(function(link) {
-                const href = link.getAttribute('href');
-                if (href && href.startsWith('#')) {
-                    headingIds.push(href.substring(1));
+            // 1) 优先使用 Jekyll 已经渲染好的 TOC 列表
+            const generated = body.querySelector('ul#markdown-toc, ul#toc, #markdown-toc');
+            if (generated) {
+                toc.innerHTML = generated.innerHTML;
+                generated.remove();
+            } else {
+                // 2) 否则从正文的 h1-h6 自动生成
+                const headings = body.querySelectorAll('h1, h2, h3, h4, h5, h6');
+                if (headings.length === 0) {
+                    toc.innerHTML = '<div class="toc-empty">本篇文章暂无目录</div>';
+                    return;
                 }
-            });
-
-            const headings = [];
-            headingIds.forEach(function(id) {
-                const heading = document.getElementById(id);
-                if (heading) {
-                    headings.push(heading);
-                }
-            });
-
-            if (headings.length === 0) return;
-
-            let currentActive = null;
-
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        const id = entry.target.getAttribute('id');
-                        const link = toc.querySelector('a[href="#' + id + '"]');
-                        if (link && link !== currentActive) {
-                            currentActive = link;
-
-                            toc.querySelectorAll('a').forEach(function(a) {
-                                a.classList.remove('active');
-                            });
-                            link.classList.add('active');
-
-                            const linkTop = link.offsetTop;
-                            const linkHeight = link.offsetHeight;
-                            const tocHeight = toc.offsetHeight;
-                            const scrollTop = toc.scrollTop;
-
-                            function smoothScrollTo(element, targetTop, duration) {
-                const startTop = element.scrollTop;
-                const change = targetTop - startTop;
-                const startTime = performance.now();
-
-                function animateScroll(currentTime) {
-                    const elapsed = currentTime - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-                    const easeProgress = 1 - Math.pow(1 - progress, 3);
-                    element.scrollTop = startTop + change * easeProgress;
-
-                    if (progress < 1) {
-                        requestAnimationFrame(animateScroll);
-                    }
-                }
-
-                requestAnimationFrame(animateScroll);
-            }
-
-            if (linkTop < scrollTop || linkTop + linkHeight > scrollTop + tocHeight) {
-                smoothScrollTo(toc, linkTop - tocHeight / 2 + linkHeight / 2, 300);
-            }
-                        }
-                    }
+                headings.forEach((h, i) => {
+                    if (!h.id) h.id = 'heading-' + i + '-' + (h.textContent || '').trim().replace(/\s+/g, '-').slice(0, 20);
                 });
-            }, {
-                rootMargin: '-100px 0px -60% 0px',
-                threshold: 0
+                const ul = document.createElement('ul');
+                headings.forEach(h => {
+                    const li = document.createElement('li');
+                    li.className = 'toc-level-' + h.tagName.toLowerCase();
+                    const a = document.createElement('a');
+                    a.href = '#' + h.id;
+                    a.textContent = (h.textContent || '').trim();
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                });
+                toc.appendChild(ul);
+            }
+
+            // 2.5) 给各级目录项加编号（兼容 {:toc} 生成的无 class 目录）
+            (function numberToc() {
+                // 先尝试用类名定位
+                let items = toc.querySelectorAll('li[class*="toc-level-h"]');
+                if (items.length === 0) {
+                    // 否则遍历所有 li，根据 ul 嵌套深度算级别（最外层 = 1）
+                    const allLis = toc.querySelectorAll('li');
+                    allLis.forEach(li => {
+                        let depth = 0;
+                        let p = li.parentElement;
+                        while (p && p !== toc) {
+                            if (p.tagName === 'UL') depth++;
+                            p = p.parentElement;
+                        }
+                        li.dataset.tocDepth = String(depth);
+                    });
+                    items = allLis;
+                }
+
+                if (items.length === 0) return;
+
+                // 找到实际出现的最高级（depth 最小 = 1）
+                const allDepths = Array.from(items).map(li => {
+                    if (li.dataset.tocDepth) return parseInt(li.dataset.tocDepth, 10);
+                    const m = li.className.match(/toc-level-h([1-6])/);
+                    return m ? parseInt(m[1], 10) : 1;
+                });
+                const topDepth = Math.min.apply(null, allDepths);
+
+                const c = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+                items.forEach(li => {
+                    let depth;
+                    if (li.dataset.tocDepth) {
+                        depth = parseInt(li.dataset.tocDepth, 10);
+                    } else {
+                        const m = li.className.match(/toc-level-h([1-6])/);
+                        depth = m ? parseInt(m[1], 10) : 1;
+                    }
+                    c[depth]++;
+                    for (let k = depth + 1; k <= 6; k++) c[k] = 0;
+                    const a = li.querySelector('a');
+                    if (!a || a.querySelector('.toc-num')) return;
+                    const num = document.createElement('span');
+                    num.className = 'toc-num';
+                    // 三级及更深：不编号，改用实心圆点
+                    if (depth - topDepth >= 2) {
+                        num.classList.add('toc-dot');
+                        num.textContent = '●';
+                    } else {
+                        const parts = [];
+                        for (let k = topDepth; k <= depth; k++) {
+                            if (c[k] > 0) parts.push(c[k]);
+                        }
+                        num.textContent = parts.join('.') + ' ';
+                    }
+                    a.insertBefore(num, a.firstChild);
+                });
+            })();
+
+            // 3) 滚动联动高亮
+            const links = toc.querySelectorAll('a');
+            if (links.length === 0) return;
+
+            const map = new Map();
+            links.forEach(a => {
+                const id = a.getAttribute('href');
+                if (id && id.startsWith('#')) {
+                    const target = document.getElementById(id.substring(1));
+                    if (target) map.set(target, a);
+                }
             });
 
-            headings.forEach(function(heading) {
-                observer.observe(heading);
-            });
-        });
+            const setActive = (a) => {
+                links.forEach(x => x.classList.remove('active'));
+                a.classList.add('active');
+                const top = a.offsetTop - toc.clientHeight / 2 + a.clientHeight / 2;
+                toc.scrollTo({ top, behavior: 'smooth' });
+            };
+
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver(entries => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const a = map.get(entry.target);
+                            if (a) setActive(a);
+                        }
+                    });
+                }, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+                map.forEach((_, target) => observer.observe(target));
+            }
+        };
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', build);
+        } else {
+            build();
+        }
+    })();
     </script>
 
-</body>
+    <script>
+    // 主题切换（明/暗）
+    (function(){
+        const btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        const saved = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', saved);
+        btn.addEventListener('click', () => {
+            const cur = document.documentElement.getAttribute('data-theme');
+            const next = cur === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+    })();
+    </script>
+
+    <script>
+    // 顶部栏滚动毛玻璃
+    (function(){
+        const top = document.getElementById('topbar');
+        if (!top) return;
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 30) top.classList.add('scrolled');
+            else top.classList.remove('scrolled');
+        });
+    })();
+    </script>
+
+    <script>
+    // 背景图加载
+    (function() {
+        const bgUrl = "/Blog/images/background.jpg";
+        const img = new Image();
+        img.src = bgUrl;
+        img.onload = function() {
+            document.body.classList.add('loaded');
+        };
+        setTimeout(() => document.body.classList.add('loaded'), 5000);
+    })();
+    </script>
+
     <script src="/Blog/autohighlight.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
-
+    <script src="/Blog/copy.js"></script>
+</body>
 </html>

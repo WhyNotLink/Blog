@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIN's Blog</title>
+    <title>工具 - LIN的博客</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="tool.css">
     <script type="module">
@@ -12,7 +12,7 @@
         
         const navbar = document.getElementById('navbar');
         const hero = document.querySelector('.hero');
-        const heroHeight = hero.offsetHeight;
+        const heroHeight = hero ? hero.offsetHeight : 0;
 
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
@@ -90,14 +90,30 @@
 
 
     <!-- 主体内容 -->
-    <main class="tool-container">
-        <h2 class="section-title">工具目录</h2>
+    <main class="tool-page-container">
+        <div class="tool-hero">
+            <span class="hero-eyebrow">TOOLBOX</span>
+            <h2 class="section-title">在线工具</h2>
+            <p class="hero-sub">常用小工具合集</p>
+        </div>
         <div class="tool-list">
             <a href="tools/register_visualizer/register_visualizer.html" class="tool-item" data-cat="register_visualizer">
-                <span class="tool-name">寄存器文档可视化</span>
+                <div class="tool-icon">📊</div>
+                <div class="tool-text">
+                    <span class="tool-name">寄存器文档可视化</span>
+                    <span class="tool-desc">把芯片手册寄存器表自动渲染成可读的中文表格</span>
+                </div>
+                <div class="tool-badge">在线</div>
+                <span class="tool-arrow">→</span>
             </a>
             <a href="tools/regitster_debug_visualizer/register_debug_visualizer.html" class="tool-item" data-cat="register_debug_visualizer">
-                <span class="tool-name">寄存器调试可视化</span>
+                <div class="tool-icon">🛠</div>
+                <div class="tool-text">
+                    <span class="tool-name">寄存器调试可视化</span>
+                    <span class="tool-desc">实时解析调试日志中的寄存器读写，可视化位域</span>
+                </div>
+                <div class="tool-badge">在线</div>
+                <span class="tool-arrow">→</span>
             </a>
         </div>
     </main>

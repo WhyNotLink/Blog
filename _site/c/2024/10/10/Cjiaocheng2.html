@@ -2,30 +2,20 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>C语言教程（二） - LIN's Blog</title>
-    <!-- 使用 relative_url 确保路径永远正确 -->
+
     <link rel="stylesheet" href="/Blog/style.css">
     <link rel="stylesheet" href="/Blog/post.css">
-    
-    <script>
-        // const navbar = document.getElementById('navbar');
-        // const hero = document.querySelector('.hero');
-        // const heroHeight = hero.offsetHeight;
-        const threshold = 200;
 
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            if (scrollY > threshold) {
-            navbar.classList.add('scrolled');
-            } else {
-            navbar.classList.remove('scrolled');
-            }
-        });
-       
-    </script>
-        <!-- Odometer 数字滚动插件 -->
+    <!-- Odometer 数字滚动插件 -->
     <link rel="stylesheet" href="/Blog/odometr.css">
     <script src="/Blog/odometr.js"></script>
+
+    <!-- 代码高亮主题 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/androidstudio.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
     <!-- 博客运行计时核心脚本 -->
     <script>
     window.pjaxLoaded = function(){
@@ -33,38 +23,35 @@
         var blog_running_hours=document.getElementById("blog_running_hours");
         var blog_running_mins=document.getElementById("blog_running_mins");
         var blog_running_secs=document.getElementById("blog_running_secs");
-        
+
         function refresh_blog_running_time(){
-            // 博客起始时间：2024年10月7日（月份0-11，所以9代表10月）
             var time = new Date() - new Date(2024, 9, 7, 0, 0, 0);
             var d=parseInt(time/24/60/60/1000);
             var h=parseInt(time%(24*60*60*1000)/60/60/1000);
             var m=parseInt(time%(60*60*1000)/60/1000);
             var s=parseInt(time%(60*1000)/1000);
-            
             blog_running_days.innerHTML=d;
             blog_running_hours.innerHTML=h;
             blog_running_mins.innerHTML=m;
             blog_running_secs.innerHTML=s;
         };
-        
         refresh_blog_running_time();
         if (typeof(bottomTimeIntervalHasSet) == "undefined"){
             var bottomTimeIntervalHasSet = true;
             setInterval(refresh_blog_running_time,500);
         }
     };
-    // 初始化数字滚动
+
     window.onload = function(){
         odometer_init();
         window.pjaxLoaded();
-        hljs.highlightAll();
+        if (window.hljs) hljs.highlightAll();
     };
 
     function odometer_init(){
         let el = document.getElementsByClassName('odometer');
         for (let i = 0; i < el.length; i++) {
-            od = new Odometer({
+            new Odometer({
                 el: el[i],
                 format: 'ddd',
                 duration: 200
@@ -72,83 +59,162 @@
         }
     }
     </script>
-
 </head>
 <body class="fade-in-content">
 
-    <nav class="nav" id="navbar">
-        <div class="container">
-            <ul class="nav-menu">
-                <li><a href="/Blog/index.html">首页</a></li>
-                <li><a href="/Blog/sort.html">分类</a></li>
-                <li><a href="/Blog/history.html">归档</a></li>
-                <li><a href="/Blog/tool.html">工具</a></li>
-                <li><a href="/Blog/aboutme.html">关于我</a></li>
-            </ul>
-        </div>
-    </nav>
+    <!-- 顶部导航 -->
+    <header class="topbar" id="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="/Blog/index.html">
+                <span class="brand-name">LIN的博客</span>
+            </a>
 
-    <main class="main">
-        <div class="container">
-            <div class="content">
-                <article class="post-detail">
-                    <h1 class="post-title">C语言教程（二）</h1>
-                    <div class="post-meta">
-                        2024年10月10日 | 分类：C
+            <nav class="topnav">
+                <a href="/Blog/sort.html">分类</a>
+                <a href="/Blog/history.html">归档</a>
+                <a href="/Blog/tool.html">工具</a>
+                <a href="/Blog/aboutmehtml">关于我</a>
+            </nav>
+
+            <div class="topbar-tools">
+                <button class="theme-toggle" id="themeToggle" title="切换主题">◐</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 三栏主体 -->
+    <main class="post-layout">
+        <!-- 左侧栏：作者 + 分类 + 标签 -->
+        <aside class="post-left">
+            <div class="card author-card">
+                <div class="author-info">
+                    <img class="author-avatar" src="/Blog/images/touxiang.jpg" alt="avatar">
+                    <div class="author-text">
+                        <div class="author-name">LIN</div>
+                        <div class="author-bio">摸鱼?摸鱼.摸鱼!</div>
                     </div>
+                </div>
+                <a class="author-github" href="#" target="_blank">
+                    <span class="gh-icon"></span> GitHub
+                </a>
+            </div>
+
+            <div class="card widget-card">
+                <div class="widget-title">分类</div>
+                <ul class="cat-list">
+                
+                
                     
-                    <!-- Jekyll 会把 Markdown 的内容塞到这里 -->
-                    <div class="entry-content">
-                        <ul id="markdown-toc">
-  <li><a href="#一指针基础" id="markdown-toc-一指针基础">一、指针基础</a>    <ul>
-      <li><a href="#1-核心概念" id="markdown-toc-1-核心概念">1. 核心概念</a></li>
-      <li><a href="#2-两个核心运算符" id="markdown-toc-2-两个核心运算符">2. 两个核心运算符</a></li>
-      <li><a href="#3-指针定义语法" id="markdown-toc-3-指针定义语法">3. 指针定义语法</a></li>
-    </ul>
-  </li>
-  <li><a href="#二指针的基本特性" id="markdown-toc-二指针的基本特性">二、指针的基本特性</a>    <ul>
-      <li><a href="#1-空指针" id="markdown-toc-1-空指针">1. 空指针</a></li>
-      <li><a href="#2-野指针" id="markdown-toc-2-野指针">2. 野指针</a></li>
-      <li><a href="#3-指针的步长" id="markdown-toc-3-指针的步长">3. 指针的步长</a></li>
-    </ul>
-  </li>
-  <li><a href="#三指针与数组" id="markdown-toc-三指针与数组">三、指针与数组</a>    <ul>
-      <li><a href="#1-核心结论" id="markdown-toc-1-核心结论">1. 核心结论</a></li>
-      <li><a href="#2-指针访问数组" id="markdown-toc-2-指针访问数组">2. 指针访问数组</a></li>
-      <li><a href="#3-指针遍历数组" id="markdown-toc-3-指针遍历数组">3. 指针遍历数组</a></li>
-    </ul>
-  </li>
-  <li><a href="#四指针与字符串" id="markdown-toc-四指针与字符串">四、指针与字符串</a>    <ul>
-      <li><a href="#1-两种定义方式" id="markdown-toc-1-两种定义方式">1. 两种定义方式</a></li>
-      <li><a href="#2-指针操作字符串" id="markdown-toc-2-指针操作字符串">2. 指针操作字符串</a></li>
-    </ul>
-  </li>
-  <li><a href="#五指针与函数传址调用" id="markdown-toc-五指针与函数传址调用">五、指针与函数（传址调用）</a>    <ul>
-      <li><a href="#1-传值-vs-传址" id="markdown-toc-1-传值-vs-传址">1. 传值 vs 传址</a></li>
-      <li><a href="#2-交换两个数传址经典案例" id="markdown-toc-2-交换两个数传址经典案例">2. 交换两个数（传址经典案例）</a></li>
-      <li><a href="#3指针作为函数返回值" id="markdown-toc-3指针作为函数返回值">3.指针作为函数返回值</a></li>
-    </ul>
-  </li>
-  <li><a href="#六指针进阶" id="markdown-toc-六指针进阶">六、指针进阶</a>    <ul>
-      <li><a href="#1-多级指针指针的指针" id="markdown-toc-1-多级指针指针的指针">1. 多级指针（指针的指针）</a></li>
-      <li><a href="#2-数组指针-vs-指针数组" id="markdown-toc-2-数组指针-vs-指针数组">2. 数组指针 vs 指针数组</a></li>
-      <li><a href="#3-函数指针" id="markdown-toc-3-函数指针">3. 函数指针</a></li>
-      <li><a href="#4-回调函数" id="markdown-toc-4-回调函数">4. 回调函数</a></li>
-    </ul>
-  </li>
-  <li><a href="#七指针与结构体" id="markdown-toc-七指针与结构体">七、指针与结构体</a></li>
-  <li><a href="#八指针与动态内存" id="markdown-toc-八指针与动态内存">八、指针与动态内存</a>    <ul>
-      <li><a href="#1-核心函数" id="markdown-toc-1-核心函数">1. 核心函数</a></li>
-      <li><a href="#2-规范写法" id="markdown-toc-2-规范写法">2. 规范写法</a></li>
-      <li><a href="#3申请它做什么" id="markdown-toc-3申请它做什么">3.申请它做什么？</a></li>
+                    <li><a href="/Blog/sort.html">C<span class="cat-count">3</span></a></li>
+                
+                </ul>
+            </div>
+
+            <div class="card widget-card">
+                <div class="widget-title">标签</div>
+                <div class="tag-list">
+                
+                    <span class="tag-empty">暂无标签</span>
+                
+                </div>
+            </div>
+        </aside>
+
+        <!-- 中间内容 -->
+        <article class="post-main">
+            <div class="post-header">
+                
+                
+
+                <div class="post-meta-top">
+                    <span class="meta-badge">
+                        <span class="meta-icon meta-icon-gray">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></svg>
+                        </span>
+                        <span>4271 字</span>
+                    </span>
+                    <span class="meta-badge">
+                        <span class="meta-icon meta-icon-gray">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </span>
+                        <span>13 分钟</span>
+                    </span>
+                </div>
+
+                <h1 class="post-title">C语言教程（二）</h1>
+
+                <div class="post-meta-bar">
+                    <span class="meta-pill">
+                        <span class="meta-icon meta-icon-amber">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        </span>
+                        2024-10-10
+                    </span>
+                    <span class="meta-pill">
+                        <span class="meta-icon meta-icon-amber">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v4H4z"/><path d="M4 12h16v4H4z"/><path d="M4 20h16"/></svg>
+                        </span>
+                        C
+                    </span>
+                    
+                        
+                    
+                </div>
+            </div>
+
+            <div class="post-body">
+                <ul id="markdown-toc">
+  <li><a href="#指针基础" id="markdown-toc-指针基础">指针基础</a>    <ul>
+      <li><a href="#核心概念" id="markdown-toc-核心概念">核心概念</a>        <ul>
+          <li><a href="#两个核心运算符" id="markdown-toc-两个核心运算符">两个核心运算符</a></li>
+          <li><a href="#指针定义语法" id="markdown-toc-指针定义语法">指针定义语法</a></li>
+        </ul>
+      </li>
+      <li><a href="#指针的基本特性" id="markdown-toc-指针的基本特性">指针的基本特性</a>        <ul>
+          <li><a href="#空指针" id="markdown-toc-空指针">空指针</a></li>
+          <li><a href="#野指针" id="markdown-toc-野指针">野指针</a></li>
+          <li><a href="#指针的步长" id="markdown-toc-指针的步长">指针的步长</a></li>
+        </ul>
+      </li>
+      <li><a href="#指针与数组" id="markdown-toc-指针与数组">指针与数组</a>        <ul>
+          <li><a href="#核心结论" id="markdown-toc-核心结论">核心结论</a></li>
+          <li><a href="#指针访问数组" id="markdown-toc-指针访问数组">指针访问数组</a></li>
+          <li><a href="#指针遍历数组" id="markdown-toc-指针遍历数组">指针遍历数组</a></li>
+        </ul>
+      </li>
+      <li><a href="#指针与字符串" id="markdown-toc-指针与字符串">指针与字符串</a>        <ul>
+          <li><a href="#两种定义方式" id="markdown-toc-两种定义方式">两种定义方式</a></li>
+          <li><a href="#指针操作字符串" id="markdown-toc-指针操作字符串">指针操作字符串</a></li>
+        </ul>
+      </li>
+      <li><a href="#指针与函数传址调用" id="markdown-toc-指针与函数传址调用">指针与函数（传址调用）</a>        <ul>
+          <li><a href="#传值-vs-传址" id="markdown-toc-传值-vs-传址">传值 vs 传址</a></li>
+          <li><a href="#交换两个数传址经典案例" id="markdown-toc-交换两个数传址经典案例">交换两个数（传址经典案例）</a></li>
+          <li><a href="#指针作为函数返回值" id="markdown-toc-指针作为函数返回值">指针作为函数返回值</a></li>
+        </ul>
+      </li>
+      <li><a href="#指针进阶" id="markdown-toc-指针进阶">指针进阶</a>        <ul>
+          <li><a href="#多级指针指针的指针" id="markdown-toc-多级指针指针的指针">多级指针（指针的指针）</a></li>
+          <li><a href="#数组指针-vs-指针数组" id="markdown-toc-数组指针-vs-指针数组">数组指针 vs 指针数组</a></li>
+          <li><a href="#函数指针" id="markdown-toc-函数指针">函数指针</a></li>
+          <li><a href="#回调函数" id="markdown-toc-回调函数">回调函数</a></li>
+        </ul>
+      </li>
+      <li><a href="#指针与结构体" id="markdown-toc-指针与结构体">指针与结构体</a></li>
+      <li><a href="#指针与动态内存" id="markdown-toc-指针与动态内存">指针与动态内存</a>        <ul>
+          <li><a href="#核心函数" id="markdown-toc-核心函数">核心函数</a></li>
+          <li><a href="#规范写法" id="markdown-toc-规范写法">规范写法</a></li>
+          <li><a href="#申请它做什么" id="markdown-toc-申请它做什么">申请它做什么？</a></li>
+        </ul>
+      </li>
     </ul>
   </li>
 </ul>
 <hr />
 
-<h2 id="一指针基础">一、指针基础</h2>
+<h1 id="指针基础">指针基础</h1>
 
-<h3 id="1-核心概念">1. 核心概念</h3>
+<h2 id="核心概念">核心概念</h2>
 
 <ol>
   <li><strong>内存地址</strong>：计算机内存的每个字节都有唯一编号，这个编号就是<strong>地址</strong>。</li>
@@ -156,7 +222,7 @@
   <li><strong>指针变量</strong>：专门用来<strong>存储内存地址</strong>的变量（普通变量存数值，指针变量存地址）。</li>
 </ol>
 
-<h3 id="2-两个核心运算符">2. 两个核心运算符</h3>
+<h3 id="两个核心运算符">两个核心运算符</h3>
 
 <table>
   <thead>
@@ -183,7 +249,7 @@
   </tbody>
 </table>
 
-<h3 id="3-指针定义语法">3. 指针定义语法</h3>
+<h3 id="指针定义语法">指针定义语法</h3>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 格式：数据类型 *指针变量名;
 int a = 10;
@@ -194,9 +260,9 @@ p = &amp;a;      // 把a的地址赋值给指针p
 
 <p>关键：<strong>指针的类型必须和指向变量的类型一致</strong>。</p>
 
-<h2 id="二指针的基本特性">二、指针的基本特性</h2>
+<h2 id="指针的基本特性">指针的基本特性</h2>
 
-<h3 id="1-空指针">1. 空指针</h3>
+<h3 id="空指针">空指针</h3>
 
 <ul>
   <li>定义：指向<strong>地址 0</strong>的指针，代表「不指向任何有效内存」。</li>
@@ -208,7 +274,7 @@ p = &amp;a;      // 把a的地址赋值给指针p
 
 <p>禁止：<strong>空指针解引用</strong>（<code class="language-plaintext highlighter-rouge">*NULL</code>）会直接导致程序崩溃！</p>
 
-<h3 id="2-野指针">2. 野指针</h3>
+<h3 id="野指针">野指针</h3>
 
 <ul>
   <li>定义：指向<strong>非法 / 已释放内存</strong>的指针（最常见的 bug 来源）。</li>
@@ -216,7 +282,7 @@ p = &amp;a;      // 把a的地址赋值给指针p
   <li>规避：指针必须初始化，释放内存后置<code class="language-plaintext highlighter-rouge">NULL</code>。</li>
 </ul>
 
-<h3 id="3-指针的步长">3. 指针的步长</h3>
+<h3 id="指针的步长">指针的步长</h3>
 
 <p>指针<code class="language-plaintext highlighter-rouge">++/--</code>时，移动的字节数 = 指向数据类型的大小：</p>
 
@@ -228,9 +294,9 @@ p = &amp;a;      // 把a的地址赋值给指针p
 
 <p>作用：指针遍历数组时自动跳转到下一个元素。</p>
 
-<h2 id="三指针与数组">三、指针与数组</h2>
+<h2 id="指针与数组">指针与数组</h2>
 
-<h3 id="1-核心结论">1. 核心结论</h3>
+<h3 id="核心结论">核心结论</h3>
 
 <p><strong>数组名 = 数组首元素的地址</strong>（常量指针，不能修改指向）。</p>
 
@@ -238,7 +304,7 @@ p = &amp;a;      // 把a的地址赋值给指针p
 int *p = arr;  // 等价 int *p = &amp;arr[0];
 </code></pre></div></div>
 
-<h3 id="2-指针访问数组">2. 指针访问数组</h3>
+<h3 id="指针访问数组">指针访问数组</h3>
 
 <p>数组下标 和 指针写法<strong>完全等价</strong>：</p>
 
@@ -264,7 +330,7 @@ int *p = arr;  // 等价 int *p = &amp;arr[0];
   </tbody>
 </table>
 
-<h3 id="3-指针遍历数组">3. 指针遍历数组</h3>
+<h3 id="指针遍历数组">指针遍历数组</h3>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int arr[5] = {1,2,3,4,5};
 int *p = arr;
@@ -273,11 +339,11 @@ for(int i=0; i&lt;5; i++){
 }
 </code></pre></div></div>
 
-<h2 id="四指针与字符串">四、指针与字符串</h2>
+<h2 id="指针与字符串">指针与字符串</h2>
 
 <p>C 语言字符串 = 以<code class="language-plaintext highlighter-rouge">\0</code>结尾的<code class="language-plaintext highlighter-rouge">char</code>数组，字符串操作全靠指针。</p>
 
-<h3 id="1-两种定义方式">1. 两种定义方式</h3>
+<h3 id="两种定义方式">两种定义方式</h3>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 1. 字符数组（栈区，内容可修改）
 char str1[] = "hello"; 
@@ -288,7 +354,7 @@ char *str2 = "hello";
 str2[0] = 'H';  //报错！只读内存
 </code></pre></div></div>
 
-<h3 id="2-指针操作字符串">2. 指针操作字符串</h3>
+<h3 id="指针操作字符串">指针操作字符串</h3>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>char *p = "hello";
 while(*p != '\0'){  // 遍历到字符串结束符
@@ -296,16 +362,16 @@ while(*p != '\0'){  // 遍历到字符串结束符
 }
 </code></pre></div></div>
 
-<h2 id="五指针与函数传址调用">五、指针与函数（传址调用）</h2>
+<h2 id="指针与函数传址调用">指针与函数（传址调用）</h2>
 
-<h3 id="1-传值-vs-传址">1. 传值 vs 传址</h3>
+<h3 id="传值-vs-传址">传值 vs 传址</h3>
 
 <ol>
   <li><strong>传值</strong>：函数内修改形参，<strong>不影响实参</strong>。</li>
   <li><strong>传址</strong>：用指针传递地址，函数内<strong>直接修改实参</strong>。</li>
 </ol>
 
-<h3 id="2-交换两个数传址经典案例">2. 交换两个数（传址经典案例）</h3>
+<h3 id="交换两个数传址经典案例">交换两个数（传址经典案例）</h3>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>void swap(int *a, int *b){
     int temp = *a;
@@ -321,15 +387,15 @@ int main(){
 }
 </code></pre></div></div>
 
-<h3 id="3指针作为函数返回值">3.指针作为函数返回值</h3>
+<h3 id="指针作为函数返回值">指针作为函数返回值</h3>
 
 <p>禁止：返回局部变量的地址（函数结束后栈内存释放，变成野指针）。</p>
 
 <p>允许：返回全局变量、静态变量、动态分配内存的地址。</p>
 
-<h2 id="六指针进阶">六、指针进阶</h2>
+<h2 id="指针进阶">指针进阶</h2>
 
-<h3 id="1-多级指针指针的指针">1. 多级指针（指针的指针）</h3>
+<h3 id="多级指针指针的指针">多级指针（指针的指针）</h3>
 
 <p>存储「一级指针的地址」，用于修改指针本身</p>
 
@@ -339,7 +405,7 @@ int **pp = &amp;p;  // 二级指针：指向p的地址
 **pp = 20;      // 等价 *p = 20 → a=20
 </code></pre></div></div>
 
-<h3 id="2-数组指针-vs-指针数组">2. 数组指针 vs 指针数组</h3>
+<h3 id="数组指针-vs-指针数组">数组指针 vs 指针数组</h3>
 
 <table>
   <thead>
@@ -363,7 +429,7 @@ int **pp = &amp;p;  // 二级指针：指向p的地址
   </tbody>
 </table>
 
-<h3 id="3-函数指针">3. 函数指针</h3>
+<h3 id="函数指针">函数指针</h3>
 
 <p>指向<strong>函数</strong>的指针，存储函数的入口地址。</p>
 
@@ -373,11 +439,11 @@ int (*fp)(int,int) = add;  // fp指向add函数
 int res = fp(1,2);  // 等价 add(1,2)
 </code></pre></div></div>
 
-<h3 id="4-回调函数">4. 回调函数</h3>
+<h3 id="回调函数">回调函数</h3>
 
 <p>把<strong>函数指针作为参数</strong>传给另一个函数，实现灵活调用。</p>
 
-<h2 id="七指针与结构体">七、指针与结构体</h2>
+<h2 id="指针与结构体">指针与结构体</h2>
 
 <p>结构体指针访问成员用 <code class="language-plaintext highlighter-rouge">-&gt;</code> 运算符（比<code class="language-plaintext highlighter-rouge">.</code>更高效）。</p>
 
@@ -393,11 +459,11 @@ int main(){
 }
 </code></pre></div></div>
 
-<h2 id="八指针与动态内存">八、指针与动态内存</h2>
+<h2 id="指针与动态内存">指针与动态内存</h2>
 
 <p>用指针管理<strong>堆区内存</strong>（手动申请 / 释放，解决数组固定大小问题），头文件：<code class="language-plaintext highlighter-rouge">&lt;stdlib.h&gt;</code>。</p>
 
-<h3 id="1-核心函数">1. 核心函数</h3>
+<h3 id="核心函数">核心函数</h3>
 
 <table>
   <thead>
@@ -431,7 +497,7 @@ int main(){
   </tbody>
 </table>
 
-<h3 id="2-规范写法">2. 规范写法</h3>
+<h3 id="规范写法">规范写法</h3>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int *p = (int*)malloc(5 * sizeof(int));
 if(p == NULL){  // 必须判断：内存申请失败
@@ -442,7 +508,7 @@ free(p);  // 释放
 p = NULL; // 避免野指针
 </code></pre></div></div>
 
-<h3 id="3申请它做什么">3.申请它做什么？</h3>
+<h3 id="申请它做什么">申请它做什么？</h3>
 
 <p>这部分其实很多时候都不会讲，再者就是浅浅一过。但是实际做项目就知道这块很重要。</p>
 
@@ -456,159 +522,231 @@ p = NULL; // 避免野指针
 
 <p>比较需要注意的是申请完内存他是不会手动释放的。所以再也不用的时候需要手动释放，别占着内存浪费。</p>
 
-                    </div>
-                    
-                </article>
-                
-                <div style="margin-top:30px;">
-                    <a href="/Blog/" class="post-read-more">← Back</a>
-                </div>
             </div>
-            
-        </div>
+
+        </article>
+
+        <!-- 右侧栏：目录 -->
+        <aside class="post-right">
+            <nav id="toc-nav" class="toc-nav"></nav>
+        </aside>
     </main>
 
     <!-- 页脚 -->
     <footer class="footer">
-        <div class="container ">
-            <!-- 版权信息 -->
+        <div class="container">
             <div>Copyright © 2024 - 版权归属 LIN</div>
-            <!-- 博客运行计时 -->
             <div class="running-time">
-                本博客已运行 
-                <span id="blog_running_days" class="odometer"></span> days , 
-                <span id="blog_running_hours" class="odometer"></span> h , 
-                <span id="blog_running_mins" class="odometer"></span> m , 
+                本博客已运行
+                <span id="blog_running_days" class="odometer"></span> days ,
+                <span id="blog_running_hours" class="odometer"></span> h ,
+                <span id="blog_running_mins" class="odometer"></span> m ,
                 <span id="blog_running_secs" class="odometer"></span> s
             </div>
         </div>
     </footer>
-    <!-- 支持 Mermaid 流程图 -->
+
+    <!-- Mermaid 流程图 -->
     
-        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-        <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // 1. 找到所有被 kramdown 标记为 mermaid 的代码块
-            const mermaidBlocks = document.querySelectorAll('pre > code.language-mermaid');
-            
-            mermaidBlocks.forEach((codeBlock) => {
-            // 2. 创建一个新的 div，类名为 mermaid
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const mermaidBlocks = document.querySelectorAll('pre > code.language-mermaid');
+        mermaidBlocks.forEach((codeBlock) => {
             const container = document.createElement('div');
             container.className = 'mermaid';
-            // 3. 将原始内容（代码）放入 div
             container.textContent = codeBlock.textContent;
-            
-            // 4. 替换掉原本的 pre 标签
             const pre = codeBlock.parentElement;
             pre.parentNode.replaceChild(container, pre);
-            });
-
-            // 5. 手动启动渲染
-            mermaid.initialize({ startOnLoad: true });
         });
-        </script>
+        mermaid.initialize({ startOnLoad: true });
+    });
+    </script>
     
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/androidstudio.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-    <script>
-        (function() {
-            const bgUrl = "/Blog/images/background.jpg";
-            const img = new Image();
 
-            img.src = bgUrl;
-            img.onload = function() {
-                console.log("背景图加载完毕！");
-                document.body.classList.add('loaded');
-            };
-            setTimeout(() => {
-                document.body.classList.add('loaded');
-            }, 5000);
-        })();
-    </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const toc = document.getElementById('markdown-toc');
+    // 自动生成右侧目录（同时兼容 Jekyll 的 {:toc} 标记）
+    (function initToc() {
+        const build = () => {
+            const toc = document.getElementById('toc-nav');
             if (!toc) return;
+            const body = document.querySelector('.post-body');
+            if (!body) return;
 
-            const headingIds = [];
-            const tocLinks = toc.querySelectorAll('a');
+            // 清空占位文案
+            toc.innerHTML = '';
 
-            tocLinks.forEach(function(link) {
-                const href = link.getAttribute('href');
-                if (href && href.startsWith('#')) {
-                    headingIds.push(href.substring(1));
+            // 1) 优先使用 Jekyll 已经渲染好的 TOC 列表
+            const generated = body.querySelector('ul#markdown-toc, ul#toc, #markdown-toc');
+            if (generated) {
+                toc.innerHTML = generated.innerHTML;
+                generated.remove();
+            } else {
+                // 2) 否则从正文的 h1-h6 自动生成
+                const headings = body.querySelectorAll('h1, h2, h3, h4, h5, h6');
+                if (headings.length === 0) {
+                    toc.innerHTML = '<div class="toc-empty">本篇文章暂无目录</div>';
+                    return;
                 }
-            });
-
-            const headings = [];
-            headingIds.forEach(function(id) {
-                const heading = document.getElementById(id);
-                if (heading) {
-                    headings.push(heading);
-                }
-            });
-
-            if (headings.length === 0) return;
-
-            let currentActive = null;
-
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        const id = entry.target.getAttribute('id');
-                        const link = toc.querySelector('a[href="#' + id + '"]');
-                        if (link && link !== currentActive) {
-                            currentActive = link;
-
-                            toc.querySelectorAll('a').forEach(function(a) {
-                                a.classList.remove('active');
-                            });
-                            link.classList.add('active');
-
-                            const linkTop = link.offsetTop;
-                            const linkHeight = link.offsetHeight;
-                            const tocHeight = toc.offsetHeight;
-                            const scrollTop = toc.scrollTop;
-
-                            function smoothScrollTo(element, targetTop, duration) {
-                const startTop = element.scrollTop;
-                const change = targetTop - startTop;
-                const startTime = performance.now();
-
-                function animateScroll(currentTime) {
-                    const elapsed = currentTime - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-                    const easeProgress = 1 - Math.pow(1 - progress, 3);
-                    element.scrollTop = startTop + change * easeProgress;
-
-                    if (progress < 1) {
-                        requestAnimationFrame(animateScroll);
-                    }
-                }
-
-                requestAnimationFrame(animateScroll);
-            }
-
-            if (linkTop < scrollTop || linkTop + linkHeight > scrollTop + tocHeight) {
-                smoothScrollTo(toc, linkTop - tocHeight / 2 + linkHeight / 2, 300);
-            }
-                        }
-                    }
+                headings.forEach((h, i) => {
+                    if (!h.id) h.id = 'heading-' + i + '-' + (h.textContent || '').trim().replace(/\s+/g, '-').slice(0, 20);
                 });
-            }, {
-                rootMargin: '-100px 0px -60% 0px',
-                threshold: 0
+                const ul = document.createElement('ul');
+                headings.forEach(h => {
+                    const li = document.createElement('li');
+                    li.className = 'toc-level-' + h.tagName.toLowerCase();
+                    const a = document.createElement('a');
+                    a.href = '#' + h.id;
+                    a.textContent = (h.textContent || '').trim();
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                });
+                toc.appendChild(ul);
+            }
+
+            // 2.5) 给各级目录项加编号（兼容 {:toc} 生成的无 class 目录）
+            (function numberToc() {
+                // 先尝试用类名定位
+                let items = toc.querySelectorAll('li[class*="toc-level-h"]');
+                if (items.length === 0) {
+                    // 否则遍历所有 li，根据 ul 嵌套深度算级别（最外层 = 1）
+                    const allLis = toc.querySelectorAll('li');
+                    allLis.forEach(li => {
+                        let depth = 0;
+                        let p = li.parentElement;
+                        while (p && p !== toc) {
+                            if (p.tagName === 'UL') depth++;
+                            p = p.parentElement;
+                        }
+                        li.dataset.tocDepth = String(depth);
+                    });
+                    items = allLis;
+                }
+
+                if (items.length === 0) return;
+
+                // 找到实际出现的最高级（depth 最小 = 1）
+                const allDepths = Array.from(items).map(li => {
+                    if (li.dataset.tocDepth) return parseInt(li.dataset.tocDepth, 10);
+                    const m = li.className.match(/toc-level-h([1-6])/);
+                    return m ? parseInt(m[1], 10) : 1;
+                });
+                const topDepth = Math.min.apply(null, allDepths);
+
+                const c = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+                items.forEach(li => {
+                    let depth;
+                    if (li.dataset.tocDepth) {
+                        depth = parseInt(li.dataset.tocDepth, 10);
+                    } else {
+                        const m = li.className.match(/toc-level-h([1-6])/);
+                        depth = m ? parseInt(m[1], 10) : 1;
+                    }
+                    c[depth]++;
+                    for (let k = depth + 1; k <= 6; k++) c[k] = 0;
+                    const a = li.querySelector('a');
+                    if (!a || a.querySelector('.toc-num')) return;
+                    const num = document.createElement('span');
+                    num.className = 'toc-num';
+                    // 三级及更深：不编号，改用实心圆点
+                    if (depth - topDepth >= 2) {
+                        num.classList.add('toc-dot');
+                        num.textContent = '●';
+                    } else {
+                        const parts = [];
+                        for (let k = topDepth; k <= depth; k++) {
+                            if (c[k] > 0) parts.push(c[k]);
+                        }
+                        num.textContent = parts.join('.') + ' ';
+                    }
+                    a.insertBefore(num, a.firstChild);
+                });
+            })();
+
+            // 3) 滚动联动高亮
+            const links = toc.querySelectorAll('a');
+            if (links.length === 0) return;
+
+            const map = new Map();
+            links.forEach(a => {
+                const id = a.getAttribute('href');
+                if (id && id.startsWith('#')) {
+                    const target = document.getElementById(id.substring(1));
+                    if (target) map.set(target, a);
+                }
             });
 
-            headings.forEach(function(heading) {
-                observer.observe(heading);
-            });
-        });
+            const setActive = (a) => {
+                links.forEach(x => x.classList.remove('active'));
+                a.classList.add('active');
+                const top = a.offsetTop - toc.clientHeight / 2 + a.clientHeight / 2;
+                toc.scrollTo({ top, behavior: 'smooth' });
+            };
+
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver(entries => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const a = map.get(entry.target);
+                            if (a) setActive(a);
+                        }
+                    });
+                }, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+                map.forEach((_, target) => observer.observe(target));
+            }
+        };
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', build);
+        } else {
+            build();
+        }
+    })();
     </script>
 
-</body>
+    <script>
+    // 主题切换（明/暗）
+    (function(){
+        const btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        const saved = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', saved);
+        btn.addEventListener('click', () => {
+            const cur = document.documentElement.getAttribute('data-theme');
+            const next = cur === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+    })();
+    </script>
+
+    <script>
+    // 顶部栏滚动毛玻璃
+    (function(){
+        const top = document.getElementById('topbar');
+        if (!top) return;
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 30) top.classList.add('scrolled');
+            else top.classList.remove('scrolled');
+        });
+    })();
+    </script>
+
+    <script>
+    // 背景图加载
+    (function() {
+        const bgUrl = "/Blog/images/background.jpg";
+        const img = new Image();
+        img.src = bgUrl;
+        img.onload = function() {
+            document.body.classList.add('loaded');
+        };
+        setTimeout(() => document.body.classList.add('loaded'), 5000);
+    })();
+    </script>
+
     <script src="/Blog/autohighlight.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
-
+    <script src="/Blog/copy.js"></script>
+</body>
 </html>

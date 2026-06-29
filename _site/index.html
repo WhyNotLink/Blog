@@ -32,11 +32,6 @@
     <!-- 博客运行计时核心脚本 -->
     <script>
     window.pjaxLoaded = function(){
-        var blog_running_days=document.getElementById("blog_running_days");
-        var blog_running_hours=document.getElementById("blog_running_hours");
-        var blog_running_mins=document.getElementById("blog_running_mins");
-        var blog_running_secs=document.getElementById("blog_running_secs");
-        
         function refresh_blog_running_time(){
             // 博客起始时间：2024年10月7日（月份0-11，所以9代表10月）
             var time = new Date() - new Date(2024, 9, 7, 0, 0, 0);
@@ -44,13 +39,14 @@
             var h=parseInt(time%(24*60*60*1000)/60/60/1000);
             var m=parseInt(time%(60*60*1000)/60/1000);
             var s=parseInt(time%(60*1000)/1000);
-            
-            blog_running_days.innerHTML=d;
-            blog_running_hours.innerHTML=h;
-            blog_running_mins.innerHTML=m;
-            blog_running_secs.innerHTML=s;
+
+            // 同时更新页面上所有同名 id 的元素（侧边栏 + 页脚）
+            document.querySelectorAll('#blog_running_days').forEach(function(el){ el.innerHTML = d; });
+            document.querySelectorAll('#blog_running_hours').forEach(function(el){ el.innerHTML = h; });
+            document.querySelectorAll('#blog_running_mins').forEach(function(el){ el.innerHTML = m; });
+            document.querySelectorAll('#blog_running_secs').forEach(function(el){ el.innerHTML = s; });
         };
-        
+
         refresh_blog_running_time();
         if (typeof(bottomTimeIntervalHasSet) == "undefined"){
             var bottomTimeIntervalHasSet = true;
@@ -110,6 +106,21 @@
         <div class="container">
             <div class="content">
                 <!-- 文章列表 -->
+                
+                <article class="post">
+                    <h2 class="post-title">
+                        <a href="/Blog/linux/2026/06/30/Arch.html">安装ARCH</a>
+                    </h2>
+                    <div class="post-meta">
+                        <span class="post-date">2026年06月30日</span>
+                        <span class="post-category">Linux</span>
+                    </div>
+                    <div class="post-content">
+                        <hr />
+
+                    </div>
+                    <a href="/Blog/linux/2026/06/30/Arch.html" class="post-read-more">Read More</a>
+                </article>
                 
                 <article class="post">
                     <h2 class="post-title">
@@ -330,32 +341,48 @@
             <!-- 侧边栏 -->
             <aside class="sidebar">
                 <!-- 作者信息 -->
-                <div class="widget">
-                    <h3 class="widget-title">关于我</h3>
-                    <div class="author-info">
+                <div class="widget widget-author">
+                    <div class="widget-avatar">
                         <img src="/Blog/images/touxiang.jpg" alt="作者头像" class="author-avatar">
-                        <p>人生三大目标，摸鱼、摸鱼还是摸鱼</p>
+                    </div>
+                    <h3 class="widget-title">关于我</h3>
+                    <p class="author-bio">人生三大目标：摸鱼、摸鱼、还是摸鱼 🐟</p>
+                    <div class="author-stats">
+                        <div class="stat"><span id="blog_running_days" class="odometer stat-num">0</span><span class="stat-label">天</span></div>
+                        <div class="stat-divider"></div>
+                        <div class="stat"><span class="stat-label">摸鱼中</span><span class="stat-dot"></span></div>
                     </div>
                 </div>
 
                 <!-- 超链接 -->
-                <div class="widget">
+                <div class="widget widget-links">
                     <h3 class="widget-title">神秘小链接</h3>
                     <ul class="widget-list">
-                        <li><a href="https://space.bilibili.com/13202894?spm_id_from=333.788.0.0">BiliBili</a></li>
-                        <li><a href="https://github.com/WhyNotLink">GitHub</a></li>
-                        <li><a href="#">Email</a></li>
+                        <li><a href="https://space.bilibili.com/13202894?spm_id_from=333.788.0.0" target="_blank" rel="noopener" class="link-bilibili">
+                            <span class="link-icon">B</span>
+                            <span class="link-text">BiliBili</span>
+                            <span class="link-arrow">→</span>
+                        </a></li>
+                        <li><a href="https://github.com/WhyNotLink" target="_blank" rel="noopener" class="link-github">
+                            <span class="link-icon">G</span>
+                            <span class="link-text">GitHub</span>
+                            <span class="link-arrow">→</span>
+                        </a></li>
+                        <li><a href="#" class="link-email">
+                            <span class="link-icon">@</span>
+                            <span class="link-text">Email</span>
+                            <span class="link-arrow">→</span>
+                        </a></li>
                     </ul>
                 </div>
 
                 <!-- 标签 -->
-                <div class="widget">
+                <div class="widget widget-share">
                     <h3 class="widget-title">分享</h3>
                     <div class="tag-cloud">
-                        <a href="/Blog/share/music.html">音乐</a>
-                        <a href="/Blog/share/language.html">语言</a>
-                        <a href="/Blog/share/aichat.html">Chat</a>
-                        <a href="分享.html">钓鱼</a>
+                        <a href="/Blog/share/music.html" class="tag tag-1">🎵 音乐</a>
+                        <a href="/Blog/share/language.html" class="tag tag-2">🌐 语言</a>
+                        <a href="/Blog/share/aichat.html" class="tag tag-3">💬 Chat</a>
                     </div>
                 </div>
             </aside>

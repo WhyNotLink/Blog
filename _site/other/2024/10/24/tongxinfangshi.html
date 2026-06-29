@@ -2,30 +2,20 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>硬件通信方式 - LIN's Blog</title>
-    <!-- 使用 relative_url 确保路径永远正确 -->
+
     <link rel="stylesheet" href="/Blog/style.css">
     <link rel="stylesheet" href="/Blog/post.css">
-    
-    <script>
-        // const navbar = document.getElementById('navbar');
-        // const hero = document.querySelector('.hero');
-        // const heroHeight = hero.offsetHeight;
-        const threshold = 200;
 
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            if (scrollY > threshold) {
-            navbar.classList.add('scrolled');
-            } else {
-            navbar.classList.remove('scrolled');
-            }
-        });
-       
-    </script>
-        <!-- Odometer 数字滚动插件 -->
+    <!-- Odometer 数字滚动插件 -->
     <link rel="stylesheet" href="/Blog/odometr.css">
     <script src="/Blog/odometr.js"></script>
+
+    <!-- 代码高亮主题 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/androidstudio.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
     <!-- 博客运行计时核心脚本 -->
     <script>
     window.pjaxLoaded = function(){
@@ -33,38 +23,35 @@
         var blog_running_hours=document.getElementById("blog_running_hours");
         var blog_running_mins=document.getElementById("blog_running_mins");
         var blog_running_secs=document.getElementById("blog_running_secs");
-        
+
         function refresh_blog_running_time(){
-            // 博客起始时间：2024年10月7日（月份0-11，所以9代表10月）
             var time = new Date() - new Date(2024, 9, 7, 0, 0, 0);
             var d=parseInt(time/24/60/60/1000);
             var h=parseInt(time%(24*60*60*1000)/60/60/1000);
             var m=parseInt(time%(60*60*1000)/60/1000);
             var s=parseInt(time%(60*1000)/1000);
-            
             blog_running_days.innerHTML=d;
             blog_running_hours.innerHTML=h;
             blog_running_mins.innerHTML=m;
             blog_running_secs.innerHTML=s;
         };
-        
         refresh_blog_running_time();
         if (typeof(bottomTimeIntervalHasSet) == "undefined"){
             var bottomTimeIntervalHasSet = true;
             setInterval(refresh_blog_running_time,500);
         }
     };
-    // 初始化数字滚动
+
     window.onload = function(){
         odometer_init();
         window.pjaxLoaded();
-        hljs.highlightAll();
+        if (window.hljs) hljs.highlightAll();
     };
 
     function odometer_init(){
         let el = document.getElementsByClassName('odometer');
         for (let i = 0; i < el.length; i++) {
-            od = new Odometer({
+            new Odometer({
                 el: el[i],
                 format: 'ddd',
                 duration: 200
@@ -72,34 +59,111 @@
         }
     }
     </script>
-
 </head>
 <body class="fade-in-content">
 
-    <nav class="nav" id="navbar">
-        <div class="container">
-            <ul class="nav-menu">
-                <li><a href="/Blog/index.html">首页</a></li>
-                <li><a href="/Blog/sort.html">分类</a></li>
-                <li><a href="/Blog/history.html">归档</a></li>
-                <li><a href="/Blog/tool.html">工具</a></li>
-                <li><a href="/Blog/aboutme.html">关于我</a></li>
-            </ul>
-        </div>
-    </nav>
+    <!-- 顶部导航 -->
+    <header class="topbar" id="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="/Blog/index.html">
+                <span class="brand-name">LIN的博客</span>
+            </a>
 
-    <main class="main">
-        <div class="container">
-            <div class="content">
-                <article class="post-detail">
-                    <h1 class="post-title">硬件通信方式</h1>
-                    <div class="post-meta">
-                        2024年10月24日 | 分类：Other
+            <nav class="topnav">
+                <a href="/Blog/sort.html">分类</a>
+                <a href="/Blog/history.html">归档</a>
+                <a href="/Blog/tool.html">工具</a>
+                <a href="/Blog/aboutmehtml">关于我</a>
+            </nav>
+
+            <div class="topbar-tools">
+                <button class="theme-toggle" id="themeToggle" title="切换主题">◐</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 三栏主体 -->
+    <main class="post-layout">
+        <!-- 左侧栏：作者 + 分类 + 标签 -->
+        <aside class="post-left">
+            <div class="card author-card">
+                <div class="author-info">
+                    <img class="author-avatar" src="/Blog/images/touxiang.jpg" alt="avatar">
+                    <div class="author-text">
+                        <div class="author-name">LIN</div>
+                        <div class="author-bio">摸鱼?摸鱼.摸鱼!</div>
                     </div>
+                </div>
+                <a class="author-github" href="#" target="_blank">
+                    <span class="gh-icon"></span> GitHub
+                </a>
+            </div>
+
+            <div class="card widget-card">
+                <div class="widget-title">分类</div>
+                <ul class="cat-list">
+                
+                
                     
-                    <!-- Jekyll 会把 Markdown 的内容塞到这里 -->
-                    <div class="entry-content">
-                        <ul id="markdown-toc">
+                    <li><a href="/Blog/sort.html">Other<span class="cat-count">4</span></a></li>
+                
+                </ul>
+            </div>
+
+            <div class="card widget-card">
+                <div class="widget-title">标签</div>
+                <div class="tag-list">
+                
+                    <span class="tag-empty">暂无标签</span>
+                
+                </div>
+            </div>
+        </aside>
+
+        <!-- 中间内容 -->
+        <article class="post-main">
+            <div class="post-header">
+                
+                
+
+                <div class="post-meta-top">
+                    <span class="meta-badge">
+                        <span class="meta-icon meta-icon-gray">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></svg>
+                        </span>
+                        <span>3293 字</span>
+                    </span>
+                    <span class="meta-badge">
+                        <span class="meta-icon meta-icon-gray">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </span>
+                        <span>10 分钟</span>
+                    </span>
+                </div>
+
+                <h1 class="post-title">硬件通信方式</h1>
+
+                <div class="post-meta-bar">
+                    <span class="meta-pill">
+                        <span class="meta-icon meta-icon-amber">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        </span>
+                        2024-10-24
+                    </span>
+                    <span class="meta-pill">
+                        <span class="meta-icon meta-icon-amber">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v4H4z"/><path d="M4 12h16v4H4z"/><path d="M4 20h16"/></svg>
+                        </span>
+                        Other
+                    </span>
+                    
+                        
+                    
+                </div>
+            </div>
+
+            <div class="post-body">
+                <ul id="markdown-toc">
   <li><a href="#uart" id="markdown-toc-uart">UART</a></li>
   <li><a href="#spi" id="markdown-toc-spi">SPI</a>    <ul>
       <li><a href="#spi-分为主从两种模式" id="markdown-toc-spi-分为主从两种模式">SPI 分为主、从两种模式</a></li>
@@ -255,159 +319,231 @@ RX1--&gt;TX2;TX1--&gt;RX2;GND1--&gt;GND2
 <p>一般数据通过CPU到内存或者外设需要一定时间，在这个时间里CPU进程卡住无法做别的事情，DMA就是帮助CPU运送数据的一个工具。开启DMA后CPU可继续处理其他事情，由DMA将数据进行运送。</p>
 
 
-                    </div>
-                    
-                </article>
-                
-                <div style="margin-top:30px;">
-                    <a href="/Blog/" class="post-read-more">← Back</a>
-                </div>
             </div>
-            
-        </div>
+
+        </article>
+
+        <!-- 右侧栏：目录 -->
+        <aside class="post-right">
+            <nav id="toc-nav" class="toc-nav"></nav>
+        </aside>
     </main>
 
     <!-- 页脚 -->
     <footer class="footer">
-        <div class="container ">
-            <!-- 版权信息 -->
+        <div class="container">
             <div>Copyright © 2024 - 版权归属 LIN</div>
-            <!-- 博客运行计时 -->
             <div class="running-time">
-                本博客已运行 
-                <span id="blog_running_days" class="odometer"></span> days , 
-                <span id="blog_running_hours" class="odometer"></span> h , 
-                <span id="blog_running_mins" class="odometer"></span> m , 
+                本博客已运行
+                <span id="blog_running_days" class="odometer"></span> days ,
+                <span id="blog_running_hours" class="odometer"></span> h ,
+                <span id="blog_running_mins" class="odometer"></span> m ,
                 <span id="blog_running_secs" class="odometer"></span> s
             </div>
         </div>
     </footer>
-    <!-- 支持 Mermaid 流程图 -->
+
+    <!-- Mermaid 流程图 -->
     
-        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-        <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // 1. 找到所有被 kramdown 标记为 mermaid 的代码块
-            const mermaidBlocks = document.querySelectorAll('pre > code.language-mermaid');
-            
-            mermaidBlocks.forEach((codeBlock) => {
-            // 2. 创建一个新的 div，类名为 mermaid
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const mermaidBlocks = document.querySelectorAll('pre > code.language-mermaid');
+        mermaidBlocks.forEach((codeBlock) => {
             const container = document.createElement('div');
             container.className = 'mermaid';
-            // 3. 将原始内容（代码）放入 div
             container.textContent = codeBlock.textContent;
-            
-            // 4. 替换掉原本的 pre 标签
             const pre = codeBlock.parentElement;
             pre.parentNode.replaceChild(container, pre);
-            });
-
-            // 5. 手动启动渲染
-            mermaid.initialize({ startOnLoad: true });
         });
-        </script>
+        mermaid.initialize({ startOnLoad: true });
+    });
+    </script>
     
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/androidstudio.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-    <script>
-        (function() {
-            const bgUrl = "/Blog/images/background.jpg";
-            const img = new Image();
 
-            img.src = bgUrl;
-            img.onload = function() {
-                console.log("背景图加载完毕！");
-                document.body.classList.add('loaded');
-            };
-            setTimeout(() => {
-                document.body.classList.add('loaded');
-            }, 5000);
-        })();
-    </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const toc = document.getElementById('markdown-toc');
+    // 自动生成右侧目录（同时兼容 Jekyll 的 {:toc} 标记）
+    (function initToc() {
+        const build = () => {
+            const toc = document.getElementById('toc-nav');
             if (!toc) return;
+            const body = document.querySelector('.post-body');
+            if (!body) return;
 
-            const headingIds = [];
-            const tocLinks = toc.querySelectorAll('a');
+            // 清空占位文案
+            toc.innerHTML = '';
 
-            tocLinks.forEach(function(link) {
-                const href = link.getAttribute('href');
-                if (href && href.startsWith('#')) {
-                    headingIds.push(href.substring(1));
+            // 1) 优先使用 Jekyll 已经渲染好的 TOC 列表
+            const generated = body.querySelector('ul#markdown-toc, ul#toc, #markdown-toc');
+            if (generated) {
+                toc.innerHTML = generated.innerHTML;
+                generated.remove();
+            } else {
+                // 2) 否则从正文的 h1-h6 自动生成
+                const headings = body.querySelectorAll('h1, h2, h3, h4, h5, h6');
+                if (headings.length === 0) {
+                    toc.innerHTML = '<div class="toc-empty">本篇文章暂无目录</div>';
+                    return;
                 }
-            });
-
-            const headings = [];
-            headingIds.forEach(function(id) {
-                const heading = document.getElementById(id);
-                if (heading) {
-                    headings.push(heading);
-                }
-            });
-
-            if (headings.length === 0) return;
-
-            let currentActive = null;
-
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        const id = entry.target.getAttribute('id');
-                        const link = toc.querySelector('a[href="#' + id + '"]');
-                        if (link && link !== currentActive) {
-                            currentActive = link;
-
-                            toc.querySelectorAll('a').forEach(function(a) {
-                                a.classList.remove('active');
-                            });
-                            link.classList.add('active');
-
-                            const linkTop = link.offsetTop;
-                            const linkHeight = link.offsetHeight;
-                            const tocHeight = toc.offsetHeight;
-                            const scrollTop = toc.scrollTop;
-
-                            function smoothScrollTo(element, targetTop, duration) {
-                const startTop = element.scrollTop;
-                const change = targetTop - startTop;
-                const startTime = performance.now();
-
-                function animateScroll(currentTime) {
-                    const elapsed = currentTime - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-                    const easeProgress = 1 - Math.pow(1 - progress, 3);
-                    element.scrollTop = startTop + change * easeProgress;
-
-                    if (progress < 1) {
-                        requestAnimationFrame(animateScroll);
-                    }
-                }
-
-                requestAnimationFrame(animateScroll);
-            }
-
-            if (linkTop < scrollTop || linkTop + linkHeight > scrollTop + tocHeight) {
-                smoothScrollTo(toc, linkTop - tocHeight / 2 + linkHeight / 2, 300);
-            }
-                        }
-                    }
+                headings.forEach((h, i) => {
+                    if (!h.id) h.id = 'heading-' + i + '-' + (h.textContent || '').trim().replace(/\s+/g, '-').slice(0, 20);
                 });
-            }, {
-                rootMargin: '-100px 0px -60% 0px',
-                threshold: 0
+                const ul = document.createElement('ul');
+                headings.forEach(h => {
+                    const li = document.createElement('li');
+                    li.className = 'toc-level-' + h.tagName.toLowerCase();
+                    const a = document.createElement('a');
+                    a.href = '#' + h.id;
+                    a.textContent = (h.textContent || '').trim();
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                });
+                toc.appendChild(ul);
+            }
+
+            // 2.5) 给各级目录项加编号（兼容 {:toc} 生成的无 class 目录）
+            (function numberToc() {
+                // 先尝试用类名定位
+                let items = toc.querySelectorAll('li[class*="toc-level-h"]');
+                if (items.length === 0) {
+                    // 否则遍历所有 li，根据 ul 嵌套深度算级别（最外层 = 1）
+                    const allLis = toc.querySelectorAll('li');
+                    allLis.forEach(li => {
+                        let depth = 0;
+                        let p = li.parentElement;
+                        while (p && p !== toc) {
+                            if (p.tagName === 'UL') depth++;
+                            p = p.parentElement;
+                        }
+                        li.dataset.tocDepth = String(depth);
+                    });
+                    items = allLis;
+                }
+
+                if (items.length === 0) return;
+
+                // 找到实际出现的最高级（depth 最小 = 1）
+                const allDepths = Array.from(items).map(li => {
+                    if (li.dataset.tocDepth) return parseInt(li.dataset.tocDepth, 10);
+                    const m = li.className.match(/toc-level-h([1-6])/);
+                    return m ? parseInt(m[1], 10) : 1;
+                });
+                const topDepth = Math.min.apply(null, allDepths);
+
+                const c = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+                items.forEach(li => {
+                    let depth;
+                    if (li.dataset.tocDepth) {
+                        depth = parseInt(li.dataset.tocDepth, 10);
+                    } else {
+                        const m = li.className.match(/toc-level-h([1-6])/);
+                        depth = m ? parseInt(m[1], 10) : 1;
+                    }
+                    c[depth]++;
+                    for (let k = depth + 1; k <= 6; k++) c[k] = 0;
+                    const a = li.querySelector('a');
+                    if (!a || a.querySelector('.toc-num')) return;
+                    const num = document.createElement('span');
+                    num.className = 'toc-num';
+                    // 三级及更深：不编号，改用实心圆点
+                    if (depth - topDepth >= 2) {
+                        num.classList.add('toc-dot');
+                        num.textContent = '●';
+                    } else {
+                        const parts = [];
+                        for (let k = topDepth; k <= depth; k++) {
+                            if (c[k] > 0) parts.push(c[k]);
+                        }
+                        num.textContent = parts.join('.') + ' ';
+                    }
+                    a.insertBefore(num, a.firstChild);
+                });
+            })();
+
+            // 3) 滚动联动高亮
+            const links = toc.querySelectorAll('a');
+            if (links.length === 0) return;
+
+            const map = new Map();
+            links.forEach(a => {
+                const id = a.getAttribute('href');
+                if (id && id.startsWith('#')) {
+                    const target = document.getElementById(id.substring(1));
+                    if (target) map.set(target, a);
+                }
             });
 
-            headings.forEach(function(heading) {
-                observer.observe(heading);
-            });
-        });
+            const setActive = (a) => {
+                links.forEach(x => x.classList.remove('active'));
+                a.classList.add('active');
+                const top = a.offsetTop - toc.clientHeight / 2 + a.clientHeight / 2;
+                toc.scrollTo({ top, behavior: 'smooth' });
+            };
+
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver(entries => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const a = map.get(entry.target);
+                            if (a) setActive(a);
+                        }
+                    });
+                }, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+                map.forEach((_, target) => observer.observe(target));
+            }
+        };
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', build);
+        } else {
+            build();
+        }
+    })();
     </script>
 
-</body>
+    <script>
+    // 主题切换（明/暗）
+    (function(){
+        const btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        const saved = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', saved);
+        btn.addEventListener('click', () => {
+            const cur = document.documentElement.getAttribute('data-theme');
+            const next = cur === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+    })();
+    </script>
+
+    <script>
+    // 顶部栏滚动毛玻璃
+    (function(){
+        const top = document.getElementById('topbar');
+        if (!top) return;
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 30) top.classList.add('scrolled');
+            else top.classList.remove('scrolled');
+        });
+    })();
+    </script>
+
+    <script>
+    // 背景图加载
+    (function() {
+        const bgUrl = "/Blog/images/background.jpg";
+        const img = new Image();
+        img.src = bgUrl;
+        img.onload = function() {
+            document.body.classList.add('loaded');
+        };
+        setTimeout(() => document.body.classList.add('loaded'), 5000);
+    })();
+    </script>
+
     <script src="/Blog/autohighlight.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
-
+    <script src="/Blog/copy.js"></script>
+</body>
 </html>

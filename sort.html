@@ -75,82 +75,126 @@ layout: null
         </div>
     </nav>
  <main class="sort-container">
+    <div class="sort-hero">
+        <span class="hero-eyebrow">CATEGORIES</span>
         <h2 class="section-title">文章分类</h2>
-        <div class="category-list">
-            <!-- AI -->
-            <a href="categoryhtml/AI.html" class="category-item" data-cat="ai">
+    </div>
+    <div class="category-list">
+        <!-- AI -->
+        <a href="categoryhtml/AI.html" class="category-item" data-cat="ai">
+            <div class="category-icon">🤖</div>
+            <div class="category-text">
                 <span class="category-name">AI</span>
-                <span class="category-count odometer">{{ site.categories.AI | size }}</span>
-            </a>
-            <!-- Android Studio -->
-            <a href="categoryhtml/Android_Studio.html" class="category-item" data-cat="android_studio">
+                <span class="category-desc">人工智能 · 机器学习</span>
+            </div>
+            <div class="category-count-wrap"><span class="category-count odometer">{{ site.categories.AI | size }}</span></div>
+        </a>
+        <!-- Android Studio -->
+        <a href="categoryhtml/Android_Studio.html" class="category-item" data-cat="android_studio">
+            <div class="category-icon">📱</div>
+            <div class="category-text">
                 <span class="category-name">Android Studio</span>
-                <span class="category-count odometer">{{ site.categories.Android | size }}</span>
-            </a>
-            <!-- C/C++ -->
-            <a href="categoryhtml/C,C++.html" class="category-item" data-cat="c_cpp">
-                <span class="category-name">C/C++</span>
-                <span class="category-count odometer">
-                    {% assign combined = "" | split: "," %}
-                    {% assign c_list = site.categories["C"] | default: combined %}
-                    {% assign cpp_list = site.categories["C++"] | default: combined %}
-                    {% assign combined = combined | concat: c_list %}
-                    {% assign combined = combined | concat: cpp_list %}
-                    {{ combined | uniq | size }}
-                </span>
-            </a>
-            <!-- Keil5/CubMX -->
-            <a href="categoryhtml/Keil5,Cubmx,TICCS.html" class="category-item" data-cat="keil_cubmx">
-                <span class="category-name">Keil5/CubMX/TICCS</span>
-                <span class="category-count odometer">
-                    {% assign combined = "" | split: "," %}
-                    {% assign keil_list = site.categories["Keil5"] | default: combined %}
-                    {% assign cub_list = site.categories["CubMX"] | default: combined %}
-                    {% assign tic_list = site.categories["TICCS"] | default: combined %}
-                    {% assign combined = combined | concat: keil_list %}
-                    {% assign combined = combined | concat: cub_list %}
-                    {% assign combined = combined | concat: tic_list %}
-                    {{ combined | uniq | size }}
-                    <!-- {% assign keil5_count = site.categories["Keil5"] | size %}
-                    {% assign cubmx_count = site.categories["CubMX"] | size %}
-                    {% assign ticcs_count = site.categories["TICCS"] | size %}
-                    {{ keil5_count | plus: cubmx_count | plus: ticcs_count }} -->
-                </span>
-            </a>
-            <!-- Linux -->
-            <a href="categoryhtml/Linux.html" class="category-item" data-cat="linux">
+                <span class="category-desc">移动应用开发</span>
+            </div>
+            <div class="category-count-wrap"><span class="category-count odometer">{{ site.categories.Android | size }}</span></div>
+        </a>
+        <!-- C/C++ -->
+        <a href="categoryhtml/C,C++.html" class="category-item" data-cat="c_cpp">
+            <div class="category-icon">{ }</div>
+            <div class="category-text">
+                <span class="category-name">C / C++</span>
+                <span class="category-desc">系统级编程</span>
+            </div>
+            <div class="category-count-wrap"><span class="category-count odometer">
+                {% assign combined = "" | split: "," %}
+                {% assign c_list = site.categories["C"] | default: combined %}
+                {% assign cpp_list = site.categories["C++"] | default: combined %}
+                {% assign combined = combined | concat: c_list %}
+                {% assign combined = combined | concat: cpp_list %}
+                {{ combined | uniq | size }}
+            </span></div>
+        </a>
+        <!-- Keil5/CubMX -->
+        <a href="categoryhtml/Keil5,Cubmx,TICCS.html" class="category-item" data-cat="keil_cubmx">
+            <div class="category-icon">🔧</div>
+            <div class="category-text">
+                <span class="category-name">Keil5 / CubMX / TICCS</span>
+                <span class="category-desc">嵌入式开发工具</span>
+            </div>
+            <div class="category-count-wrap"><span class="category-count odometer">
+                {% assign combined = "" | split: "," %}
+                {% assign keil_list = site.categories["Keil5"] | default: combined %}
+                {% assign cub_list = site.categories["CubMX"] | default: combined %}
+                {% assign tic_list = site.categories["TICCS"] | default: combined %}
+                {% assign combined = combined | concat: keil_list %}
+                {% assign combined = combined | concat: cub_list %}
+                {% assign combined = combined | concat: tic_list %}
+                {{ combined | uniq | size }}
+            </span></div>
+        </a>
+        <!-- Linux -->
+        <a href="categoryhtml/Linux.html" class="category-item" data-cat="linux">
+            <div class="category-icon">🐧</div>
+            <div class="category-text">
                 <span class="category-name">Linux</span>
-                <span class="category-count odometer">{{ site.categories.Linux | size }}</span>
-            </a>
-            <!-- PCB -->
-            <a href="categoryhtml/PCB,EDA.html" class="category-item" data-cat="pcb">
-                <span class="category-name">PCB/EDA</span>
-                <span class="category-count odometer">
-                    {% assign combined = "" | split: "," %}
-                    {% assign pcb_list = site.categories["PCB"] | default: combined %}
-                    {% assign eda_list = site.categories["EDA"] | default: combined %}
-                    {% assign combined = combined | concat: pcb_list %}
-                    {% assign combined = combined | concat: eda_list %}
-                    {{ combined | uniq | size }}
-                </span>
-            </a>
-            <!-- Python -->
-            <a href="categoryhtml/Python.html" class="category-item" data-cat="python">
+                <span class="category-desc">开源操作系统</span>
+            </div>
+            <div class="category-count-wrap"><span class="category-count odometer">{{ site.categories.Linux | size }}</span></div>
+        </a>
+        <!-- PCB -->
+        <a href="categoryhtml/PCB,EDA.html" class="category-item" data-cat="pcb">
+            <div class="category-icon">🔌</div>
+            <div class="category-text">
+                <span class="category-name">PCB / EDA</span>
+                <span class="category-desc">硬件电路设计</span>
+            </div>
+            <div class="category-count-wrap"><span class="category-count odometer">
+                {% assign combined = "" | split: "," %}
+                {% assign pcb_list = site.categories["PCB"] | default: combined %}
+                {% assign eda_list = site.categories["EDA"] | default: combined %}
+                {% assign combined = combined | concat: pcb_list %}
+                {% assign combined = combined | concat: eda_list %}
+                {{ combined | uniq | size }}
+            </span></div>
+        </a>
+        <!-- Python -->
+        <a href="categoryhtml/Python.html" class="category-item" data-cat="python">
+            <div class="category-icon">🐍</div>
+            <div class="category-text">
                 <span class="category-name">Python</span>
-                <span class="category-count odometer">{{ site.categories.Python | size }}</span>
-            </a>
-            <!-- QT -->
-            <a href="categoryhtml/Qt.html" class="category-item" data-cat="qt">
+                <span class="category-desc">脚本 · 数据 · AI</span>
+            </div>
+            <div class="category-count-wrap"><span class="category-count odometer">{{ site.categories.Python | size }}</span></div>
+        </a>
+        <!-- QT -->
+        <a href="categoryhtml/Qt.html" class="category-item" data-cat="qt">
+            <div class="category-icon">🖥</div>
+            <div class="category-text">
                 <span class="category-name">QT</span>
-                <span class="category-count odometer">{{ site.categories.Qt | size }}</span>
-            </a>
-            <!-- Web -->
-            <a href="categoryhtml/Web.html" class="category-item" data-cat="web">
+                <span class="category-desc">跨平台 GUI 框架</span>
+            </div>
+            <div class="category-count-wrap"><span class="category-count odometer">{{ site.categories.Qt | size }}</span></div>
+        </a>
+        <!-- Web -->
+        <a href="categoryhtml/Web.html" class="category-item" data-cat="web">
+            <div class="category-icon">🌐</div>
+            <div class="category-text">
                 <span class="category-name">Web</span>
-                <span class="category-count odometer">{{ site.categories.Web | size }}</span>
-            </a>
-        </div>
-    </main>
+                <span class="category-desc">前端 · 后端</span>
+            </div>
+            <div class="category-count-wrap"><span class="category-count odometer">{{ site.categories.Web | size }}</span></div>
+        </a>
+        <!-- Other -->
+        <a href="categoryhtml/Other.html" class="category-item" data-cat="other">
+            <div class="category-icon">📚</div>
+            <div class="category-text">
+                <span class="category-name">Other</span>
+                <span class="category-desc">杂项 · 其他内容</span>
+            </div>
+            <div class="category-count-wrap"><span class="category-count odometer">{{ site.categories.Other | size }}</span></div>
+        </a>
+    </div>
+</main>
 
     <!-- 页脚 -->
     <footer class="footer">
