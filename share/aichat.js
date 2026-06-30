@@ -8,7 +8,7 @@ const CONFIG = {
     repo: 'Chat-logs',
     history_path: 'chat_history.json',
     encodedToken: part1 + part2 + part3 + part4,
-    AI_API_KEY: 'sk-mx7mwmSK6BPx5J7seyFLcq1bmqoQmrCCHYd4FYR9RmG32uyA',
+    AI_API_KEY: 'sk-WbBIFFgBaNSbdmsGjnQuSwmdQpCs7aKrLml6xuEsvp5S1b0E',
     AI_API_URL: 'https://api.moonshot.cn/v1/chat/completions',
     AI_MODEL: 'moonshot-v1-8k',
     AI_SYSTEM_PROMPT: '角色扮演,你是派蒙,协助一起探索,你的回复要简短,而且如果用户问你太复杂或者专业的问题,你要说不清楚,不要回复太详细,而且不要图标而是颜文字',
