@@ -402,7 +402,7 @@ a:hover {
 }
 .link-bilibili .link-icon { background: linear-gradient(135deg, #00aeec, #fb7299); }
 .link-github    .link-icon { background: linear-gradient(135deg, #24292e, #4a5568); }
-.link-email     .link-icon { background: linear-gradient(135deg, #f59e0b, #ef4444); }
+.link-guestbook    .link-icon { background: linear-gradient(135deg, #f59e0b, #ef4444); }
 .widget-list a .link-text {
     flex: 1;
     font-weight: 500;

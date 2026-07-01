@@ -1,0 +1,450 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIN's Blog - 留言板</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="guestbook.css">
+    <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true });
+    </script>
+    <link rel="stylesheet" href="/Blog/odometr.css">
+    <script src="/Blog/odometr.js"></script>
+    <script>
+    window.pjaxLoaded = function(){
+        var blog_running_days=document.getElementById("blog_running_days");
+        var blog_running_hours=document.getElementById("blog_running_hours");
+        var blog_running_mins=document.getElementById("blog_running_mins");
+        var blog_running_secs=document.getElementById("blog_running_secs");
+        
+        function refresh_blog_running_time(){
+            var time = new Date() - new Date(2024, 9, 7, 0, 0, 0);
+            var d=parseInt(time/24/60/60/1000);
+            var h=parseInt(time%(24*60*60*1000)/60/60/1000);
+            var m=parseInt(time%(60*60*1000)/60/1000);
+            var s=parseInt(time%(60*60*1000)/60/1000);
+            
+            blog_running_days.innerHTML=d;
+            blog_running_hours.innerHTML=h;
+            blog_running_mins.innerHTML=m;
+            blog_running_secs.innerHTML=s;
+        };
+        
+        refresh_blog_running_time();
+        if (typeof(bottomTimeIntervalHasSet) == "undefined"){
+            var bottomTimeIntervalHasSet = true;
+            setInterval(refresh_blog_running_time,500);
+        }
+    };
+    window.onload = function(){
+        odometer_init();
+        window.pjaxLoaded();
+    };
+    function odometer_init(){
+        let el = document.getElementsByClassName('odometer');
+        for (let i = 0; i < el.length; i++) {
+            od = new Odometer({
+                el: el[i],
+                format: 'ddd',
+                duration: 200
+            });
+        }
+    }
+    </script>
+</head>
+<body>
+    <nav class="nav" id="navbar">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="sort.html">分类</a></li>
+                <li><a href="history.html">归档</a></li>
+                <li><a href="tool.html">工具</a></li>
+                <li><a href="guestbook.html">留言</a></li>
+                <li><a href="aboutme.html">关于我</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="hero" id="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">留言板</h1>
+            <p class="hero-subtitle">留下你的足迹，Chat With Me</p>
+        </div>
+    </div>
+
+    <main class="main">
+        <div class="container">
+            <div class="issue-board">
+                <aside class="sidebar-panel">
+                    <div class="new-comment-card">
+                        <h2>发表留言</h2>
+                        <form id="new-comment-form">
+                        <div class="form-row">
+                            <input type="text" id="new-username" placeholder="Github Name" required>
+                            <button type="submit" class="submit-btn">发送</button>
+                        </div>
+                        <textarea id="new-content" placeholder="写下你想说的话..." required></textarea>
+                    </form>
+                    </div>
+                    
+                    <div class="stats-widget">
+                        <h3>留言统计</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-value" id="total-comments">0</span>
+                                <span class="stat-label">总留言</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="total-replies">0</span>
+                                <span class="stat-label">总回复</span>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <section class="main-panel">
+                    <div class="timeline-header">
+                        <h2>留言时间线</h2>
+                        <span class="timeline-count">共 <span id="count-display">0</span> 条留言</span>
+                    </div>
+                    <div id="comments-list" class="comments-list">
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div>Copyright © 2024 - 版权归属 LIN</div>
+            <div class="running-time">
+                本博客已运行 
+                <span id="blog_running_days" class="odometer"></span> days , 
+                <span id="blog_running_hours" class="odometer"></span> h , 
+                <span id="blog_running_mins" class="odometer"></span> m , 
+                <span id="blog_running_secs" class="odometer"></span> s
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
+
+    <script>
+    const navbar = document.getElementById('navbar');
+    const hero = document.getElementById('hero');
+    if (hero) {
+        const heroHeight = hero.offsetHeight;
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            if (scrollY > heroHeight) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    }
+
+    // === Cloudflare Worker API 配置 ===
+    // 部署 Worker 后，将下面的 URL 替换为你的 Worker 域名
+    const API_BASE = 'https://delicate-hall-d71a-guestbook.2904518529.workers.dev';
+
+    const commentsList = document.getElementById('comments-list');
+    const newCommentForm = document.getElementById('new-comment-form');
+    const totalCommentsEl = document.getElementById('total-comments');
+    const totalRepliesEl = document.getElementById('total-replies');
+    const countDisplayEl = document.getElementById('count-display');
+
+    let allComments = [];
+    let isLoading = false;
+
+    function generateId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function hashColor(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const hue = Math.abs(hash) % 360;
+        return `hsl(${hue}, 60%, 60%)`;
+    }
+
+    function formatTime(timestamp) {
+        const date = new Date(timestamp);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+    }
+
+    function updateStats(comments) {
+        const total = comments.length;
+        const replies = comments.filter(c => c.parentId !== null).length;
+        totalCommentsEl.textContent = total;
+        totalRepliesEl.textContent = replies;
+        countDisplayEl.textContent = total;
+    }
+
+    async function loadComments() {
+        isLoading = true;
+        try {
+            const res = await fetch(`${API_BASE}/api/comments`);
+            if (!res.ok) throw new Error('Failed to load comments');
+            const comments = await res.json();
+            
+            comments.forEach(comment => {
+                if (!comment.id) comment.id = generateId();
+                if (comment.parentId === undefined) comment.parentId = null;
+            });
+            
+            allComments = comments;
+            updateStats(comments);
+            renderComments(comments);
+        } catch (e) {
+            console.error('Failed to load comments:', e);
+            commentsList.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>加载留言失败</p><p class="empty-hint">请检查网络连接或稍后再试</p></div>';
+        } finally {
+            isLoading = false;
+        }
+    }
+
+    async function saveComment(comment) {
+        const res = await fetch(`${API_BASE}/api/comments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(comment),
+        });
+        if (!res.ok) throw new Error('Failed to save comment');
+    }
+
+    function getReplies(comments, parentId) {
+        return comments.filter(c => c.parentId === parentId);
+    }
+
+    function renderComments(comments) {
+        const topLevelComments = getReplies(comments, null);
+        
+        if (topLevelComments.length === 0) {
+            commentsList.innerHTML = '<div class="empty-state"><div class="empty-icon">💬</div><p>还没有人留言</p><p class="empty-hint">快来发表第一条留言吧~</p></div>';
+            return;
+        }
+
+        commentsList.innerHTML = topLevelComments.map((comment, index) => renderComment(comment, comments, 0, index)).join('');
+    }
+
+    function renderComment(comment, allComments, depth, index) {
+        const replies = getReplies(allComments, comment.id);
+        const name = comment.isOwner ? 'LIN' : comment.username;
+        const avatarLetter = comment.isOwner ? 'L' : (name.charAt(0) || '?').toUpperCase();
+        const avatarColor = comment.isOwner ? '' : hashColor(name);
+        const avatarClass = comment.isOwner ? 'owner-avatar' : 'visitor-avatar';
+        const nameClass = comment.isOwner ? 'owner-name' : 'visitor-name';
+        const githubAvatarUrl = comment.isOwner ? 'https://github.com/LIN.png?size=72' : `https://github.com/${encodeURIComponent(name)}.png?size=72`;
+        
+        const avatarHtml = `
+            <div class="avatar-wrapper">
+                <img src="${githubAvatarUrl}" 
+                     alt="${escapeHtml(name)}" 
+                     class="avatar-img"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+                     style="display: flex;">
+                <div class="avatar ${avatarClass}" ${!comment.isOwner ? `style="background: ${avatarColor}"` : ''}>${avatarLetter}</div>
+            </div>
+        `;
+        
+        const maxDepth = 2;
+
+        let repliesHtml = '';
+        if (replies.length > 0) {
+            if (depth < maxDepth) {
+                repliesHtml = `<div class="replies-list">${replies.map((r, i) => renderComment(r, allComments, depth + 1, i)).join('')}</div>`;
+            } else {
+                repliesHtml = replies.map(r => {
+                    const rName = r.isOwner ? 'LIN' : r.username;
+                    const rAvatarLetter = r.isOwner ? 'L' : (rName.charAt(0) || '?').toUpperCase();
+                    const rAvatarColor = r.isOwner ? '' : hashColor(rName);
+                    const rGithubUrl = r.isOwner ? 'https://github.com/LIN.png?size=72' : `https://github.com/${encodeURIComponent(rName)}.png?size=72`;
+                    return `<div class="comment-item flat-reply">
+                        <div class="comment-card">
+                            <div class="comment-header">
+                                <div class="avatar-wrapper">
+                                    <img src="${rGithubUrl}" 
+                                         alt="${escapeHtml(rName)}" 
+                                         class="avatar-img"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+                                         style="display: flex;">
+                                    <div class="avatar ${r.isOwner ? 'owner-avatar' : 'visitor-avatar'}" ${!r.isOwner ? `style="background: ${rAvatarColor}"` : ''}>${rAvatarLetter}</div>
+                                </div>
+                                <span class="comment-author ${r.isOwner ? 'owner-name' : 'visitor-name'}">${escapeHtml(rName)}</span>
+                                <span class="comment-time">${formatTime(r.timestamp)}</span>
+                                <button class="reply-btn" data-reply-to="${r.id}" data-reply-user="${rName}">回复</button>
+                            </div>
+                            <div class="comment-content">${escapeHtml(r.content)}</div>
+                            <div class="reply-form-container" id="reply-form-${r.id}"></div>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+        }
+
+        return `
+            <div class="comment-item ${depth > 0 ? 'nested' : ''}" data-comment-id="${comment.id}" data-depth="${depth}">
+                <div class="timeline-line"></div>
+                <div class="timeline-dot ${comment.isOwner ? 'owner-dot' : ''}"></div>
+                <div class="comment-card">
+                    <div class="comment-header">
+                        ${avatarHtml}
+                        <span class="comment-author ${nameClass}">${escapeHtml(name)}</span>
+                        ${comment.isOwner ? '<span class="owner-badge">博主</span>' : ''}
+                        <span class="comment-time">${formatTime(comment.timestamp)}</span>
+                        <button class="reply-btn" data-reply-to="${comment.id}" data-reply-user="${name}">回复</button>
+                    </div>
+                    <div class="comment-content">${escapeHtml(comment.content)}</div>
+                    <div class="reply-form-container" id="reply-form-${comment.id}"></div>
+                    ${repliesHtml}
+                </div>
+            </div>
+        `;
+    }
+
+    newCommentForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (isLoading) return;
+
+        const username = escapeHtml(document.getElementById('new-username').value.trim());
+        const content = escapeHtml(document.getElementById('new-content').value.trim());
+
+        if (!username || !content) return;
+
+        const comment = {
+            id: generateId(),
+            username,
+            content,
+            timestamp: Date.now(),
+            parentId: null,
+            isOwner: false
+        };
+
+        const btn = newCommentForm.querySelector('.submit-btn');
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '发送中...';
+
+        try {
+            await saveComment(comment);
+            newCommentForm.reset();
+            await loadComments();
+            btn.textContent = '已发送';
+            btn.classList.add('success');
+        } catch (e) {
+            console.error('Failed to submit:', e);
+            btn.textContent = '发送失败';
+        } finally {
+            btn.disabled = false;
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.classList.remove('success');
+            }, 2000);
+        }
+    });
+
+    commentsList.addEventListener('click', (e) => {
+        const replyBtn = e.target.closest('.reply-btn');
+        if (!replyBtn) return;
+
+        const commentId = replyBtn.dataset.replyTo;
+        const replyUser = replyBtn.dataset.replyUser;
+        const formContainer = document.getElementById(`reply-form-${commentId}`);
+
+        if (formContainer.querySelector('.reply-form')) {
+            formContainer.innerHTML = '';
+            return;
+        }
+
+        formContainer.innerHTML = `
+            <form class="reply-form">
+                <input type="text" class="reply-username" placeholder="你的昵称" required>
+                <textarea class="reply-content" placeholder="回复 ${replyUser}..." required></textarea>
+                <label class="owner-toggle">
+                    <input type="checkbox" class="is-owner-check">
+                    <span>作为博主 LIN 回复</span>
+                </label>
+                <div class="reply-actions">
+                    <button type="submit" class="reply-submit-btn">发送回复</button>
+                    <button type="button" class="reply-cancel-btn">取消</button>
+                </div>
+            </form>
+        `;
+    });
+
+    commentsList.addEventListener('click', (e) => {
+        const cancelBtn = e.target.closest('.reply-cancel-btn');
+        if (cancelBtn) {
+            const form = cancelBtn.closest('.reply-form');
+            form.parentElement.innerHTML = '';
+            return;
+        }
+    });
+
+    commentsList.addEventListener('submit', async (e) => {
+        const replyForm = e.target.closest('.reply-form');
+        if (!replyForm) return;
+        e.preventDefault();
+        if (isLoading) return;
+
+        const commentItem = replyForm.closest('.comment-item');
+        const parentId = commentItem.dataset.commentId;
+        const parentUser = commentItem.querySelector('.comment-author').textContent;
+        
+        const username = escapeHtml(replyForm.querySelector('.reply-username').value.trim());
+        let content = escapeHtml(replyForm.querySelector('.reply-content').value.trim());
+        const isOwner = replyForm.querySelector('.is-owner-check').checked;
+
+        if (!username || !content) return;
+
+        content = `@${parentUser} ${content}`;
+
+        const comment = {
+            id: generateId(),
+            username: isOwner ? 'LIN' : username,
+            content,
+            timestamp: Date.now(),
+            parentId,
+            isOwner
+        };
+
+        const submitBtn = replyForm.querySelector('.reply-submit-btn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = '发送中...';
+
+        try {
+            await saveComment(comment);
+            await loadComments();
+        } catch (e) {
+            console.error('Failed to reply:', e);
+            submitBtn.textContent = '失败';
+        } finally {
+            submitBtn.disabled = false;
+        }
+    });
+
+    loadComments();
+    </script>
+</body>
+</html>
