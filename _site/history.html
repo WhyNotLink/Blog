@@ -3,257 +3,1257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIN's Blog</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="history.css">
+    <title>归档 - LIN's Blog</title>
+    <link rel="stylesheet" href="/Blog/style.css">
+    <link rel="stylesheet" href="/Blog/history.css">
     <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     mermaid.initialize({ startOnLoad: true });
-        
-        const navbar = document.getElementById('navbar');
-        const hero = document.querySelector('.hero');
-        const heroHeight = hero.offsetHeight;
-
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            if (scrollY > heroHeight) {
-            navbar.classList.add('scrolled');
-            } else {
-            navbar.classList.remove('scrolled');
-            }
-        });
-       
     </script>
-        <!-- Odometer 数字滚动插件 -->
+    <!-- Odometer -->
     <link rel="stylesheet" href="/Blog/odometr.css">
     <script src="/Blog/odometr.js"></script>
-
-    <!-- 博客运行计时核心脚本 -->
     <script>
     window.pjaxLoaded = function(){
         var blog_running_days=document.getElementById("blog_running_days");
         var blog_running_hours=document.getElementById("blog_running_hours");
         var blog_running_mins=document.getElementById("blog_running_mins");
         var blog_running_secs=document.getElementById("blog_running_secs");
-        
         function refresh_blog_running_time(){
-            // 博客起始时间：2024年10月7日（月份0-11，所以9代表10月）
             var time = new Date() - new Date(2024, 9, 7, 0, 0, 0);
             var d=parseInt(time/24/60/60/1000);
             var h=parseInt(time%(24*60*60*1000)/60/60/1000);
             var m=parseInt(time%(60*60*1000)/60/1000);
             var s=parseInt(time%(60*1000)/1000);
-            
             blog_running_days.innerHTML=d;
             blog_running_hours.innerHTML=h;
             blog_running_mins.innerHTML=m;
             blog_running_secs.innerHTML=s;
         };
-        
         refresh_blog_running_time();
         if (typeof(bottomTimeIntervalHasSet) == "undefined"){
             var bottomTimeIntervalHasSet = true;
             setInterval(refresh_blog_running_time,500);
         }
     };
-    // 初始化数字滚动
     window.onload = function(){
         odometer_init();
         window.pjaxLoaded();
     };
-
     function odometer_init(){
         let el = document.getElementsByClassName('odometer');
         for (let i = 0; i < el.length; i++) {
-            od = new Odometer({
-                el: el[i],
-                format: 'ddd',
-                duration: 200
-            });
+            od = new Odometer({ el: el[i], format: 'ddd', duration: 200 });
         }
     }
     </script>
 
+    <!-- 页面加载控制 - 立即执行 -->
+    <script>
+    (function() {
+        const isFirstVisit = !sessionStorage.getItem('bgLoaded');
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const loader = document.getElementById('pageLoader');
+            
+            if (!isFirstVisit) {
+                if (loader) loader.style.display = 'none';
+                document.body.classList.add('page-fade-in');
+                return;
+            }
+            
+            function hideLoader() {
+                if (loader) {
+                    loader.classList.add('hidden');
+                    setTimeout(() => loader.style.display = 'none', 500);
+                }
+                document.body.classList.add('loaded');
+                sessionStorage.setItem('bgLoaded', 'true');
+            }
+            
+            const bgImg = new Image();
+            bgImg.src = '/Blog/images/bg1.jpg';
+            
+            if (bgImg.complete && bgImg.naturalWidth > 0) {
+                hideLoader();
+            } else {
+                bgImg.onload = hideLoader;
+                bgImg.onerror = hideLoader;
+                setTimeout(hideLoader, 3000);
+            }
+        });
+    })();
+    </script>
+
 </head>
 <body class="fade-in-content">
+    <!-- 加载遮罩 -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-spinner"></div>
+    </div>
+    <!-- 背景自动切换 -->
+    <div class="bg-slider" id="bgSlider">
+        <div class="bg-layer active" style="background-image: url('/Blog/images/bg1.jpg')"></div>
+        <div class="bg-layer" style="background-image: url('/Blog/images/bg2.jpg')"></div>
+        <div class="bg-layer" style="background-image: url('/Blog/images/bg3.jpg')"></div>
+    </div>
+    <!-- 萤火虫特效 -->
+    <div class="fireflies" id="fireflies"></div>
+
     <!-- 导航 -->
     <nav class="nav" id="navbar">
         <div class="container">
             <ul class="nav-menu">
-                <li><a href="index.html">首页</a></li>
-                <li><a href="sort.html">分类</a></li>
-                <li><a href="history.html">归档</a></li>
-                <li><a href="tool.html">工具</a></li>
-                <li><a href="guestbook.html">留言</a></li>
-                <li><a href="aboutme.html">关于我</a></li>
+                <li><a href="/Blog/index.html">首页</a></li>
+                <li><a href="/Blog/sort.html">分类</a></li>
+                <li><a href="/Blog/history.html">归档</a></li>
+                <li><a href="/Blog/tool.html">工具</a></li>
+                <li><a href="/Blog/guestbook.html">留言</a></li>
+                <li><a href="/Blog/aboutme.html">关于我</a></li>
             </ul>
         </div>
     </nav>
 
-
     <!-- 主体内容 -->
-    <main class="main">
-        <div class="archive-container">
-            <h1 class="archive-title">全部文章 - 15</h1>
-            <div class="timeline">
-                
-                
-                    <div class="timeline-year">2026年</div>
-                    
-                        <div class="timeline-item">
-                            <!-- 文章缩略图：有图片才显示 -->
-                            
-                            <div class="timeline-content">
-                                <div class="timeline-date">2026-06-29</div>
-                                <a href="/Blog/linux/2026/06/29/Arch.html" class="timeline-title">安装ARCH</a>
-                            </div>
-                        </div>
-                    
-                        <div class="timeline-item">
-                            <!-- 文章缩略图：有图片才显示 -->
-                            
-                            <div class="timeline-content">
-                                <div class="timeline-date">2026-05-04</div>
-                                <a href="/Blog/python/2026/05/04/shujujiegou.html" class="timeline-title">数据结构</a>
-                            </div>
-                        </div>
-                    
-                        <div class="timeline-item">
-                            <!-- 文章缩略图：有图片才显示 -->
-                            
-                            <div class="timeline-content">
-                                <div class="timeline-date">2026-04-09</div>
-                                <a href="/Blog/other/2026/04/09/GitInit.html" class="timeline-title">Git使用指南</a>
-                            </div>
-                        </div>
-                    
-                        <div class="timeline-item">
-                            <!-- 文章缩略图：有图片才显示 -->
-                            
-                            <div class="timeline-content">
-                                <div class="timeline-date">2026-04-07</div>
-                                <a href="/Blog/c/2026/04/07/TICAR.html" class="timeline-title">TI小车</a>
-                            </div>
-                        </div>
-                    
-                        <div class="timeline-item">
-                            <!-- 文章缩略图：有图片才显示 -->
-                            
-                            <div class="timeline-content">
-                                <div class="timeline-date">2026-04-05</div>
-                                <a href="/Blog/other/2026/04/05/xiantan.html" class="timeline-title">如何入门嵌入式开发</a>
-                            </div>
-                        </div>
-                    
-                        <div class="timeline-item">
-                            <!-- 文章缩略图：有图片才显示 -->
-                            
-                            <div class="timeline-content">
-                                <div class="timeline-date">2026-04-05</div>
-                                <a href="/Blog/web/2026/04/05/qianduan.html" class="timeline-title">前端开发</a>
-                            </div>
-                        </div>
-                    
-                        <div class="timeline-item">
-                            <!-- 文章缩略图：有图片才显示 -->
-                            
-                            <div class="timeline-content">
-                                <div class="timeline-date">2026-04-02</div>
-                                <a href="/Blog/other/2026/04/02/tuchuan.html" class="timeline-title">模拟图传与数字图传</a>
-                            </div>
-                        </div>
-                    
-                
-                    <div class="timeline-year">2025年</div>
-                    
-                        <div class="timeline-item">
-                            <!-- 文章缩略图：有图片才显示 -->
-                            
-                            <div class="timeline-content">
-                                <div class="timeline-date">2025-04-28</div>
-                                <a href="/Blog/ai/python/2025/04/28/yolotrain.html" class="timeline-title">Yolo训练</a>
-                            </div>
-                        </div>
-                    
-                        <div class="timeline-item">
-                            <!-- 文章缩略图：有图片才显示 -->
-                            
-                            <div class="timeline-content">
-                                <div class="timeline-date">2025-04-18</div>
-                                <a href="/Blog/android/2025/04/18/android.html" class="timeline-title">Android graled配置</a>
-                            </div>
-                        </div>
-                    
-                        <div class="timeline-item">
-                            <!-- 文章缩略图：有图片才显示 -->
-                            
-                                <img src="/Blog/post-image/image-20250304210324503-1.png" alt="使用CubMX配置G431RBT6开发板">
-                            
-                            <div class="timeline-content">
-                                <div class="timeline-date">2025-04-18</div>
-                                <a href="/Blog/cubmx/keil5/2025/04/18/G431.html" class="timeline-title">使用CubMX配置G431RBT6开发板</a>
-                            </div>
-                        </div>
-                    
-                
-                    <div class="timeline-year">2024年</div>
-                    
-                        <div class="timeline-item">
-                            <!-- 文章缩略图：有图片才显示 -->
-                            
-                            <div class="timeline-content">
-                                <div class="timeline-date">2024-11-30</div>
-                                <a href="/Blog/python/2024/11/30/pythonjiaocheng2.html" class="timeline-title">Python教程(二)</a>
-                            </div>
-                        </div>
-                    
-                        <div class="timeline-item">
-                            <!-- 文章缩略图：有图片才显示 -->
-                            
-                            <div class="timeline-content">
-                                <div class="timeline-date">2024-11-27</div>
-                                <a href="/Blog/python/2024/11/27/pythonjiaocheng.html" class="timeline-title">Python教程(一)</a>
-                            </div>
-                        </div>
-                    
-                        <div class="timeline-item">
-                            <!-- 文章缩略图：有图片才显示 -->
-                            
-                            <div class="timeline-content">
-                                <div class="timeline-date">2024-10-24</div>
-                                <a href="/Blog/other/2024/10/24/tongxinfangshi.html" class="timeline-title">硬件通信方式</a>
-                            </div>
-                        </div>
-                    
-                        <div class="timeline-item">
-                            <!-- 文章缩略图：有图片才显示 -->
-                            
-                            <div class="timeline-content">
-                                <div class="timeline-date">2024-10-10</div>
-                                <a href="/Blog/c/2024/10/10/Cjiaocheng2.html" class="timeline-title">C语言教程（二）</a>
-                            </div>
-                        </div>
-                    
-                        <div class="timeline-item">
-                            <!-- 文章缩略图：有图片才显示 -->
-                            
-                            <div class="timeline-content">
-                                <div class="timeline-date">2024-10-09</div>
-                                <a href="/Blog/c/2024/10/09/Cjiaocheng.html" class="timeline-title">C语言教程（一）</a>
-                            </div>
-                        </div>
-                    
+    <main class="main archive-main" id="main-content">
+        <div class="archive-header">
+            <h1 class="archive-title">归档</h1>
+            <p class="archive-subtitle">总计 15 篇文章</p>
+        </div>
+
+        <!-- 搜索与筛选区 -->
+        <div class="archive-toolbar">
+            <div class="search-box" id="searchBox">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input type="text" id="searchInput" class="search-input" placeholder="搜寻文章..." autocomplete="off">
+                <div class="search-dropdown" id="searchDropdown"></div>
+            </div>
+
+            <!-- 标签筛选 -->
+            
+            
+            
+
+            <div class="tag-filters" id="tagFilters">
                 
             </div>
+
+            <!-- 视图切换 -->
+            <div class="view-toggle" id="viewToggle">
+                <button class="view-btn active" data-view="timeline" title="时间线视图">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="2" x2="12" y2="22"/><circle cx="12" cy="6" r="2"/><circle cx="12" cy="18" r="2"/>
+                    </svg>
+                    <span>时间线</span>
+                </button>
+                <button class="view-btn" data-view="grid" title="网格视图">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                    </svg>
+                    <span>网格</span>
+                </button>
+            </div>
         </div>
+
+        <!-- 时间线视图 -->
+        <div class="timeline-view active" id="timelineView">
+            <div class="timeline-line"></div>
+            
+            
+            <div class="tl-item" 
+                 data-tags=""
+                 data-title="安装arch"
+                 data-date="2026-06-29">
+                <div class="tl-dot"></div>
+                <div class="tl-card tl-left">
+                    <a href="/Blog/linux/2026/06/29/Arch.html" class="tl-card-inner">
+                        <div class="tl-cover">
+                            
+                            <div class="tl-cover-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                            </div>
+                            
+                        </div>
+                        <div class="tl-body">
+                            <h3 class="tl-card-title">安装ARCH</h3>
+                            
+                            <p class="tl-card-desc">
+</p>
+                            
+                            <div class="tl-card-tags">
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tl-date">2026-06-29</div>
+            </div>
+            
+            <div class="tl-item" 
+                 data-tags=""
+                 data-title="数据结构"
+                 data-date="2026-05-04">
+                <div class="tl-dot"></div>
+                <div class="tl-card tl-right">
+                    <a href="/Blog/python/2026/05/04/shujujiegou.html" class="tl-card-inner">
+                        <div class="tl-cover">
+                            
+                            <div class="tl-cover-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                            </div>
+                            
+                        </div>
+                        <div class="tl-body">
+                            <h3 class="tl-card-title">数据结构</h3>
+                            
+                            <p class="tl-card-desc">
+</p>
+                            
+                            <div class="tl-card-tags">
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tl-date">2026-05-04</div>
+            </div>
+            
+            <div class="tl-item" 
+                 data-tags=""
+                 data-title="git使用指南"
+                 data-date="2026-04-09">
+                <div class="tl-dot"></div>
+                <div class="tl-card tl-left">
+                    <a href="/Blog/other/2026/04/09/GitInit.html" class="tl-card-inner">
+                        <div class="tl-cover">
+                            
+                            <div class="tl-cover-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                            </div>
+                            
+                        </div>
+                        <div class="tl-body">
+                            <h3 class="tl-card-title">Git使用指南</h3>
+                            
+                            <p class="tl-card-desc">
+</p>
+                            
+                            <div class="tl-card-tags">
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tl-date">2026-04-09</div>
+            </div>
+            
+            <div class="tl-item" 
+                 data-tags=""
+                 data-title="ti小车"
+                 data-date="2026-04-07">
+                <div class="tl-dot"></div>
+                <div class="tl-card tl-right">
+                    <a href="/Blog/c/2026/04/07/TICAR.html" class="tl-card-inner">
+                        <div class="tl-cover">
+                            
+                            <div class="tl-cover-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                            </div>
+                            
+                        </div>
+                        <div class="tl-body">
+                            <h3 class="tl-card-title">TI小车</h3>
+                            
+                            <p class="tl-card-desc">
+</p>
+                            
+                            <div class="tl-card-tags">
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tl-date">2026-04-07</div>
+            </div>
+            
+            <div class="tl-item" 
+                 data-tags=""
+                 data-title="前端开发"
+                 data-date="2026-04-05">
+                <div class="tl-dot"></div>
+                <div class="tl-card tl-left">
+                    <a href="/Blog/web/2026/04/05/qianduan.html" class="tl-card-inner">
+                        <div class="tl-cover">
+                            
+                            <div class="tl-cover-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                            </div>
+                            
+                        </div>
+                        <div class="tl-body">
+                            <h3 class="tl-card-title">前端开发</h3>
+                            
+                            <p class="tl-card-desc">
+</p>
+                            
+                            <div class="tl-card-tags">
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tl-date">2026-04-05</div>
+            </div>
+            
+            <div class="tl-item" 
+                 data-tags=""
+                 data-title="如何入门嵌入式开发"
+                 data-date="2026-04-05">
+                <div class="tl-dot"></div>
+                <div class="tl-card tl-right">
+                    <a href="/Blog/other/2026/04/05/xiantan.html" class="tl-card-inner">
+                        <div class="tl-cover">
+                            
+                            <div class="tl-cover-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                            </div>
+                            
+                        </div>
+                        <div class="tl-body">
+                            <h3 class="tl-card-title">如何入门嵌入式开发</h3>
+                            
+                            <p class="tl-card-desc">本章内容是闲谈，给后面实验室的学弟学妹们一个参考。
+其实嵌入式开发是一个复杂的过程，需要学习很多知识。
+它不仅涉及硬件还有软件
+一般人精通一方面就很厉害了...</p>
+                            
+                            <div class="tl-card-tags">
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tl-date">2026-04-05</div>
+            </div>
+            
+            <div class="tl-item" 
+                 data-tags=""
+                 data-title="模拟图传与数字图传"
+                 data-date="2026-04-02">
+                <div class="tl-dot"></div>
+                <div class="tl-card tl-left">
+                    <a href="/Blog/other/2026/04/02/tuchuan.html" class="tl-card-inner">
+                        <div class="tl-cover">
+                            
+                            <div class="tl-cover-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                            </div>
+                            
+                        </div>
+                        <div class="tl-body">
+                            <h3 class="tl-card-title">模拟图传与数字图传</h3>
+                            
+                            <p class="tl-card-desc">数字图传
+</p>
+                            
+                            <div class="tl-card-tags">
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tl-date">2026-04-02</div>
+            </div>
+            
+            <div class="tl-item" 
+                 data-tags=""
+                 data-title="yolo训练"
+                 data-date="2025-04-28">
+                <div class="tl-dot"></div>
+                <div class="tl-card tl-right">
+                    <a href="/Blog/ai/python/2025/04/28/yolotrain.html" class="tl-card-inner">
+                        <div class="tl-cover">
+                            
+                            <div class="tl-cover-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                            </div>
+                            
+                        </div>
+                        <div class="tl-body">
+                            <h3 class="tl-card-title">Yolo训练</h3>
+                            
+                            <p class="tl-card-desc">工程结构
+</p>
+                            
+                            <div class="tl-card-tags">
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tl-date">2025-04-28</div>
+            </div>
+            
+            <div class="tl-item" 
+                 data-tags=""
+                 data-title="使用cubmx配置g431rbt6开发板"
+                 data-date="2025-04-18">
+                <div class="tl-dot"></div>
+                <div class="tl-card tl-left">
+                    <a href="/Blog/cubmx/keil5/2025/04/18/G431.html" class="tl-card-inner">
+                        <div class="tl-cover">
+                            
+                            <img src="/Blog/post-image/image-20250304210324503-1.png" alt="使用CubMX配置G431RBT6开发板" loading="lazy">
+                            
+                        </div>
+                        <div class="tl-body">
+                            <h3 class="tl-card-title">使用CubMX配置G431RBT6开发板</h3>
+                            
+                            <p class="tl-card-desc">
+</p>
+                            
+                            <div class="tl-card-tags">
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tl-date">2025-04-18</div>
+            </div>
+            
+            <div class="tl-item" 
+                 data-tags=""
+                 data-title="android graled配置"
+                 data-date="2025-04-18">
+                <div class="tl-dot"></div>
+                <div class="tl-card tl-right">
+                    <a href="/Blog/android/2025/04/18/android.html" class="tl-card-inner">
+                        <div class="tl-cover">
+                            
+                            <div class="tl-cover-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                            </div>
+                            
+                        </div>
+                        <div class="tl-body">
+                            <h3 class="tl-card-title">Android graled配置</h3>
+                            
+                            <p class="tl-card-desc">
+</p>
+                            
+                            <div class="tl-card-tags">
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tl-date">2025-04-18</div>
+            </div>
+            
+            <div class="tl-item" 
+                 data-tags=""
+                 data-title="python教程(二)"
+                 data-date="2024-11-30">
+                <div class="tl-dot"></div>
+                <div class="tl-card tl-left">
+                    <a href="/Blog/python/2024/11/30/pythonjiaocheng2.html" class="tl-card-inner">
+                        <div class="tl-cover">
+                            
+                            <div class="tl-cover-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                            </div>
+                            
+                        </div>
+                        <div class="tl-body">
+                            <h3 class="tl-card-title">Python教程(二)</h3>
+                            
+                            <p class="tl-card-desc">
+</p>
+                            
+                            <div class="tl-card-tags">
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tl-date">2024-11-30</div>
+            </div>
+            
+            <div class="tl-item" 
+                 data-tags=""
+                 data-title="python教程(一)"
+                 data-date="2024-11-27">
+                <div class="tl-dot"></div>
+                <div class="tl-card tl-right">
+                    <a href="/Blog/python/2024/11/27/pythonjiaocheng.html" class="tl-card-inner">
+                        <div class="tl-cover">
+                            
+                            <div class="tl-cover-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                            </div>
+                            
+                        </div>
+                        <div class="tl-body">
+                            <h3 class="tl-card-title">Python教程(一)</h3>
+                            
+                            <p class="tl-card-desc">
+</p>
+                            
+                            <div class="tl-card-tags">
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tl-date">2024-11-27</div>
+            </div>
+            
+            <div class="tl-item" 
+                 data-tags=""
+                 data-title="硬件通信方式"
+                 data-date="2024-10-24">
+                <div class="tl-dot"></div>
+                <div class="tl-card tl-left">
+                    <a href="/Blog/other/2024/10/24/tongxinfangshi.html" class="tl-card-inner">
+                        <div class="tl-cover">
+                            
+                            <div class="tl-cover-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                            </div>
+                            
+                        </div>
+                        <div class="tl-body">
+                            <h3 class="tl-card-title">硬件通信方式</h3>
+                            
+                            <p class="tl-card-desc">
+</p>
+                            
+                            <div class="tl-card-tags">
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tl-date">2024-10-24</div>
+            </div>
+            
+            <div class="tl-item" 
+                 data-tags=""
+                 data-title="c语言教程（二）"
+                 data-date="2024-10-10">
+                <div class="tl-dot"></div>
+                <div class="tl-card tl-right">
+                    <a href="/Blog/c/2024/10/10/Cjiaocheng2.html" class="tl-card-inner">
+                        <div class="tl-cover">
+                            
+                            <div class="tl-cover-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                            </div>
+                            
+                        </div>
+                        <div class="tl-body">
+                            <h3 class="tl-card-title">C语言教程（二）</h3>
+                            
+                            <p class="tl-card-desc">
+</p>
+                            
+                            <div class="tl-card-tags">
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tl-date">2024-10-10</div>
+            </div>
+            
+            <div class="tl-item" 
+                 data-tags=""
+                 data-title="c语言教程（一）"
+                 data-date="2024-10-09">
+                <div class="tl-dot"></div>
+                <div class="tl-card tl-left">
+                    <a href="/Blog/c/2024/10/09/Cjiaocheng.html" class="tl-card-inner">
+                        <div class="tl-cover">
+                            
+                            <div class="tl-cover-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                            </div>
+                            
+                        </div>
+                        <div class="tl-body">
+                            <h3 class="tl-card-title">C语言教程（一）</h3>
+                            
+                            <p class="tl-card-desc">
+</p>
+                            
+                            <div class="tl-card-tags">
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tl-date">2024-10-09</div>
+            </div>
+            
+            
+        </div>
+
+        <!-- 网格视图 -->
+        <div class="grid-view" id="gridView">
+            
+            <div class="grid-card-wrapper"
+                 data-tags=""
+                 data-title="安装arch"
+                 data-date="2026-06-29">
+                <a href="/Blog/linux/2026/06/29/Arch.html" class="grid-card">
+                    <div class="grid-cover">
+                        
+                        <div class="grid-cover-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="grid-date-badge">2026-06-29</div>
+                    </div>
+                    <div class="grid-body">
+                        <h3 class="grid-card-title">安装ARCH</h3>
+                        
+                        <p class="grid-card-desc">
+</p>
+                        
+                        <div class="grid-card-tags">
+                            
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="grid-card-wrapper"
+                 data-tags=""
+                 data-title="数据结构"
+                 data-date="2026-05-04">
+                <a href="/Blog/python/2026/05/04/shujujiegou.html" class="grid-card">
+                    <div class="grid-cover">
+                        
+                        <div class="grid-cover-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="grid-date-badge">2026-05-04</div>
+                    </div>
+                    <div class="grid-body">
+                        <h3 class="grid-card-title">数据结构</h3>
+                        
+                        <p class="grid-card-desc">
+</p>
+                        
+                        <div class="grid-card-tags">
+                            
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="grid-card-wrapper"
+                 data-tags=""
+                 data-title="git使用指南"
+                 data-date="2026-04-09">
+                <a href="/Blog/other/2026/04/09/GitInit.html" class="grid-card">
+                    <div class="grid-cover">
+                        
+                        <div class="grid-cover-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="grid-date-badge">2026-04-09</div>
+                    </div>
+                    <div class="grid-body">
+                        <h3 class="grid-card-title">Git使用指南</h3>
+                        
+                        <p class="grid-card-desc">
+</p>
+                        
+                        <div class="grid-card-tags">
+                            
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="grid-card-wrapper"
+                 data-tags=""
+                 data-title="ti小车"
+                 data-date="2026-04-07">
+                <a href="/Blog/c/2026/04/07/TICAR.html" class="grid-card">
+                    <div class="grid-cover">
+                        
+                        <div class="grid-cover-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="grid-date-badge">2026-04-07</div>
+                    </div>
+                    <div class="grid-body">
+                        <h3 class="grid-card-title">TI小车</h3>
+                        
+                        <p class="grid-card-desc">
+</p>
+                        
+                        <div class="grid-card-tags">
+                            
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="grid-card-wrapper"
+                 data-tags=""
+                 data-title="前端开发"
+                 data-date="2026-04-05">
+                <a href="/Blog/web/2026/04/05/qianduan.html" class="grid-card">
+                    <div class="grid-cover">
+                        
+                        <div class="grid-cover-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="grid-date-badge">2026-04-05</div>
+                    </div>
+                    <div class="grid-body">
+                        <h3 class="grid-card-title">前端开发</h3>
+                        
+                        <p class="grid-card-desc">
+</p>
+                        
+                        <div class="grid-card-tags">
+                            
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="grid-card-wrapper"
+                 data-tags=""
+                 data-title="如何入门嵌入式开发"
+                 data-date="2026-04-05">
+                <a href="/Blog/other/2026/04/05/xiantan.html" class="grid-card">
+                    <div class="grid-cover">
+                        
+                        <div class="grid-cover-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="grid-date-badge">2026-04-05</div>
+                    </div>
+                    <div class="grid-body">
+                        <h3 class="grid-card-title">如何入门嵌入式开发</h3>
+                        
+                        <p class="grid-card-desc">本章内容是闲谈，给后面实验室的学弟学妹们一个参考。
+其实嵌入式开发是一个复杂的过程，需要学习很多知识。
+它不仅涉及...</p>
+                        
+                        <div class="grid-card-tags">
+                            
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="grid-card-wrapper"
+                 data-tags=""
+                 data-title="模拟图传与数字图传"
+                 data-date="2026-04-02">
+                <a href="/Blog/other/2026/04/02/tuchuan.html" class="grid-card">
+                    <div class="grid-cover">
+                        
+                        <div class="grid-cover-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="grid-date-badge">2026-04-02</div>
+                    </div>
+                    <div class="grid-body">
+                        <h3 class="grid-card-title">模拟图传与数字图传</h3>
+                        
+                        <p class="grid-card-desc">数字图传
+</p>
+                        
+                        <div class="grid-card-tags">
+                            
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="grid-card-wrapper"
+                 data-tags=""
+                 data-title="yolo训练"
+                 data-date="2025-04-28">
+                <a href="/Blog/ai/python/2025/04/28/yolotrain.html" class="grid-card">
+                    <div class="grid-cover">
+                        
+                        <div class="grid-cover-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="grid-date-badge">2025-04-28</div>
+                    </div>
+                    <div class="grid-body">
+                        <h3 class="grid-card-title">Yolo训练</h3>
+                        
+                        <p class="grid-card-desc">工程结构
+</p>
+                        
+                        <div class="grid-card-tags">
+                            
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="grid-card-wrapper"
+                 data-tags=""
+                 data-title="使用cubmx配置g431rbt6开发板"
+                 data-date="2025-04-18">
+                <a href="/Blog/cubmx/keil5/2025/04/18/G431.html" class="grid-card">
+                    <div class="grid-cover">
+                        
+                        <img src="/Blog/post-image/image-20250304210324503-1.png" alt="使用CubMX配置G431RBT6开发板" loading="lazy">
+                        
+                        <div class="grid-date-badge">2025-04-18</div>
+                    </div>
+                    <div class="grid-body">
+                        <h3 class="grid-card-title">使用CubMX配置G431RBT6开发板</h3>
+                        
+                        <p class="grid-card-desc">
+</p>
+                        
+                        <div class="grid-card-tags">
+                            
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="grid-card-wrapper"
+                 data-tags=""
+                 data-title="android graled配置"
+                 data-date="2025-04-18">
+                <a href="/Blog/android/2025/04/18/android.html" class="grid-card">
+                    <div class="grid-cover">
+                        
+                        <div class="grid-cover-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="grid-date-badge">2025-04-18</div>
+                    </div>
+                    <div class="grid-body">
+                        <h3 class="grid-card-title">Android graled配置</h3>
+                        
+                        <p class="grid-card-desc">
+</p>
+                        
+                        <div class="grid-card-tags">
+                            
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="grid-card-wrapper"
+                 data-tags=""
+                 data-title="python教程(二)"
+                 data-date="2024-11-30">
+                <a href="/Blog/python/2024/11/30/pythonjiaocheng2.html" class="grid-card">
+                    <div class="grid-cover">
+                        
+                        <div class="grid-cover-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="grid-date-badge">2024-11-30</div>
+                    </div>
+                    <div class="grid-body">
+                        <h3 class="grid-card-title">Python教程(二)</h3>
+                        
+                        <p class="grid-card-desc">
+</p>
+                        
+                        <div class="grid-card-tags">
+                            
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="grid-card-wrapper"
+                 data-tags=""
+                 data-title="python教程(一)"
+                 data-date="2024-11-27">
+                <a href="/Blog/python/2024/11/27/pythonjiaocheng.html" class="grid-card">
+                    <div class="grid-cover">
+                        
+                        <div class="grid-cover-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="grid-date-badge">2024-11-27</div>
+                    </div>
+                    <div class="grid-body">
+                        <h3 class="grid-card-title">Python教程(一)</h3>
+                        
+                        <p class="grid-card-desc">
+</p>
+                        
+                        <div class="grid-card-tags">
+                            
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="grid-card-wrapper"
+                 data-tags=""
+                 data-title="硬件通信方式"
+                 data-date="2024-10-24">
+                <a href="/Blog/other/2024/10/24/tongxinfangshi.html" class="grid-card">
+                    <div class="grid-cover">
+                        
+                        <div class="grid-cover-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="grid-date-badge">2024-10-24</div>
+                    </div>
+                    <div class="grid-body">
+                        <h3 class="grid-card-title">硬件通信方式</h3>
+                        
+                        <p class="grid-card-desc">
+</p>
+                        
+                        <div class="grid-card-tags">
+                            
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="grid-card-wrapper"
+                 data-tags=""
+                 data-title="c语言教程（二）"
+                 data-date="2024-10-10">
+                <a href="/Blog/c/2024/10/10/Cjiaocheng2.html" class="grid-card">
+                    <div class="grid-cover">
+                        
+                        <div class="grid-cover-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="grid-date-badge">2024-10-10</div>
+                    </div>
+                    <div class="grid-body">
+                        <h3 class="grid-card-title">C语言教程（二）</h3>
+                        
+                        <p class="grid-card-desc">
+</p>
+                        
+                        <div class="grid-card-tags">
+                            
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="grid-card-wrapper"
+                 data-tags=""
+                 data-title="c语言教程（一）"
+                 data-date="2024-10-09">
+                <a href="/Blog/c/2024/10/09/Cjiaocheng.html" class="grid-card">
+                    <div class="grid-cover">
+                        
+                        <div class="grid-cover-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="grid-date-badge">2024-10-09</div>
+                    </div>
+                    <div class="grid-body">
+                        <h3 class="grid-card-title">C语言教程（一）</h3>
+                        
+                        <p class="grid-card-desc">
+</p>
+                        
+                        <div class="grid-card-tags">
+                            
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            
+        </div>
+
+        <!-- 回到顶部 -->
+        <button class="scroll-top" id="scrollTop" title="回到顶部">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
+            </svg>
+        </button>
+
+    <!-- 归档交互脚本 -->
+    <script>
+    (function() {
+        // DOM
+        const searchInput = document.getElementById('searchInput');
+        const searchDropdown = document.getElementById('searchDropdown');
+        const searchBox = document.getElementById('searchBox');
+        const tagBtns = document.querySelectorAll('.tag-btn');
+        const viewBtns = document.querySelectorAll('.view-btn');
+        const timelineView = document.getElementById('timelineView');
+        const gridView = document.getElementById('gridView');
+        const scrollTopBtn = document.getElementById('scrollTop');
+        const tlItems = document.querySelectorAll('.tl-item, .grid-card-wrapper');
+
+        let activeTag = 'all';
+        let activeView = 'timeline';
+
+        // 收集所有文章数据
+        const posts = Array.from(tlItems).map(item => ({
+            el: item,
+            tags: item.dataset.tags ? item.dataset.tags.split(',').map(t => t.trim()) : [],
+            title: item.dataset.title || '',
+            date: item.dataset.date || '',
+            slug: item.querySelector('a')?.getAttribute('href') || ''
+        }));
+
+        // 搜索
+        let searchDebounce;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchDebounce);
+            const query = this.value.trim().toLowerCase();
+            if (!query) { searchDropdown.classList.remove('show'); return; }
+            
+            searchDebounce = setTimeout(() => {
+                const results = posts.filter(p => 
+                    p.title.includes(query)
+                );
+                if (results.length > 0) {
+                    searchDropdown.innerHTML = results.map(p => `
+                        <a href="${p.slug}" class="search-result-item">
+                            <span class="search-result-title">${highlightMatch(p.title, query)}</span>
+                            <span class="search-result-date">${p.date}</span>
+                        </a>
+                    `).join('');
+                    searchDropdown.classList.add('show');
+                } else {
+                    searchDropdown.innerHTML = '<div class="search-no-result">未找到匹配文章 🌌</div>';
+                    searchDropdown.classList.add('show');
+                }
+            }, 200);
+        });
+
+        searchInput.addEventListener('focus', function() {
+            if (this.value.trim()) searchDropdown.classList.add('show');
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!searchBox.contains(e.target)) searchDropdown.classList.remove('show');
+        });
+
+        function highlightMatch(text, query) {
+            const idx = text.toLowerCase().indexOf(query);
+            if (idx === -1) return text;
+            return text.slice(0, idx) + '<mark>' + text.slice(idx, idx + query.length) + '</mark>' + text.slice(idx + query.length);
+        }
+
+        // 标签筛选
+        tagBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.classList.contains('active')) {
+                    this.classList.remove('active');
+                    activeTag = 'all';
+                } else {
+                    tagBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    activeTag = this.dataset.tag;
+                }
+                applyFilters();
+            });
+        });
+
+        // 视图切换
+        viewBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                viewBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                activeView = this.dataset.view;
+                
+                if (activeView === 'timeline') {
+                    timelineView.classList.add('active');
+                    gridView.classList.remove('active');
+                } else {
+                    timelineView.classList.remove('active');
+                    gridView.classList.add('active');
+                }
+                applyFilters();
+            });
+        });
+
+        // 移动端强制网格视图
+        function checkMobileView() {
+            if (window.innerWidth < 768) {
+                viewBtns.forEach(b => b.classList.remove('active'));
+                document.querySelector('.view-btn[data-view="grid"]').classList.add('active');
+                timelineView.classList.remove('active');
+                gridView.classList.add('active');
+                activeView = 'grid';
+            }
+        }
+        checkMobileView();
+        window.addEventListener('resize', checkMobileView);
+
+        // 筛选逻辑
+        function applyFilters() {
+            const tlItems = timelineView.querySelectorAll('.tl-item');
+            const gridItems = gridView.querySelectorAll('.grid-card-wrapper');
+            
+            let tlVisible = 0, gridVisible = 0;
+
+            [tlItems, gridItems].forEach(items => {
+                items.forEach(item => {
+                    const tags = item.dataset.tags ? item.dataset.tags.split(',').map(t => t.trim()) : [];
+                    const match = activeTag === 'all' || tags.includes(activeTag);
+                    item.style.display = match ? '' : 'none';
+                });
+            });
+
+            let visibleIndex = 0;
+            tlItems.forEach(item => {
+                if (item.style.display !== 'none') {
+                    const card = item.querySelector('.tl-card');
+                    card.classList.remove('tl-left', 'tl-right');
+                    card.classList.add(visibleIndex % 2 === 0 ? 'tl-left' : 'tl-right');
+                    visibleIndex++;
+                }
+            });
+        }
+
+        // 滚动条/回到顶部
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 400) {
+                scrollTopBtn.classList.add('show');
+            } else {
+                scrollTopBtn.classList.remove('show');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // 导航栏滚动效果
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    })();
+    </script>
     </main>
 
     <!-- 页脚 -->
     <footer class="footer">
         <div class="container ">
-            <!-- 版权信息 -->
             <div>Copyright © 2024 - 版权归属 LIN</div>
-            <!-- 博客运行计时 -->
             <div class="running-time">
                 本博客已运行 
                 <span id="blog_running_days" class="odometer"></span> days , 
@@ -263,23 +1263,62 @@
             </div>
         </div>
     </footer>
+
     <script>
-        (function() {
-            const bgUrl = "/Blog/images/background.jpg";
-            const img = new Image();
+    // 背景自动切换 + 立即显示内容
+    (function() {
+        const layers = document.querySelectorAll('.bg-layer');
+        let currentIndex = 0;
+        
+        setInterval(() => {
+            layers[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % layers.length;
+            layers[currentIndex].classList.add('active');
+        }, 10000);
+        
+        document.body.classList.add('loaded');
+    })();
+    
+    // 萤火虫特效
+    (function() {
+        const container = document.getElementById('fireflies');
+        const floatPaths = ['float1', 'float2', 'float3', 'float4'];
+        
+        for (let i = 0; i < 50; i++) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'firefly-wrapper';
+            wrapper.style.top = Math.random() * 100 + '%';
+            wrapper.style.left = Math.random() * 100 + '%';
             
-            img.src = bgUrl;
-            img.onload = function() {
-                console.log("背景图加载完毕！");
-                document.body.classList.add('loaded');
-            };
-            setTimeout(() => {
-                document.body.classList.add('loaded');
-            }, 5000);
-        })();
+            const floatDuration = 15 + Math.random() * 20;
+            const floatDelay = Math.random() * -20;
+            const floatPath = floatPaths[Math.floor(Math.random() * 4)];
+            
+            wrapper.style.setProperty('--float-duration', floatDuration + 's');
+            wrapper.style.setProperty('--float-delay', floatDelay + 's');
+            wrapper.style.setProperty('--float-path', floatPath);
+            
+            const firefly = document.createElement('div');
+            firefly.className = 'firefly';
+            const size = 3 + Math.random() * 4;
+            firefly.style.width = size + 'px';
+            firefly.style.height = size + 'px';
+            
+            const breatheDuration = 3 + Math.random() * 5;
+            const breatheDelay = Math.random() * -10;
+            
+            firefly.style.setProperty('--breathe-duration', breatheDuration + 's');
+            firefly.style.setProperty('--breathe-delay', breatheDelay + 's');
+            
+            wrapper.appendChild(firefly);
+            container.appendChild(wrapper);
+        }
+    })();
     </script>
-</body>
+
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
-   
+
+    <script src="/Blog/pjax.js"></script>
+</body>
 </html>

@@ -60,6 +60,7 @@ layout: null
 
 </head>
 <body class="fade-in-content">
+{% include background.html %}
 
     <!-- 导航 -->
     <nav class="nav" id="navbar">
@@ -73,7 +74,7 @@ layout: null
         </div>
     </nav>
 
-    <main class="main">
+    <main class="main" id="main-content">
         <h2 class="Document-title">C,C++</h2>
         <div class="container">
             <div class="content">
@@ -113,23 +114,10 @@ layout: null
             </div>
         </div>
     </footer>
-    <script>
-        (function() {
-            const bgUrl = "/Blog/images/background.jpg";
-            const img = new Image();
-            
-            img.src = bgUrl;
-            img.onload = function() {
-                console.log("背景图加载完毕！");
-                document.body.classList.add('loaded');
-            };
-            setTimeout(() => {
-                document.body.classList.add('loaded');
-            }, 5000);
-        })();
-    </script>
+{% include bg-script.html %}
 </body>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
+    <script src="/Blog/pjax.js"></script>
    
 </html>

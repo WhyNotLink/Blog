@@ -7,7 +7,7 @@ layout: null
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LIN's Blog</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ '/style.css' | relative_url }}">
     <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     mermaid.initialize({ startOnLoad: true });
@@ -74,8 +74,59 @@ layout: null
     }
     </script>
 
+    <!-- 页面加载控制 - 立即执行 -->
+    <script>
+    (function() {
+        const isFirstVisit = !sessionStorage.getItem('bgLoaded');
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const loader = document.getElementById('pageLoader');
+            
+            if (!isFirstVisit) {
+                if (loader) loader.style.display = 'none';
+                document.body.classList.add('page-fade-in');
+                return;
+            }
+            
+            function hideLoader() {
+                if (loader) {
+                    loader.classList.add('hidden');
+                    setTimeout(() => loader.style.display = 'none', 500);
+                }
+                document.body.classList.add('loaded');
+                sessionStorage.setItem('bgLoaded', 'true');
+            }
+            
+            const bgImg = new Image();
+            bgImg.src = '/Blog/images/bg1.jpg';
+            
+            if (bgImg.complete && bgImg.naturalWidth > 0) {
+                hideLoader();
+            } else {
+                bgImg.onload = hideLoader;
+                bgImg.onerror = hideLoader;
+                setTimeout(hideLoader, 3000);
+            }
+        });
+    })();
+    </script>
+
 </head>
 <body class="fade-in-content">
+    <!-- 加载遮罩 -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-spinner"></div>
+    </div>
+    
+    <!-- 背景自动切换 -->
+    <div class="bg-slider" id="bgSlider">
+        <div class="bg-layer active" style="background-image: url('/Blog/images/bg1.jpg')"></div>
+        <div class="bg-layer" style="background-image: url('/Blog/images/bg2.jpg')"></div>
+        <div class="bg-layer" style="background-image: url('/Blog/images/bg3.jpg')"></div>
+    </div>
+    <!-- 萤火虫特效 -->
+    <div class="fireflies" id="fireflies"></div>
+
     <!-- 头部
     <header class="header">
         <div class="container">
@@ -88,12 +139,12 @@ layout: null
     <nav class="nav" id="navbar">
         <div class="container">
             <ul class="nav-menu">
-                <li><a href="index.html">首页</a></li>
-                <li><a href="sort.html">分类</a></li>
-                <li><a href="history.html">归档</a></li>
-                <li><a href="tool.html">工具</a></li>
-                <li><a href="guestbook.html">留言</a></li>
-                <li><a href="aboutme.html">关于我</a></li>
+                <li><a href="{{ '/index.html' | relative_url }}">首页</a></li>
+                <li><a href="{{ '/sort.html' | relative_url }}">分类</a></li>
+                <li><a href="{{ '/history.html' | relative_url }}">归档</a></li>
+                <li><a href="{{ '/tool.html' | relative_url }}">工具</a></li>
+                <li><a href="{{ '/guestbook.html' | relative_url }}">留言</a></li>
+                <li><a href="{{ '/aboutme.html' | relative_url }}">关于我</a></li>
             </ul>
         </div>
     </nav>
@@ -106,7 +157,7 @@ layout: null
     </section>
 
     <!-- 主体内容 -->
-    <main class="main">
+    <main class="main" id="main-content">
         <div class="container">
             <div class="content">
                 <!-- 文章列表 -->
@@ -196,22 +247,61 @@ layout: null
     </footer>
 
     <script>
+    // 页面加载完成后立即显示内容
+    (function() {
+        const layers = document.querySelectorAll('.bg-layer');
+        let currentIndex = 0;
+        
+        // 背景自动切换
+        setInterval(() => {
+            layers[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % layers.length;
+            layers[currentIndex].classList.add('active');
+        }, 10000);
+        
+        // 立即显示页面内容
+        document.body.classList.add('loaded');
+    })();
+        
+        // 萤火虫特效
         (function() {
-            const bgUrl = "/Blog/images/background.jpg";
-            const img = new Image();
+            const container = document.getElementById('fireflies');
+            const floatPaths = ['float1', 'float2', 'float3', 'float4'];
             
-            img.src = bgUrl;
-            img.onload = function() {
-                console.log("背景图加载完毕！");
-                document.body.classList.add('loaded');
-            };
-            setTimeout(() => {
-                document.body.classList.add('loaded');
-            }, 5000);
+            for (let i = 0; i < 50; i++) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'firefly-wrapper';
+                wrapper.style.top = Math.random() * 100 + '%';
+                wrapper.style.left = Math.random() * 100 + '%';
+                
+                const floatDuration = 15 + Math.random() * 20;
+                const floatDelay = Math.random() * -20;
+                const floatPath = floatPaths[Math.floor(Math.random() * 4)];
+                
+                wrapper.style.setProperty('--float-duration', floatDuration + 's');
+                wrapper.style.setProperty('--float-delay', floatDelay + 's');
+                wrapper.style.setProperty('--float-path', floatPath);
+                
+                const firefly = document.createElement('div');
+                firefly.className = 'firefly';
+                const size = 3 + Math.random() * 4;
+                firefly.style.width = size + 'px';
+                firefly.style.height = size + 'px';
+                
+                const breatheDuration = 3 + Math.random() * 5;
+                const breatheDelay = Math.random() * -10;
+                
+                firefly.style.setProperty('--breathe-duration', breatheDuration + 's');
+                firefly.style.setProperty('--breathe-delay', breatheDelay + 's');
+                
+                wrapper.appendChild(firefly);
+                container.appendChild(wrapper);
+            }
         })();
     </script>
 
 </body>
+    <script src="/Blog/pjax.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
 

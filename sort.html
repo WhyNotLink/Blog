@@ -7,8 +7,8 @@ layout: null
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sort</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="sort.css">
+    <link rel="stylesheet" href="{{ '/style.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/sort.css' | relative_url }}">
         <!-- Odometer 数字滚动插件 -->
     <link rel="stylesheet" href="/Blog/odometr.css">
     <script src="/Blog/odometr.js"></script>
@@ -59,30 +59,79 @@ layout: null
     }
     </script>
 
+    <!-- 页面加载控制 - 立即执行 -->
+    <script>
+    (function() {
+        const isFirstVisit = !sessionStorage.getItem('bgLoaded');
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const loader = document.getElementById('pageLoader');
+            
+            if (!isFirstVisit) {
+                if (loader) loader.style.display = 'none';
+                document.body.classList.add('page-fade-in');
+                return;
+            }
+            
+            function hideLoader() {
+                if (loader) {
+                    loader.classList.add('hidden');
+                    setTimeout(() => loader.style.display = 'none', 500);
+                }
+                document.body.classList.add('loaded');
+                sessionStorage.setItem('bgLoaded', 'true');
+            }
+            
+            const bgImg = new Image();
+            bgImg.src = '/Blog/images/bg1.jpg';
+            
+            if (bgImg.complete && bgImg.naturalWidth > 0) {
+                hideLoader();
+            } else {
+                bgImg.onload = hideLoader;
+                bgImg.onerror = hideLoader;
+                setTimeout(hideLoader, 3000);
+            }
+        });
+    })();
+    </script>
+
 </head>
 <body class="fade-in-content">
+    <!-- 加载遮罩 -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-spinner"></div>
+    </div>
+    <!-- 背景自动切换 -->
+    <div class="bg-slider" id="bgSlider">
+        <div class="bg-layer active" style="background-image: url('/Blog/images/bg1.jpg')"></div>
+        <div class="bg-layer" style="background-image: url('/Blog/images/bg2.jpg')"></div>
+        <div class="bg-layer" style="background-image: url('/Blog/images/bg3.jpg')"></div>
+    </div>
+    <!-- 萤火虫特效 -->
+    <div class="fireflies" id="fireflies"></div>
 
     <!-- 导航 -->
     <nav class="nav" id="navbar">
         <div class="container">
             <ul class="nav-menu">
-                <li><a href="index.html">首页</a></li>
-                <li><a href="sort.html">分类</a></li>
-                <li><a href="history.html">归档</a></li>
-                <li><a href="tool.html">工具</a></li>
-                <li><a href="guestbook.html">留言</a></li>
-                <li><a href="aboutme.html">关于我</a></li>
+                <li><a href="{{ '/index.html' | relative_url }}">首页</a></li>
+                <li><a href="{{ '/sort.html' | relative_url }}">分类</a></li>
+                <li><a href="{{ '/history.html' | relative_url }}">归档</a></li>
+                <li><a href="{{ '/tool.html' | relative_url }}">工具</a></li>
+                <li><a href="{{ '/guestbook.html' | relative_url }}">留言</a></li>
+                <li><a href="{{ '/aboutme.html' | relative_url }}">关于我</a></li>
             </ul>
         </div>
     </nav>
- <main class="sort-container">
+ <main class="sort-container" id="main-content">
     <div class="sort-hero">
         <span class="hero-eyebrow">CATEGORIES</span>
         <h2 class="section-title">文章分类</h2>
     </div>
     <div class="category-list">
         <!-- AI -->
-        <a href="categoryhtml/AI.html" class="category-item" data-cat="ai">
+        <a href="{{ '/categoryhtml/' | relative_url }}AI.html" class="category-item" data-cat="ai">
             <div class="category-icon">🤖</div>
             <div class="category-text">
                 <span class="category-name">AI</span>
@@ -91,7 +140,7 @@ layout: null
             <div class="category-count-wrap"><span class="category-count odometer">{{ site.categories.AI | size }}</span></div>
         </a>
         <!-- Android Studio -->
-        <a href="categoryhtml/Android_Studio.html" class="category-item" data-cat="android_studio">
+        <a href="{{ '/categoryhtml/' | relative_url }}Android_Studio.html" class="category-item" data-cat="android_studio">
             <div class="category-icon">📱</div>
             <div class="category-text">
                 <span class="category-name">Android Studio</span>
@@ -100,7 +149,7 @@ layout: null
             <div class="category-count-wrap"><span class="category-count odometer">{{ site.categories.Android | size }}</span></div>
         </a>
         <!-- C/C++ -->
-        <a href="categoryhtml/C,C++.html" class="category-item" data-cat="c_cpp">
+        <a href="{{ '/categoryhtml/' | relative_url }}C,C++.html" class="category-item" data-cat="c_cpp">
             <div class="category-icon">{ }</div>
             <div class="category-text">
                 <span class="category-name">C / C++</span>
@@ -116,7 +165,7 @@ layout: null
             </span></div>
         </a>
         <!-- Keil5/CubMX -->
-        <a href="categoryhtml/Keil5,Cubmx,TICCS.html" class="category-item" data-cat="keil_cubmx">
+        <a href="{{ '/categoryhtml/' | relative_url }}Keil5,Cubmx,TICCS.html" class="category-item" data-cat="keil_cubmx">
             <div class="category-icon">🔧</div>
             <div class="category-text">
                 <span class="category-name">Keil5 / CubMX / TICCS</span>
@@ -134,7 +183,7 @@ layout: null
             </span></div>
         </a>
         <!-- Linux -->
-        <a href="categoryhtml/Linux.html" class="category-item" data-cat="linux">
+        <a href="{{ '/categoryhtml/' | relative_url }}Linux.html" class="category-item" data-cat="linux">
             <div class="category-icon">🐧</div>
             <div class="category-text">
                 <span class="category-name">Linux</span>
@@ -143,7 +192,7 @@ layout: null
             <div class="category-count-wrap"><span class="category-count odometer">{{ site.categories.Linux | size }}</span></div>
         </a>
         <!-- PCB -->
-        <a href="categoryhtml/PCB,EDA.html" class="category-item" data-cat="pcb">
+        <a href="{{ '/categoryhtml/' | relative_url }}PCB,EDA.html" class="category-item" data-cat="pcb">
             <div class="category-icon">🔌</div>
             <div class="category-text">
                 <span class="category-name">PCB / EDA</span>
@@ -159,7 +208,7 @@ layout: null
             </span></div>
         </a>
         <!-- Python -->
-        <a href="categoryhtml/Python.html" class="category-item" data-cat="python">
+        <a href="{{ '/categoryhtml/' | relative_url }}Python.html" class="category-item" data-cat="python">
             <div class="category-icon">🐍</div>
             <div class="category-text">
                 <span class="category-name">Python</span>
@@ -168,7 +217,7 @@ layout: null
             <div class="category-count-wrap"><span class="category-count odometer">{{ site.categories.Python | size }}</span></div>
         </a>
         <!-- QT -->
-        <a href="categoryhtml/Qt.html" class="category-item" data-cat="qt">
+        <a href="{{ '/categoryhtml/' | relative_url }}Qt.html" class="category-item" data-cat="qt">
             <div class="category-icon">🖥</div>
             <div class="category-text">
                 <span class="category-name">QT</span>
@@ -177,7 +226,7 @@ layout: null
             <div class="category-count-wrap"><span class="category-count odometer">{{ site.categories.Qt | size }}</span></div>
         </a>
         <!-- Web -->
-        <a href="categoryhtml/Web.html" class="category-item" data-cat="web">
+        <a href="{{ '/categoryhtml/' | relative_url }}Web.html" class="category-item" data-cat="web">
             <div class="category-icon">🌐</div>
             <div class="category-text">
                 <span class="category-name">Web</span>
@@ -186,7 +235,7 @@ layout: null
             <div class="category-count-wrap"><span class="category-count odometer">{{ site.categories.Web | size }}</span></div>
         </a>
         <!-- Other -->
-        <a href="categoryhtml/Other.html" class="category-item" data-cat="other">
+        <a href="{{ '/categoryhtml/' | relative_url }}Other.html" class="category-item" data-cat="other">
             <div class="category-icon">📚</div>
             <div class="category-text">
                 <span class="category-name">Other</span>
@@ -213,21 +262,58 @@ layout: null
         </div>
     </footer>
     <script>
-        (function() {
-            const bgUrl = "/Blog/images/background.jpg";
-            const img = new Image();
+    // 背景自动切换 + 立即显示内容
+    (function() {
+        const layers = document.querySelectorAll('.bg-layer');
+        let currentIndex = 0;
+        
+        setInterval(() => {
+            layers[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % layers.length;
+            layers[currentIndex].classList.add('active');
+        }, 10000);
+        
+        document.body.classList.add('loaded');
+    })();
+    
+    // 萤火虫特效
+    (function() {
+        const container = document.getElementById('fireflies');
+        const floatPaths = ['float1', 'float2', 'float3', 'float4'];
+        
+        for (let i = 0; i < 50; i++) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'firefly-wrapper';
+            wrapper.style.top = Math.random() * 100 + '%';
+            wrapper.style.left = Math.random() * 100 + '%';
             
-            img.src = bgUrl;
-            img.onload = function() {
-                console.log("背景图加载完毕！");
-                document.body.classList.add('loaded');
-            };
-            setTimeout(() => {
-                document.body.classList.add('loaded');
-            }, 5000);
-        })();
+            const floatDuration = 15 + Math.random() * 20;
+            const floatDelay = Math.random() * -20;
+            const floatPath = floatPaths[Math.floor(Math.random() * 4)];
+            
+            wrapper.style.setProperty('--float-duration', floatDuration + 's');
+            wrapper.style.setProperty('--float-delay', floatDelay + 's');
+            wrapper.style.setProperty('--float-path', floatPath);
+            
+            const firefly = document.createElement('div');
+            firefly.className = 'firefly';
+            const size = 3 + Math.random() * 4;
+            firefly.style.width = size + 'px';
+            firefly.style.height = size + 'px';
+            
+            const breatheDuration = 3 + Math.random() * 5;
+            const breatheDelay = Math.random() * -10;
+            
+            firefly.style.setProperty('--breathe-duration', breatheDuration + 's');
+            firefly.style.setProperty('--breathe-delay', breatheDelay + 's');
+            
+            wrapper.appendChild(firefly);
+            container.appendChild(wrapper);
+        }
+    })();
     </script>
 
+    <script src="/Blog/pjax.js"></script>
 </body>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>

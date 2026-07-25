@@ -558,4 +558,8 @@ async function initPlayer() {
 }
 
 // 页面加载完成后初始化
-window.addEventListener('DOMContentLoaded', initPlayer);
+if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', initPlayer);
+} else {
+    initPlayer();
+}

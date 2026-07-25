@@ -314,6 +314,10 @@ class Processing {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        new ChatApp();
+    });
+} else {
     new ChatApp();
-});
+}
