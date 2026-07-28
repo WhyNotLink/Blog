@@ -172,8 +172,15 @@
         var newLinks = newDoc.querySelectorAll('link[rel="stylesheet"]');
         for (var j = 0; j < newLinks.length; j++) {
             var rawHref = newLinks[j].getAttribute('href');
+            // 处理未渲染的 Liquid 模板 {{ '/path' | relative_url }}
+            // 提取内部的 path 作为 fallback URL
+            var cleanHref = rawHref;
+            var liquidMatch = rawHref.match(/\{\{\s*['"]?([^'"}]+)['"]?\s*\|\s*relative_url\s*\}\}/);
+            if (liquidMatch) {
+                cleanHref = liquidMatch[1];
+            }
             // 将相对路径解析为绝对路径（基于目标页面 URL）
-            var href = resolveURL(rawHref, pageUrl);
+            var href = resolveURL(cleanHref, pageUrl);
             // 检查是否已存在（用文件名匹配，避免路径差异导致重复加载）
             var alreadyLoaded = false;
             for (var k = 0; k < existing.length; k++) {
@@ -216,7 +223,11 @@
         var newHrefs = [];
         var newLinks = newDoc.querySelectorAll('link[rel="stylesheet"]');
         for (var i = 0; i < newLinks.length; i++) {
-            newHrefs.push(newLinks[i].getAttribute('href'));
+            var rawHref = newLinks[i].getAttribute('href');
+            // 处理未渲染的 Liquid 模板，提取内部路径
+            var liquidMatch = rawHref.match(/\{\{\s*['"]?([^'"}]+)['"]?\s*\|\s*relative_url\s*\}\}/);
+            var cleanHref = liquidMatch ? liquidMatch[1] : rawHref;
+            newHrefs.push(cleanHref);
         }
 
         var existing = document.querySelectorAll('link[rel="stylesheet"]');
@@ -235,8 +246,10 @@
                         found = true; break;
                     }
                     // 如果旧 href 的末尾和新 href 的末尾相同（处理相对路径）
-                    if (href && newHrefs[m] && (href.endsWith(newHrefs[m]) || newHrefs[m].endsWith(href.replace(/.*\//, '/')))) {
-                        found = true; break;
+                    if (href && newHrefs[m]) {
+                        var newBaseName = newHrefs[m].split('/').pop();
+                        var oldBaseName = href.split('/').pop();
+                        if (newBaseName && newBaseName === oldBaseName) { found = true; break; }
                     }
                 }
                 if (!found) {

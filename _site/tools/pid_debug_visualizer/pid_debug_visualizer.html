@@ -1,0 +1,2009 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PID 调试器 - LIN's Blog</title>
+    <link rel="stylesheet" href="/Blog/style.css">
+    <link rel="stylesheet" href="/Blog/tools/pid_debug_visualizer/pid_debug_visualizer.css">
+    <!-- Odometer -->
+    <link rel="stylesheet" href="/Blog/odometr.css">
+    <script src="/Blog/odometr.js"></script>
+    <script>
+    window.pjaxLoaded = function(){
+        var blog_running_days=document.getElementById("blog_running_days");
+        var blog_running_hours=document.getElementById("blog_running_hours");
+        var blog_running_mins=document.getElementById("blog_running_mins");
+        var blog_running_secs=document.getElementById("blog_running_secs");
+        function refresh_blog_running_time(){
+            var time = new Date() - new Date(2024, 9, 7, 0, 0, 0);
+            var d=parseInt(time/24/60/60/1000);
+            var h=parseInt(time%(24*60*60*1000)/60/60/1000);
+            var m=parseInt(time%(60*60*1000)/60/1000);
+            var s=parseInt(time%(60*1000)/1000);
+            blog_running_days.innerHTML=d;
+            blog_running_hours.innerHTML=h;
+            blog_running_mins.innerHTML=m;
+            blog_running_secs.innerHTML=s;
+        };
+        refresh_blog_running_time();
+        if (typeof(bottomTimeIntervalHasSet) == "undefined"){
+            var bottomTimeIntervalHasSet = true;
+            setInterval(refresh_blog_running_time,500);
+        }
+    };
+    window.onload = function(){
+        odometer_init();
+        window.pjaxLoaded();
+    };
+    function odometer_init(){
+        let el = document.getElementsByClassName('odometer');
+        for (let i = 0; i < el.length; i++) {
+            od = new Odometer({ el: el[i], format: 'ddd', duration: 200 });
+        }
+    }
+    </script>
+
+    <!-- 页面加载控制 -->
+    <script>
+    (function() {
+        const isFirstVisit = !sessionStorage.getItem('bgLoaded');
+        document.addEventListener('DOMContentLoaded', function() {
+            const loader = document.getElementById('pageLoader');
+            if (!isFirstVisit) {
+                if (loader) loader.style.display = 'none';
+                document.body.classList.add('page-fade-in');
+                return;
+            }
+            function hideLoader() {
+                if (loader) {
+                    loader.classList.add('hidden');
+                    setTimeout(() => loader.style.display = 'none', 500);
+                }
+                document.body.classList.add('loaded');
+                sessionStorage.setItem('bgLoaded', 'true');
+            }
+            const bgImg = new Image();
+            bgImg.src = '/Blog/images/bg1.jpg';
+            if (bgImg.complete && bgImg.naturalWidth > 0) {
+                hideLoader();
+            } else {
+                bgImg.onload = hideLoader;
+                bgImg.onerror = hideLoader;
+                setTimeout(hideLoader, 3000);
+            }
+        });
+    })();
+    </script>
+</head>
+<body class="fade-in-content">
+    <!-- 加载遮罩 -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-spinner"></div>
+    </div>
+    <!-- 背景自动切换 -->
+    <div class="bg-slider" id="bgSlider">
+        <div class="bg-layer active" style="background-image: url('/Blog/images/bg1.jpg')"></div>
+        <div class="bg-layer" style="background-image: url('/Blog/images/bg2.jpg')"></div>
+        <div class="bg-layer" style="background-image: url('/Blog/images/bg3.jpg')"></div>
+    </div>
+    <!-- 萤火虫特效 -->
+    <div class="fireflies" id="fireflies"></div>
+
+    <!-- 导航 -->
+    <nav class="nav" id="navbar">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="/Blog/index.html">首页</a></li>
+                <li><a href="/Blog/sort.html">分类</a></li>
+                <li><a href="/Blog/history.html">归档</a></li>
+                <li><a href="/Blog/tool.html">工具</a></li>
+                <li><a href="/Blog/guestbook.html">留言</a></li>
+                <li><a href="/Blog/aboutme.html">关于我</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主体内容 -->
+    <main class="main pid-main" id="main-content">
+        <div class="pid-header">
+            <h1 class="pid-title">PID 调试器</h1>
+            <p class="pid-subtitle">阶跃响应分析 · 被控对象仿真 · AI 自动调参</p>
+        </div>
+
+        <!-- AI 设置 -->
+        <button class="ai-settings-toggle" id="aiSettingsToggle" onclick="toggleAiSettings()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            AI 接口设置
+        </button>
+        <div class="ai-settings-panel" id="aiSettingsPanel">
+            <div class="ai-settings-grid">
+                <div class="ai-field full-width">
+                    <label>API Key <span class="ai-save-hint" id="aiSaveHint">已自动保存到本机</span></label>
+                    <input type="password" id="aiApiKey" placeholder="sk-..." autocomplete="off">
+                </div>
+                <div class="ai-field">
+                    <label>Base URL</label>
+                    <input type="text" id="aiBaseUrl" value="https://api.openai.com/v1" placeholder="https://api.openai.com/v1">
+                </div>
+                <div class="ai-field">
+                    <label>Model</label>
+                    <input type="text" id="aiModel" value="gpt-4o-mini" placeholder="gpt-4o-mini">
+                </div>
+                <div class="ai-field">
+                    <label>最大轮数</label>
+                    <input type="number" id="aiMaxRounds" value="10" min="1" max="100">
+                </div>
+                <div class="ai-field full-width" style="display:flex; gap:8px; justify-content:flex-end;">
+                    <button type="button" class="pid-btn pid-btn-secondary" onclick="clearAiSettings()">清除本机保存</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PID 参数 -->
+        <div class="pid-card">
+            <div class="pid-card-header">PID 参数</div>
+            <div class="pid-params-grid">
+                <div class="pid-param">
+                    <label>Kp <span class="pid-badge p">P</span></label>
+                    <input type="range" id="kpSlider" min="0" max="100" step="0.01" value="2" oninput="onSliderChange('kp')">
+                    <input type="number" id="kpNum" value="2" step="0.01" min="0" onchange="onNumChange('kp')">
+                </div>
+                <div class="pid-param">
+                    <label>Ki <span class="pid-badge i">I</span></label>
+                    <input type="range" id="kiSlider" min="0" max="50" step="0.01" value="0" oninput="onSliderChange('ki')">
+                    <input type="number" id="kiNum" value="0" step="0.01" min="0" onchange="onNumChange('ki')">
+                </div>
+                <div class="pid-param">
+                    <label>Kd <span class="pid-badge d">D</span></label>
+                    <input type="range" id="kdSlider" min="0" max="20" step="0.01" value="0" oninput="onSliderChange('kd')">
+                    <input type="number" id="kdNum" value="0" step="0.01" min="0" onchange="onNumChange('kd')">
+                </div>
+                <div class="pid-param">
+                    <label>设定值 SP <span class="pid-badge sp">SP</span></label>
+                    <input type="range" id="spSlider" min="0" max="100" step="0.1" value="50" oninput="onSliderChange('sp')">
+                    <input type="number" id="spNum" value="50" step="0.1" min="0" onchange="onNumChange('sp')">
+                </div>
+            </div>
+        </div>
+
+        <!-- 模式切换 + 发送 -->
+        <div class="pid-card">
+            <div class="pid-card-header">
+                <span>模式与发送</span>
+                <button class="pid-help-btn" onclick="toggleHelp()">?</button>
+            </div>
+            <div class="pid-mode-row">
+                <label class="pid-radio">
+                    <input type="radio" name="pidMode" value="sim" checked onchange="onModeChange()">
+                    <span>仿真模式</span>
+                </label>
+                <label class="pid-radio">
+                    <input type="radio" name="pidMode" value="hw" onchange="onModeChange()">
+                    <span>硬件模式</span>
+                </label>
+                <span class="pid-divider"></span>
+                <span class="pid-divider pid-hw-only" id="divider1"></span>
+                <button class="pid-btn pid-btn-primary pid-hw-only" id="btnSendPid" onclick="onSendPid()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    <span id="btnSendPidLabel">发送PID</span>
+                </button>
+                <button class="pid-btn pid-btn-warning pid-hw-only" id="btnSendSp" onclick="onSendSp()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    <span id="btnSendSpLabel">发送SP</span>
+                </button>
+                <span class="pid-divider" id="cycleDivider" style="display:none"></span>
+                <button class="pid-btn pid-btn-cycle" id="btnCycleConfig" style="display:none" onclick="openCycleConfig()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    周期配置
+                </button>
+                <span class="pid-cycle-summary" id="cycleSummary" style="display:none">--</span>
+                <button class="pid-btn pid-btn-cycle" id="btnStartCycle" style="display:none" onclick="startCycle()">开始周期</button>
+                <button class="pid-btn pid-btn-danger" id="btnStopCycle" style="display:none" onclick="stopCycle()">停止周期</button>
+                <span class="pid-divider"></span>
+                <button class="pid-btn pid-btn-success" id="btnAiTune" onclick="openAiTuneModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6m11-11h-6m-10 0H1m17.07-7.07l-4.24 4.24m-7.07 7.07l-4.24 4.24m12.73 0l-4.24-4.24M6.34 6.34L2.1 2.1"/></svg>
+                    AI 自动调参
+                </button>
+                <button class="pid-btn pid-btn-danger" id="btnAiStop" style="display:none" onclick="stopAiTuning()">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+                    停止调参
+                </button>
+            </div>
+        </div>
+
+        <!-- 串口面板 (硬件模式) -->
+        <div class="pid-card" id="serialPanel" style="display:none">
+            <div class="pid-card-header">串口连接</div>
+            <div class="pid-serial-row">
+                <div class="pid-select-group">
+                    <label>端口</label>
+                    <button class="pid-btn pid-btn-secondary" id="btnConnectSerial" onclick="onConnectBtnClick()">
+                        <svg id="iconConnect" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+                        <svg id="iconDisconnect" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+                        <span id="btnConnectSerialLabel">选择串口</span>
+                    </button>
+                </div>
+                <div class="pid-select-group">
+                    <label>波特率</label>
+                    <select id="serialBaud">
+                        <option>9600</option>
+                        <option>19200</option>
+                        <option>38400</option>
+                        <option>57600</option>
+                        <option selected>115200</option>
+                        <option>230400</option>
+                        <option>460800</option>
+                        <option>921600</option>
+                    </select>
+                </div>
+                <div class="pid-select-group">
+                    <label>状态</label>
+                    <span class="pid-serial-status" id="serialStatus">未连接</span>
+                </div>
+                <div class="pid-select-group">
+                    <label>操作</label>
+                    <div class="pid-btn-row inline">
+                        <button class="pid-btn pid-btn-secondary" id="btnPause" onclick="togglePause()">暂停</button>
+                        <button class="pid-btn pid-btn-secondary" onclick="clearChart()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
+                            清屏
+                        </button>
+                    </div>
+                </div>
+                <div class="pid-select-group">
+                    <label>视图</label>
+                    <label class="pid-checkbox">
+                        <input type="checkbox" id="chkAutoScroll" checked>
+                        <span>自动滚动</span>
+                    </label>
+                </div>
+            </div>
+            <div class="pid-serial-hint">
+                数据格式: <code>sp,pv,output</code> (每行) | PID 参数: <code>PID:2.000,0.500,0.100</code>
+            </div>
+        </div>
+
+        <!-- 周期配置弹窗 -->
+        <div class="pid-modal-overlay" id="cycleModal">
+            <div class="pid-modal">
+                <h3>周期配置</h3>
+                <p>配置多段 SP + 占空比(合计 100%)+ 总周期 + 循环次数</p>
+                <div class="cycle-grid">
+                    <div class="ai-field">
+                        <label>总周期 (s)</label>
+                        <input type="number" id="cyclePeriod" value="10" step="0.5" min="0.5">
+                    </div>
+                    <div class="ai-field">
+                        <label>循环次数</label>
+                        <input type="number" id="cycleRepeats" value="3" step="1" min="1">
+                    </div>
+                </div>
+                <div class="cycle-segments">
+                    <div class="cycle-segments-header">
+                        <span>分段</span>
+                        <button class="pid-btn pid-btn-secondary pid-btn-sm" onclick="addCycleSegment()">+ 添加段</button>
+                    </div>
+                    <div id="cycleSegmentList"></div>
+                    <div class="cycle-duty-warning" id="cycleDutyWarning" style="display:none">占空比合计必须等于 100%</div>
+                </div>
+                <div class="pid-modal-buttons">
+                    <button class="pid-btn pid-btn-secondary" onclick="closeCycleConfig()">取消</button>
+                    <button class="pid-btn pid-btn-success" onclick="saveCycleConfig()">保存</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 帮助弹窗 -->
+        <div class="pid-modal-overlay" id="helpOverlay" style="display:none">
+            <div class="pid-modal pid-modal-wide">
+                <h3>PID 调参指南</h3>
+                <div class="help-section">
+                    <h4>参数作用</h4>
+                    <table class="help-table">
+                        <thead><tr><th>参数</th><th>增大时</th><th>减小时</th></tr></thead>
+                        <tbody>
+                            <tr><td><b style="color:#00E5FF">Kp</b></td><td>响应快,超调增大,稳态误差减小</td><td>响应慢,超调减小,可能有余差</td></tr>
+                            <tr><td><b style="color:#FFA500">Ki</b></td><td>消除稳态误差更快,但可能引起震荡</td><td>稳态误差消除慢,系统更稳定</td></tr>
+                            <tr><td><b style="color:#B070FF">Kd</b></td><td>抑制超调,响应更平稳,但噪声敏感</td><td>阻尼减弱,可能产生更多震荡</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="help-section">
+                    <h4>手动整定步骤</h4>
+                    <ol class="help-steps">
+                        <li>先设 Ki=0, Kd=0,从小到大调 Kp 直到阶跃响应开始出现可见震荡</li>
+                        <li>将 Kp 减至震荡幅度的 60%~70%,获得一个略有超调的"基准响应"</li>
+                        <li>逐步加大 Ki,观察稳态误差是否快速归零。如果震荡加剧就减小 Ki</li>
+                        <li>最后加大 Kd 抑制超调,使曲线"靠上"目标值后快速稳定。Kd 不宜过大(防噪声放大)</li>
+                        <li>微调三轮:Kp → Ki → Kd → 观察 → 微调,直到超调 ≤10%、稳态误差接近 0</li>
+                    </ol>
+                </div>
+                <div class="help-section">
+                    <h4>口诀</h4>
+                    <div class="help-mnemonic">「P 给力、I 消差、D 抑震」— P 决定响应速度,I 消除静差,D 提供阻尼。通常 P 先定基调,I 再除余差,D 最后微调。遇到震荡先减 P 再加 D。</div>
+                </div>
+                <div class="help-section">
+                    <h4>硬件协议</h4>
+                    <ul class="help-list">
+                        <li>设备发送: <code>sp,pv,output</code> (每行一个采样点)</li>
+                        <li>设备回读 PID: <code>PID:kp,ki,kd</code> (回显当前生效参数)</li>
+                        <li>主机发送 PID: <code>PID:2.000,0.500,0.100</code></li>
+                        <li>主机发送 SP(单次): <code>SSP:50.000</code></li>
+                        <li>主机发送 SP(周期): <code>TSP:50.000</code></li>
+                    </ul>
+                    <div class="help-mnemonic" style="background:rgba(255,107,107,.08);border-color:#40FF6B6B">
+                        浏览器需要 Chrome / Edge / Opera 等支持 Web Serial API 的内核。Firefox / Safari 不支持。
+                    </div>
+                </div>
+                <div class="pid-modal-buttons">
+                    <button class="pid-btn pid-btn-primary" onclick="toggleHelp()">关闭</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 被控对象 & 阶跃 -->
+        <div class="pid-card pid-sim-only">
+            <div class="pid-card-header">仿真配置</div>
+            <div class="pid-options-row">
+                <div class="pid-select-group">
+                    <label>被控对象模型</label>
+                    <select id="plantModel" onchange="onPlantModelChange()">
+                        <option value="secondOrder">二阶振荡</option>
+                        <option value="firstOrder">一阶惯性</option>
+                        <option value="integrator">积分环节</option>
+                    </select>
+                </div>
+                <div class="pid-select-group">
+                    <label>增益 K</label>
+                    <input type="number" id="plantK" value="1" step="0.05" min="0.01" max="10">
+                </div>
+                <div class="pid-select-group">
+                    <label>时间常数 T</label>
+                    <input type="number" id="plantT" value="0.05" step="0.01" min="0.01" max="10">
+                </div>
+                <div class="pid-select-group" id="plantXiGroup" style="display:none">
+                    <label>阻尼比 Xi</label>
+                    <input type="number" id="plantXi" value="0.7" step="0.05" min="0.01" max="2">
+                </div>
+                <div class="pid-select-group">
+                    <label>阶跃模式</label>
+                    <select id="stepMode" onchange="onStepModeChange()">
+                        <option value="once">单次阶跃</option>
+                        <option value="cyclic">周期阶跃</option>
+                    </select>
+                </div>
+                <div class="pid-select-group">
+                    <label>仿真时长 (s)</label>
+                    <input type="number" id="duration" value="5" step="0.5" min="1" max="600">
+                </div>
+                <div class="pid-select-group">
+                    <label>输出限幅</label>
+                    <input type="number" id="maxOutput" value="100" step="1" min="1">
+                </div>
+            </div>
+            <div class="pid-btn-row">
+                <button class="pid-btn pid-btn-secondary" onclick="resetChartView()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                    重置视图
+                </button>
+            </div>
+        </div>
+
+        <!-- 图表 -->
+        <div class="pid-card">
+            <div class="pid-card-header">波形显示</div>
+            <div class="pid-chart-container" id="chartContainer">
+                <canvas id="pidCanvas"></canvas>
+            </div>
+            <div class="pid-legend">
+                <div class="pid-legend-item"><span class="pid-legend-dot sp"></span> SP 设定值</div>
+                <div class="pid-legend-item"><span class="pid-legend-dot pv"></span> PV 过程值</div>
+                <div class="pid-legend-item"><span class="pid-legend-dot out"></span> OUT 输出</div>
+            </div>
+        </div>
+
+        <!-- 指标 -->
+        <div class="pid-card">
+            <div class="pid-card-header">性能指标</div>
+            <div class="pid-metrics">
+                <div class="pid-metric overshoot">
+                    <div class="pid-metric-value" id="metricOvershoot">--</div>
+                    <div class="pid-metric-label">超调量</div>
+                </div>
+                <div class="pid-metric rise">
+                    <div class="pid-metric-value" id="metricRise">--</div>
+                    <div class="pid-metric-label">上升时间</div>
+                </div>
+                <div class="pid-metric settle">
+                    <div class="pid-metric-value" id="metricSettle">--</div>
+                    <div class="pid-metric-label">稳态时间</div>
+                </div>
+                <div class="pid-metric steady">
+                    <div class="pid-metric-value" id="metricSteady">--</div>
+                    <div class="pid-metric-label">稳态误差</div>
+                </div>
+                <div class="pid-metric iae">
+                    <div class="pid-metric-value" id="metricIae">--</div>
+                    <div class="pid-metric-label">IAE</div>
+                </div>
+                <div class="pid-metric tail">
+                    <div class="pid-metric-value" id="metricTail">--</div>
+                    <div class="pid-metric-label">末端误差</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 日志 -->
+        <div class="pid-card" id="logCard" style="display:none">
+            <div class="pid-card-header">调参日志</div>
+            <div class="pid-log" id="pidLog"></div>
+        </div>
+
+        <div class="pid-status" id="pidStatus">就绪</div>
+
+        <!-- AI 调参弹窗 -->
+        <div class="pid-modal-overlay" id="aiTuneModal">
+            <div class="pid-modal">
+                <h3>AI 自动调参</h3>
+                <p>设置目标性能指标，AI 将自动迭代优化 PID 参数</p>
+                <div class="ai-field">
+                    <label>目标上升时间 (s，0=不限)</label>
+                    <input type="number" id="targetRise" value="0.5" step="0.05" min="0">
+                </div>
+                <div class="ai-field">
+                    <label>目标稳态时间 (s，0=不限)</label>
+                    <input type="number" id="targetSettle" value="0.5" step="0.05" min="0">
+                </div>
+                <div class="ai-field">
+                    <label>自定义提示词 (可选)</label>
+                    <textarea id="customPrompt" placeholder="例如：优先减少超调，可以牺牲一些响应速度..."></textarea>
+                </div>
+                <div class="pid-modal-buttons">
+                    <button class="pid-btn pid-btn-secondary" onclick="closeAiTuneModal()">取消</button>
+                    <button class="pid-btn pid-btn-success" onclick="startAiTuning()">开始调参</button>
+                </div>
+            </div>
+        </div>
+
+    <!-- PID 调试器核心逻辑（PJAX 重新执行） -->
+    <script>
+    (function() {
+        // ==================== 数据缓冲 ====================
+        class PidDataBuffer {
+            constructor() { this.sp = []; this.pv = []; this.out = []; this.t = []; }
+            // time: 累计真实时间(秒),可选;不传则按 chartData.dt 推算
+            append(sp, pv, output, time) {
+                this.sp.push(sp); this.pv.push(pv); this.out.push(output);
+                if (typeof time === 'number') this.t.push(time);
+            }
+            clear() { this.sp = []; this.pv = []; this.out = []; this.t = []; }
+            get count() { return this.sp.length; }
+        }
+
+        // ==================== 被控对象仿真器 ====================
+        class PidPlantSimulator {
+            constructor(kp, ki, kd, plantK, plantT, plantXi, maxOutput) {
+                this.kp = kp; this.ki = ki; this.kd = kd;
+                this.plantK = plantK; this.plantT = plantT; this.plantXi = plantXi;
+                this.maxOutput = maxOutput;
+                this._pv = 0; this._integral = 0; this._prevError = 0; this._output = 0;
+                this._yPrev = 0; this._yPrev2 = 0;
+                this._prevPv = 0;        // 用于"微分作用于测量"避免阶跃冲击
+                this.plantModelVal = 'secondOrder';
+            }
+            step(sp, dt) {
+                const error = sp - this._pv;
+                this._integral += error * dt;
+                // 微分作用于测量(而非误差),阶跃瞬间不会产生巨大冲击
+                const derivative = dt > 0 ? -(this._pv - this._prevPv) / dt : 0;
+                let output = this.kp * error + this.ki * this._integral + this.kd * derivative;
+                if (output > this.maxOutput) {
+                    output = this.maxOutput;
+                    if (error > 0) this._integral -= error * dt;
+                } else if (output < -this.maxOutput) {
+                    output = -this.maxOutput;
+                    if (error < 0) this._integral -= error * dt;
+                }
+                this._output = output;
+                let pv;
+                switch (this.plantModelVal) {
+                    case 'firstOrder': pv = this._stepFirstOrder(output, dt); break;
+                    case 'secondOrder': pv = this._stepSecondOrder(output, dt); break;
+                    case 'integrator': pv = this._stepIntegrator(output, dt); break;
+                    default: pv = this._stepFirstOrder(output, dt);
+                }
+                this._prevError = error;
+                this._prevPv = this._pv;
+                this._pv = Math.max(-1e6, Math.min(1e6, pv));
+                return { output, pv: this._pv };
+            }
+            _stepFirstOrder(u, dt) {
+                const alpha = Math.exp(-dt / Math.max(this.plantT, 1e-9));
+                const y = alpha * this._yPrev + (1 - alpha) * this.plantK * u;
+                this._yPrev = y; return y;
+            }
+            _stepSecondOrder(u, dt) {
+                // 状态空间 Euler 前向差分:G(s) = K*wn²/(s² + 2ξwn*s + wn²),wn = 1/T
+                //   x1[k+1] = x1[k] + dt*x2[k]
+                //   x2[k+1] = -wn²dt*x1[k] + (1-2ξwn*dt)*x2[k] + wn²dt*u
+                //   y[k]    = K*x1[k]
+                // 稳态: x1_ss = u, x2_ss = 0 → y_ss = K*u(DC gain 正确)
+                const wn = 1.0 / Math.max(this.plantT, 1e-9);
+                const xi = this.plantXi;
+                const wn2 = wn * wn;
+                const x1 = this._yPrev;
+                const x2 = this._yPrev2;
+                const nx1 = x1 + dt * x2;
+                const nx2 = -wn2 * dt * x1 + (1 - 2 * xi * wn * dt) * x2 + wn2 * dt * u;
+                this._yPrev = nx1;
+                this._yPrev2 = nx2;
+                return this.plantK * nx1;
+            }
+            _stepIntegrator(u, dt) {
+                const y = this._yPrev + this.plantK * u * dt;
+                this._yPrev = y; return y;
+            }
+            reset() {
+                this._pv = 0; this._integral = 0; this._prevError = 0; this._prevPv = 0; this._output = 0;
+                this._yPrev = 0; this._yPrev2 = 0;
+            }
+        }
+
+        // ==================== 仿真驱动器 ====================
+        function runSimulationData(kp, ki, kd, sp, plantK, plantT, plantXi, maxOutput, duration, stepMode, modelVal) {
+            const buffer = new PidDataBuffer();
+            const sim = new PidPlantSimulator(kp, ki, kd, plantK, plantT, plantXi, maxOutput);
+            sim.plantModelVal = modelVal || 'secondOrder';
+            const maxSteps = 2000;
+            const dt = duration / Math.min(maxSteps, 1999);
+            buffer.dt = dt;
+            let lowSp, highSp;
+            if (stepMode === 'cyclic') { lowSp = sp * 0.2; highSp = sp; }
+            else { lowSp = 0; highSp = sp; }
+            const stepTime = duration / 3;
+            const steps = Math.floor(duration / dt);
+            const tracer = { stepSp: 0, maxPv: 0, initialized: false };
+            for (let i = 0; i <= steps; i++) {
+                const t = i * dt;
+                let currentSp;
+                if (stepMode === 'cyclic') {
+                    const period = duration / 3;
+                    const phase = (t % period) / period;
+                    currentSp = phase < 0.5 ? highSp : lowSp;
+                } else { currentSp = t < stepTime ? lowSp : highSp; }
+                const result = sim.step(currentSp, dt);
+                buffer.append(currentSp, result.pv, result.output, t);
+                if (!tracer.initialized) {
+                    tracer.stepSp = Math.max(currentSp, result.pv);
+                    tracer.maxPv = Math.max(currentSp, result.pv);
+                    tracer.initialized = true;
+                } else if (currentSp > tracer.stepSp + 0.1) {
+                    tracer.stepSp = currentSp;
+                    tracer.maxPv = Math.max(currentSp, result.pv);
+                } else { tracer.maxPv = Math.max(tracer.maxPv, result.pv); }
+            }
+            const overshoot = tracer.stepSp > 0.001
+                ? Math.max(0, (tracer.maxPv - tracer.stepSp) / tracer.stepSp * 100) : 0;
+            return { buffer, overshoot, dt };
+        }
+
+        // ==================== 指标计算 ====================
+        // tArr 可以是「真实时间数组」(HW)或「单值 dt」(Sim),也兼容 null
+        function computeMetrics(spArr, pvArr, spVal, tArr, overshoot) {
+            const m = {};
+            const n = spArr.length;
+            if (n < 10) return m;
+            let windowStart = 0;
+            for (let i = 1; i < n; i++) {
+                if (Math.abs(spArr[i] - spArr[i - 1]) > 0.1) windowStart = i;
+            }
+            const band = Math.max(Math.abs(spVal) * 0.02, 0.005);
+            // 解析时间函数:数组→真实时间;数字→均匀步长;无→按 index 推算
+            const getT = (i) => {
+                if (Array.isArray(tArr)) return tArr[i];
+                const dt = (typeof tArr === 'number' && tArr > 0) ? tArr : 0.01;
+                return i * dt;
+            };
+            const dtStart = getT(windowStart);
+            let riseIdx = -1;
+            if (spVal > 0.001) {
+                for (let i = windowStart; i < n; i++) {
+                    if (pvArr[i] >= Math.abs(spVal) * 0.9) { riseIdx = i; break; }
+                }
+            }
+            m.riseTime = riseIdx >= 0 ? (getT(riseIdx) - dtStart).toFixed(3) + ' s' : '未到达';
+            const tailLen = Math.max(5, Math.floor((n - windowStart) / 5));
+            let settled = true;
+            for (let i = n - tailLen; i < n; i++) {
+                if (Math.abs(pvArr[i] - spVal) > band) { settled = false; break; }
+            }
+            let settleIdx = n - 1;
+            if (settled) {
+                for (let i = n - 1; i >= windowStart; i--) {
+                    if (Math.abs(pvArr[i] - spVal) > band) { settleIdx = i + 1; break; }
+                    if (i === windowStart) settleIdx = windowStart;
+                }
+            }
+            m.settleTime = settled ? (getT(settleIdx) - dtStart).toFixed(3) + ' s' : '未稳定';
+            m.settled = settled;
+            const tailStart = n - tailLen;
+            let tailSum = 0;
+            for (let i = tailStart; i < n; i++) tailSum += (spVal - pvArr[i]);
+            m.steadyError = (tailSum / tailLen).toFixed(4);
+            // IAE 用梯形积分: sum( |sp-pv| * (t[i] - t[i-1]) )
+            let iae = 0;
+            for (let i = windowStart + 1; i < n; i++) {
+                iae += Math.abs(spArr[i] - pvArr[i]) * Math.max(getT(i) - getT(i - 1), 0);
+            }
+            m.iae = iae.toFixed(2);
+            m.tailError = (tailSum / tailLen).toFixed(4);
+            m.overshootStr = overshoot.toFixed(1) + '%';
+            m._spVal = spVal;   // 给 isGoodEnough 算相对误差用
+            return m;
+        }
+
+        // ==================== 图表渲染 ====================
+        let chartData = null, chartZoom = 1, chartOffset = 0;
+        let isDragging = false, dragStartX = 0, dragStartOffset = 0;
+
+        function getChartCanvas() {
+            const canvas = document.getElementById('pidCanvas');
+            const container = document.getElementById('chartContainer');
+            if (!canvas || !container) return null;
+            const dpr = window.devicePixelRatio || 1;
+            const rect = container.getBoundingClientRect();
+            const w = rect.width, h = rect.height;
+            if (canvas.width !== w * dpr || canvas.height !== h * dpr) {
+                canvas.width = w * dpr; canvas.height = h * dpr;
+                canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+            }
+            return { canvas, ctx: canvas.getContext('2d'), w, h, dpr };
+        }
+
+        function drawChart() {
+            if (!chartData || chartData.sp.length === 0) return;
+            const info = getChartCanvas(); if (!info) return;
+            const { ctx, w, h, dpr } = info;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.clearRect(0, 0, w, h);
+            const total = chartData.sp.length;
+            const margin = { top: 20, right: 30, bottom: 35, left: 55 };
+            const pw = w - margin.left - margin.right;
+            const ph = h - margin.top - margin.bottom;
+            const visibleCount = Math.max(10, total / chartZoom);
+            const startIdx = Math.max(0, Math.min(total - visibleCount, Math.floor(chartOffset * (total - 1))));
+            const endIdx = Math.min(total - 1, startIdx + Math.floor(visibleCount));
+            const step = Math.max(1, Math.floor((endIdx - startIdx + 1) / (pw * 2)));
+            if (endIdx <= startIdx) return;
+            let yMin = Infinity, yMax = -Infinity;
+            for (let i = startIdx; i <= endIdx; i += step) {
+                yMin = Math.min(yMin, chartData.sp[i], chartData.pv[i], chartData.out[i]);
+                yMax = Math.max(yMax, chartData.sp[i], chartData.pv[i], chartData.out[i]);
+            }
+            if (!isFinite(yMin)) { yMin = -10; yMax = 110; }
+            const yPad = Math.max((yMax - yMin) * 0.1, 1);
+            yMin -= yPad; yMax += yPad;
+            function tx(i) { return margin.left + ((i - startIdx) / (endIdx - startIdx)) * pw; }
+            function ty(v) { return margin.top + ph - ((v - yMin) / (yMax - yMin)) * ph; }
+            ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
+            const gridLines = 5;
+            for (let g = 0; g <= gridLines; g++) {
+                const y = margin.top + (ph / gridLines) * g;
+                ctx.beginPath(); ctx.moveTo(margin.left, y); ctx.lineTo(w - margin.right, y); ctx.stroke();
+                const val = yMax - ((yMax - yMin) / gridLines) * g;
+                ctx.fillStyle = 'rgba(255,255,255,0.3)'; ctx.font = '10px monospace'; ctx.textAlign = 'right';
+                ctx.fillText(val.toFixed(1), margin.left - 6, y + 4);
+            }
+            const xLabels = 5;
+            // 用真实时间数组,无 t 时回退到 idx*dt
+            const fallbackDt = chartData.dt || 0.01;
+            const getT = (idx) => (chartData.t && chartData.t.length === chartData.sp.length)
+                ? chartData.t[idx] : (idx * fallbackDt);
+            // X 轴按「固定时间点」打标签,而非按「固定 index 位置」,避免新数据进来时标签滑动
+            const tStart = getT(startIdx);
+            const tEnd = getT(endIdx);
+            const tRange = Math.max(tEnd - tStart, 1e-6);
+            // 选择「好看」的时间步长 (1, 2, 5 × 10^n)
+            const niceStep = (raw) => {
+                if (raw <= 0) return 0.01;
+                const exp = Math.floor(Math.log10(raw));
+                const m = raw / Math.pow(10, exp);
+                let n;
+                if (m < 1.5) n = 1;
+                else if (m < 3) n = 2;
+                else if (m < 7) n = 5;
+                else n = 10;
+                return n * Math.pow(10, exp);
+            };
+            const stepT = niceStep(tRange / xLabels);
+            // 第一个 tick:从 start 向上对齐到 stepT 整数倍
+            const firstTick = Math.ceil(tStart / stepT) * stepT;
+            ctx.font = '10px monospace'; ctx.textAlign = 'center';
+            for (let t = firstTick; t <= tEnd + stepT * 0.001; t += stepT) {
+                // 在 [startIdx, endIdx] 内二分查找对应时间 t 的索引
+                let lo = startIdx, hi = endIdx, idx = endIdx;
+                while (lo <= hi) {
+                    const mid = (lo + hi) >> 1;
+                    if (getT(mid) >= t) { idx = mid; hi = mid - 1; } else lo = mid + 1;
+                }
+                if (idx < startIdx) continue;
+                const x = tx(idx);
+                const tStr = t >= 60 ? (t / 60).toFixed(2) + 'min' : t.toFixed(1) + 's';
+                ctx.fillStyle = 'rgba(255,255,255,0.3)';
+                ctx.fillText(tStr, x, h - margin.bottom + 16);
+                // 小竖线作为刻度
+                ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(x, h - margin.bottom + 4); ctx.lineTo(x, h - margin.bottom + 8); ctx.stroke();
+            }
+            function drawChannel(dataArr, color, lineWidth) {
+                if (endIdx - startIdx < 2) return;
+                ctx.strokeStyle = color; ctx.lineWidth = lineWidth; ctx.lineJoin = 'round';
+                ctx.beginPath();
+                let first = true;
+                for (let i = startIdx; i <= endIdx; i += step) {
+                    const x = tx(i), y = ty(Math.max(yMin, Math.min(yMax, dataArr[i])));
+                    if (first) { ctx.moveTo(x, y); first = false; } else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            }
+            drawChannel(chartData.out, '#30C060', 1.2);
+            drawChannel(chartData.pv, '#FF6B6B', 2);
+            drawChannel(chartData.sp, '#60CDFF', 1.5);
+            ctx.strokeStyle = 'rgba(255,255,255,0.12)'; ctx.lineWidth = 1;
+            ctx.strokeRect(margin.left, margin.top, pw, ph);
+        }
+
+        // 默认 PID 参数(与初始 UI 一致)
+        const PID_DEFAULTS = { kp: 2, ki: 0.5, kd: 0.1, sp: 50 };
+        // 内部:仅重置图表视口(zoom/offset)
+        function _resetChartViewport() {
+            chartZoom = 1;
+            chartOffset = 0;
+        }
+        // 用户按钮:重置视口 + 清空缓冲 + 恢复默认参数 + 仿真模式立即重跑
+        function resetChartView() {
+            applyPidParams(PID_DEFAULTS.kp, PID_DEFAULTS.ki, PID_DEFAULTS.kd);
+            setVal('spNum', PID_DEFAULTS.sp);
+            document.getElementById('spSlider').value = PID_DEFAULTS.sp;
+            _resetChartViewport();
+            if (chartData) { chartData.sp.length = 0; chartData.pv.length = 0; chartData.out.length = 0; }
+            stepSp = 0; stepMaxPv = 0; hwLastSampleAt = 0;
+            drawChart();
+            if (!isHwMode) runSimulation();
+            setStatus(isHwMode ? '视图与参数已重置' : '视图与参数已重置,仿真已重跑');
+        }
+
+        function initChartEvents() {
+            const container = document.getElementById('chartContainer');
+            if (!container) return;
+
+            // 滚轮缩放：向上滚(deltaY<0)=放大 zoom*=1.18；向下滚(deltaY>0)=缩小 zoom*=0.85
+            container.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                const factor = e.deltaY < 0 ? 1.18 : 0.85;
+                const oldZoom = chartZoom;
+                chartZoom = Math.max(1, Math.min(1000, chartZoom * factor));
+                // 缩放时保持鼠标位置的 x 坐标不动
+                const rect = container.getBoundingClientRect();
+                const mouseXRatio = (e.clientX - rect.left) / rect.width;
+                const oldVisibleCount = chartData ? chartData.sp.length / oldZoom : 10;
+                const newVisibleCount = chartData ? chartData.sp.length / chartZoom : 10;
+                if (chartData && chartZoom > 1) {
+                    const total = chartData.sp.length;
+                    const mouseDataIdx = chartOffset * (total - 1) + mouseXRatio * oldVisibleCount;
+                    const newStartIdx = mouseDataIdx - mouseXRatio * newVisibleCount;
+                    chartOffset = Math.max(0, Math.min(1 - 1/chartZoom, newStartIdx / (total - 1)));
+                } else {
+                    chartOffset = 0;
+                }
+                drawChart();
+            }, { passive: false });
+
+            // 拖拽平移：向右拖 dx>0 → 看更早的数据 → chartOffset 减小
+            container.addEventListener('mousedown', function(e) {
+                if (e.button !== 0) return;
+                isDragging = true;
+                dragStartX = e.clientX;
+                dragStartOffset = chartOffset;
+                container.style.cursor = 'grabbing';
+                e.preventDefault();
+            });
+
+            container.addEventListener('mousemove', function(e) {
+                if (!isDragging || !chartData) return;
+                const rect = container.getBoundingClientRect();
+                const dx = e.clientX - dragStartX;
+                const total = chartData.sp.length;
+                const visibleCount = total / chartZoom;
+                // 向右拖 dx>0 → chartOffset 减小（看更早）
+                const deltaNorm = dx / rect.width * (visibleCount / total);
+                let newOffset = dragStartOffset - deltaNorm;
+                const maxOffset = Math.max(0, 1 - 1/chartZoom);
+                chartOffset = Math.max(0, Math.min(maxOffset, newOffset));
+                drawChart();
+            });
+
+            // 鼠标松开 - 监听 window 以处理在容器外释放
+            const stopDrag = function() {
+                if (isDragging) {
+                    isDragging = false;
+                    if (container) container.style.cursor = 'crosshair';
+                }
+            };
+            window.addEventListener('mouseup', stopDrag);
+            window.addEventListener('mouseleave', stopDrag);
+
+            // 鼠标离开重置光标
+            container.addEventListener('mouseleave', function() {
+                if (!isDragging) container.style.cursor = 'crosshair';
+            });
+        }
+
+        // ==================== UI 控制器 ====================
+        function getVal(id) { return parseFloat(document.getElementById(id).value) || 0; }
+        function setVal(id, v) { document.getElementById(id).value = v; }
+
+        let isAiRunning = false;
+        let lastSentKp = NaN, lastSentKi = NaN, lastSentKd = NaN;  // 跟踪最近一次发到设备的 PID(避免重复下发)
+
+        window.onSliderChange = function(type) {
+            const v = parseFloat(document.getElementById(type + 'Slider').value);
+            setVal(type + 'Num', v);
+            // 硬件模式:参数仅本地更新,等用户点"发送PID/SP"才下发
+            if (isHwMode) {
+                setStatus('已修改本地 ' + type.toUpperCase() + '=' + v + ' (待发送)');
+                return;
+            }
+            if (!isAiRunning) debounceSim();
+        };
+        window.onNumChange = function(type) {
+            const v = parseFloat(document.getElementById(type + 'Num').value) || 0;
+            const slider = document.getElementById(type + 'Slider');
+            slider.value = Math.min(slider.max, Math.max(slider.min, v));
+            // 硬件模式:参数仅本地更新,等用户点"发送PID/SP"才下发
+            if (isHwMode) {
+                setStatus('已修改本地 ' + type.toUpperCase() + '=' + v + ' (待发送)');
+                return;
+            }
+            if (!isAiRunning) debounceSim();
+        };
+
+        let simDebounce = null;
+        function debounceSim() { clearTimeout(simDebounce); simDebounce = setTimeout(runSimulation, 150); }
+
+        // 各模型的默认 K/T/Xi(被控对象 - 响应快,理论可达 < 0.5s)
+        const PLANT_DEFAULTS = {
+            firstOrder:  { k: 1.0, t: 0.05 },
+            secondOrder: { k: 1.0, t: 0.05, xi: 0.7 },
+            integrator:  { k: 2.0 }
+        };
+        // 各模型的默认 PID(故意"欠调",便于用户看到 Ki/Kd 的作用)
+        // 理论可达:一阶 PI / 二阶 PD 调好后 上升+稳态 都能 < 0.3s
+        const PID_DEFAULTS_BY_MODEL = {
+            firstOrder:  { kp: 2, ki: 0, kd: 0 },        // 纯 P:响应快但有 33% 稳态误差 → 提示加 Ki
+            secondOrder: { kp: 2, ki: 0, kd: 0 },        // 纯 P:欠阻尼有 25% 超调 → 提示加 Kd
+            integrator:  { kp: 1, ki: 0, kd: 0 }         // 纯 P:慢但不震荡 → 提示加 Ki 加快
+        };
+        window.onPlantModelChange = function() {
+            const v = document.getElementById('plantModel').value;
+            document.getElementById('plantXiGroup').style.display = v === 'secondOrder' ? '' : 'none';
+            // 切换模型时填入该模型专属默认参数(便于快速看到响应)
+            const d = PLANT_DEFAULTS[v];
+            if (d) {
+                document.getElementById('plantK').value = d.k;
+                if (d.t != null) document.getElementById('plantT').value = d.t;
+                if (d.xi != null) document.getElementById('plantXi').value = d.xi;
+            }
+            // 同步切换 PID 默认值
+            const pid = PID_DEFAULTS_BY_MODEL[v];
+            if (pid) {
+                document.getElementById('kpNum').value = pid.kp;
+                document.getElementById('kpSlider').value = pid.kp;
+                document.getElementById('kiNum').value = pid.ki;
+                document.getElementById('kiSlider').value = pid.ki;
+                document.getElementById('kdNum').value = pid.kd;
+                document.getElementById('kdSlider').value = pid.kd;
+            }
+            if (!isAiRunning) debounceSim();
+        };
+
+        function readParams() {
+            return {
+                kp: getVal('kpNum'), ki: getVal('kiNum'), kd: getVal('kdNum'), sp: getVal('spNum'),
+                plantK: getVal('plantK'), plantT: getVal('plantT'), plantXi: getVal('plantXi'),
+                maxOutput: getVal('maxOutput'), duration: getVal('duration'),
+                stepMode: document.getElementById('stepMode').value,
+                model: document.getElementById('plantModel').value
+            };
+        }
+
+        function applyPidParams(kp, ki, kd) {
+            setVal('kpNum', kp); document.getElementById('kpSlider').value = kp;
+            setVal('kiNum', ki); document.getElementById('kiSlider').value = ki;
+            setVal('kdNum', kd); document.getElementById('kdSlider').value = kd;
+        }
+
+        function runSimulation() {
+            const p = readParams();
+            const result = runSimulationData(p.kp, p.ki, p.kd, p.sp, p.plantK, p.plantT, p.plantXi, p.maxOutput, p.duration, p.stepMode, p.model);
+            chartData = result.buffer;
+            _resetChartViewport();
+            drawChart();
+            updateMetrics(result);
+            setStatus('仿真完成 · Kp=' + p.kp.toFixed(2) + ' Ki=' + p.ki.toFixed(2) + ' Kd=' + p.kd.toFixed(2));
+            return result;
+        }
+
+        function updateMetrics(result) {
+            // Sim: 用 result.dt(均匀步长)
+            const m = computeMetrics(result.buffer.sp, result.buffer.pv,
+                result.buffer.sp[result.buffer.sp.length - 1] || 0,
+                result.dt, result.overshoot);
+            document.getElementById('metricOvershoot').textContent = m.overshootStr || '--';
+            document.getElementById('metricRise').textContent = m.riseTime || '--';
+            document.getElementById('metricSettle').textContent = m.settleTime || '--';
+            document.getElementById('metricSteady').textContent = m.steadyError || '--';
+            document.getElementById('metricIae').textContent = m.iae || '--';
+            document.getElementById('metricTail').textContent = m.tailError || '--';
+        }
+
+        function setStatus(msg) { document.getElementById('pidStatus').textContent = msg; }
+
+        window.runSimulation = runSimulation;
+        window.resetChart = function() { resetChartView(); };
+        window.resetChartView = resetChartView;
+        window.toggleAiSettings = function() {
+            const panel = document.getElementById('aiSettingsPanel');
+            const toggle = document.getElementById('aiSettingsToggle');
+            panel.classList.toggle('show'); toggle.classList.toggle('open');
+        };
+        window.openAiTuneModal = function() { document.getElementById('aiTuneModal').classList.add('show'); };
+        window.closeAiTuneModal = function() { document.getElementById('aiTuneModal').classList.remove('show'); };
+
+        // ==================== 模式 / 串口 / 周期 / 帮助 ====================
+        let isHwMode = false;
+        let serialPort = null;
+        let serialReader = null;
+        let serialWriter = null;
+        let serialReadBuf = '';
+        let isPaused = false;
+        let isChartFrozen = false;  // 冻结图表:AI 调参成功后保持最终波形,不再接受新数据
+        let hwLastSampleAt = 0;
+        let sampleIntervalSec = 0.05;  // 仿真步长/硬件采样率(秒),影响指标计算
+        let stepSp = 0;                // 阶跃起始 SP
+        let stepMaxPv = 0;             // 阶跃后 PV 峰值
+
+        // 周期配置(默认 50/50 两段)
+        const cycleConfig = {
+            periodSec: 10,
+            repeats: 3,
+            segments: [
+                { value: 50, duty: 50 },
+                { value: 0,  duty: 50 }
+            ]
+        };
+        let cycleTimer = null;
+        let cycleSegIdx = 0;
+        let cycleRunCount = 0;
+
+        // ==================== Web Serial API ====================
+        function updateSerialButtons(connected) {
+            const btn = document.getElementById('btnConnectSerial');
+            const lbl = document.getElementById('btnConnectSerialLabel');
+            const iconC = document.getElementById('iconConnect');
+            const iconD = document.getElementById('iconDisconnect');
+            const sel = document.getElementById('serialBaud');
+            if (lbl) lbl.textContent = connected ? '断开' : '选择串口';
+            if (iconC) iconC.style.display = connected ? 'none' : '';
+            if (iconD) iconD.style.display = connected ? '' : 'none';
+            if (btn) {
+                btn.classList.toggle('pid-btn-secondary', !connected);
+                btn.classList.toggle('pid-btn-danger', connected);
+            }
+            if (sel) sel.disabled = connected;
+        }
+        // 同一个按钮:已连接时是"断开",未连接时是"选择串口"
+        function onConnectBtnClick() {
+            if (serialPort) closeSerial();
+            else connectSerial();
+        }
+        window.onConnectBtnClick = onConnectBtnClick;
+        async function connectSerial() {
+            if (serialPort) { closeSerial(); return; }
+            if (!('serial' in navigator)) {
+                setSerialStatus('当前浏览器不支持 Web Serial API (请用 Chrome/Edge)', 'error');
+                return;
+            }
+            try {
+                serialPort = await navigator.serial.requestPort();
+                const baud = parseInt(document.getElementById('serialBaud').value) || 115200;
+                await serialPort.open({ baudRate: baud, dataBits: 8, stopBits: 1, parity: 'none', flowControl: 'none' });
+                // 读取端:用 TextDecoder 解码
+                if (serialPort.readable && typeof serialPort.readable.pipeTo === 'function') {
+                    const textDecoder = new TextDecoderStream();
+                    const readableStreamClosed = serialPort.readable.pipeTo(textDecoder.writable).catch(() => {});
+                    serialReader = textDecoder.readable.getReader();
+                } else {
+                    serialReader = serialPort.readable.getReader();
+                }
+                // 写入端:不依赖 pipeTo,直接 getWriter,写入时用 TextEncoder 编码
+                // (兼容部分浏览器实现中 serialPort.writable 缺少 pipeTo 的情况)
+                if (serialPort.writable && typeof serialPort.writable.getWriter === 'function') {
+                    serialWriter = serialPort.writable.getWriter();
+                } else {
+                    throw new Error('当前浏览器串口写入流不可用');
+                }
+                serialReadBuf = '';
+                readSerialLoop();
+                setSerialStatus('已连接 @ ' + baud, 'connected');
+                setStatus('串口已打开');
+                updateSerialButtons(true);
+            } catch (e) {
+                setSerialStatus('打开失败: ' + (e.message || e), 'error');
+                try { if (serialPort) await serialPort.close(); } catch(_) {}
+                serialPort = null;
+                serialReader = null;
+                serialWriter = null;
+                updateSerialButtons(false);
+            }
+        }
+        window.connectSerial = connectSerial;
+
+        async function readSerialLoop() {
+            try {
+                while (serialReader) {
+                    const { value, done } = await serialReader.read();
+                    if (done) break;
+                    if (value) onSerialData(value);
+                }
+            } catch (e) {
+                if (serialPort) setSerialStatus('读取错误: ' + e.message, 'error');
+            }
+        }
+
+        function onSerialData(chunk) {
+            // 兼容两种模式:TextDecoder 解码后是 string,直接 getReader 是 Uint8Array
+            if (chunk instanceof Uint8Array) {
+                chunk = new TextDecoder('utf-8').decode(chunk);
+            }
+            serialReadBuf += chunk;
+            let idx;
+            while ((idx = serialReadBuf.search(/[\r\n]/)) !== -1) {
+                const line = serialReadBuf.substring(0, idx).trim();
+                serialReadBuf = serialReadBuf.substring(idx + 1);
+                // 跳过连续换行符
+                while (serialReadBuf.length > 0 && (serialReadBuf[0] === '\r' || serialReadBuf[0] === '\n')) {
+                    serialReadBuf = serialReadBuf.substring(1);
+                }
+                if (line) processSerialLine(line);
+            }
+        }
+
+        function processSerialLine(line) {
+            // 1) PID 回读
+            const pidM = line.match(/^PID:\s*([-+]?\d*\.?\d+)\s*,\s*([-+]?\d*\.?\d+)\s*,\s*([-+]?\d*\.?\d+)/i);
+            if (pidM) {
+                const kp = parseFloat(pidM[1]);
+                const ki = parseFloat(pidM[2]);
+                const kd = parseFloat(pidM[3]);
+                if (isFinite(kp) && isFinite(ki) && isFinite(kd)) {
+                    applyPidParams(kp, ki, kd);
+                    setStatus('已应用硬件 PID: Kp=' + kp.toFixed(3) + ' Ki=' + ki.toFixed(3) + ' Kd=' + kd.toFixed(3));
+                }
+                return;
+            }
+            // 2) 采样点 CSV: sp,pv[,output]
+            const parts = line.split(',');
+            if (parts.length < 2) return;
+            const sp = parseFloat(parts[0]);
+            const pv = parseFloat(parts[1]);
+            const output = parts.length > 2 ? parseFloat(parts[2]) || 0 : 0;
+            if (!isFinite(sp) || !isFinite(pv)) return;
+
+            // 自动检测采样率 + 累计真实时间(秒,从第一帧起)
+            const now = performance.now();
+            let realDt = 0;
+            if (hwLastSampleAt > 0) {
+                realDt = (now - hwLastSampleAt) / 1000;
+                if (realDt > 0.001 && realDt < 1.0) {
+                    sampleIntervalSec = sampleIntervalSec * 0.9 + realDt * 0.1;
+                }
+            }
+            hwLastSampleAt = now;
+
+            if (isPaused) return;
+            if (isChartFrozen) return;  // AI 调参成功后冻结,只解析不回显,避免后续数据破坏最终波形
+            // X 轴用真实累计时间(无 EMA 抖动),即使采样率不稳 X 轴也平滑
+            const tSeconds = (chartData.t && chartData.t.length > 0)
+                ? chartData.t[chartData.t.length - 1] + realDt
+                : 0;
+            chartData.sp.push(sp);
+            chartData.pv.push(pv);
+            chartData.out.push(output);
+            if (chartData.t) chartData.t.push(tSeconds);
+            // 缓冲上限:
+            //  - 仿真模式:5s × 400Hz = 2000 点(只跑 5s,看完整曲线)
+            //  - 硬件模式:1M 点上限(防 OOM,10Hz 时约 27h),持续记录全部数据
+            const maxBuf = isHwMode ? 1000000 : 2000;
+            if (chartData.sp.length > maxBuf) {
+                chartData.sp.shift(); chartData.pv.shift(); chartData.out.shift();
+                if (chartData.t.length) chartData.t.shift();
+            }
+            // 阶跃检测: SP 跳变 → 重置 stepSp / stepMaxPv
+            if (chartData.sp.length === 1 || Math.abs(sp - stepSp) > 0.5) {
+                stepSp = sp;
+                stepMaxPv = pv;
+            } else if (pv > stepMaxPv) {
+                stepMaxPv = pv;
+            }
+            // 自动滚动
+            if (document.getElementById('chkAutoScroll') && document.getElementById('chkAutoScroll').checked && chartZoom > 1) {
+                chartOffset = 1 - 1 / chartZoom;
+            }
+            drawChart();
+            if (chartData.sp.length > 10) updateMetricsFromBuffer();
+        }
+
+        async function closeSerial() {
+            try { if (serialReader) { await serialReader.cancel(); serialReader.releaseLock(); serialReader = null; } } catch(e) {}
+            try { if (serialWriter) { await serialWriter.close(); serialWriter.releaseLock(); serialWriter = null; } } catch(e) {}
+            try { if (serialPort) { await serialPort.close(); serialPort = null; } } catch(e) {}
+            // 关闭正在跑的周期发送
+            try { stopCycle(); } catch(_) {}
+            setSerialStatus('未连接', '');
+            setStatus('串口已断开');
+            updateSerialButtons(false);
+        }
+        window.closeSerial = closeSerial;
+
+        function setSerialStatus(text, cls) {
+            const el = document.getElementById('serialStatus');
+            if (!el) return;
+            el.textContent = text;
+            el.className = 'pid-serial-status' + (cls ? ' ' + cls : '');
+        }
+
+        async function serialSend(text) {
+            if (!serialWriter) { setStatus('串口未打开'); return false; }
+            try {
+                // 始终用 TextEncoder 编码(无论 writer 来自 TextEncoderStream 还是直接 writable)
+                const data = new TextEncoder().encode(text + '\r\n');
+                await serialWriter.write(data);
+                return true;
+            } catch (e) {
+                setStatus('发送失败: ' + (e.message || e));
+                return false;
+            }
+        }
+
+        // ==================== 模式切换 ====================
+        function clearChartCanvas() {
+            const info = getChartCanvas();
+            if (!info) return;
+            const { ctx, w, h } = info;
+            ctx.clearRect(0, 0, w, h);
+            // 重置指标显示
+            const ids = ['metricOvershoot','metricRise','metricSettle','metricSteady','metricIae','metricTail'];
+            ids.forEach(id => { const e = document.getElementById(id); if (e) e.textContent = '--'; });
+        }
+        function onModeChange() {
+            const prevHw = isHwMode;
+            isHwMode = document.querySelector('input[name="pidMode"]:checked').value === 'hw';
+            const serialPanel = document.getElementById('serialPanel');
+            const simOnly = document.querySelectorAll('.pid-sim-only');
+            const lblPid = document.getElementById('btnSendPidLabel');
+            const lblSp = document.getElementById('btnSendSpLabel');
+            if (isHwMode) {
+                document.body.classList.add('pid-mode-hw');
+                serialPanel.style.display = '';
+                simOnly.forEach(el => el.style.display = 'none');
+                lblPid.textContent = '发送PID';
+                lblSp.textContent = '发送SP';
+                setStatus('硬件模式 - 选择端口并打开串口接收阶跃响应数据');
+            } else {
+                document.body.classList.remove('pid-mode-hw');
+                serialPanel.style.display = 'none';
+                simOnly.forEach(el => el.style.display = '');
+                lblPid.textContent = '发送PID';
+                lblSp.textContent = '发送SP';
+                setStatus('仿真模式 - 调整 PID 参数后实时刷新');
+            }
+            // 模式切换:清空缓冲,避免两边数据混淆
+            if (chartData) { chartData.sp.length = 0; chartData.pv.length = 0; chartData.out.length = 0; }
+            stepSp = 0; stepMaxPv = 0; hwLastSampleAt = 0;
+            // 关闭可能在跑的周期发送(切到仿真时无意义)
+            if (prevHw !== isHwMode) stopCycle();
+            resetChartView();
+            clearChartCanvas();
+            // 仿真模式立即重跑(不等 debounce),硬件模式等待串口数据
+            if (!isHwMode) {
+                onStepModeChange();
+                runSimulation();
+            } else {
+                onStepModeChange();
+                setStatus('硬件模式 - 等待串口数据,设备应发送 "sp,pv,output" 格式');
+            }
+        }
+        window.onModeChange = onModeChange;
+
+        function onStepModeChange() {
+            const mode = document.getElementById('stepMode').value;
+            const cyclic = mode === 'cyclic';
+            document.getElementById('btnCycleConfig').style.display = cyclic ? 'inline-flex' : 'none';
+            document.getElementById('cycleSummary').style.display = cyclic ? 'inline-block' : 'none';
+            document.getElementById('cycleDivider').style.display = cyclic ? 'inline-block' : 'none';
+            // "开始周期" 按钮:硬件 + 周期 才显示
+            document.getElementById('btnStartCycle').style.display = (isHwMode && cyclic) ? 'inline-flex' : 'none';
+            updateCycleSummary();
+            // 仿真模式:切换阶跃模式立即刷新波形
+            if (!isHwMode && !isAiRunning) debounceSim();
+        }
+        window.onStepModeChange = onStepModeChange;
+
+        function updateCycleSummary() {
+            const el = document.getElementById('cycleSummary');
+            if (!el) return;
+            const n = cycleConfig.segments.length;
+            el.textContent = n === 0 ? '空' : ('周期 ' + cycleConfig.periodSec.toFixed(1) + 's × ' + cycleConfig.repeats + '次, ' + n + '段');
+        }
+
+        // 硬件模式:清空图表缓冲,准备接收新数据(与 AI 调参相同的刷新行为)
+        function refreshHwChart() {
+            if (!chartData) return;
+            chartData.sp.length = 0; chartData.pv.length = 0; chartData.out.length = 0;
+            if (chartData.t) chartData.t.length = 0;
+            stepSp = 0; stepMaxPv = 0; hwLastSampleAt = 0;
+            _resetChartViewport();
+            clearChartCanvas();
+            updateMetricsFromBuffer();
+            // 任何刷新图表的操作都意味着要接收新数据 → 解冻
+            unfreezeChart();
+        }
+
+        // 硬件模式:发送命令后等待设备返回一段完整阶跃响应(供手动按钮和 AI 调参共用)
+        async function waitForHwFullResponse(spValue, maxWaitMs) {
+            if (!chartData) return;
+            // 1) 清空图表,等设备发来新数据画全新波形
+            refreshHwChart();
+            // 2) 触发阶跃(单次 SSP / 周期 TSP)
+            const mode = document.getElementById('stepMode').value;
+            if (mode === 'cyclic') {
+                await serialSend('TSP:' + spValue.toFixed(3));
+            } else {
+                await serialSend('SSP:' + spValue.toFixed(3));
+            }
+            // 3) 等待设备返回完整响应:PV 稳定在 SP±2% 持续 6 次(约 300ms)或超时
+            const startTs = Date.now();
+            const stableSp = spValue;
+            let lastPv = -Infinity;
+            let stableCount = 0;
+            const minSamples = 30;
+            const stableBand = Math.max(Math.abs(stableSp) * 0.02, 0.005);
+            while (Date.now() - startTs < maxWaitMs) {
+                await sleep(50);
+                if (chartData.pv.length < minSamples) continue;
+                const curPv = chartData.pv[chartData.pv.length - 1];
+                if (Math.abs(curPv - stableSp) <= stableBand) {
+                    if (Math.abs(lastPv - curPv) < stableBand * 0.1) {
+                        stableCount++;
+                        if (stableCount >= 6) break;
+                    } else { stableCount = 0; }
+                } else { stableCount = 0; }
+                lastPv = curPv;
+            }
+            // 4) 重新计算指标(响应结束后指标稳定,不再是抖动的中间值)
+            updateMetricsFromBuffer();
+            setStatus('阶跃响应已稳定 · 已更新指标 (耗时 ' + ((Date.now() - startTs) / 1000).toFixed(1) + 's)');
+        }
+
+        function onSendPid() {
+            const kp = parseFloat(document.getElementById('kpNum').value);
+            const ki = parseFloat(document.getElementById('kiNum').value);
+            const kd = parseFloat(document.getElementById('kdNum').value);
+            if (isHwMode) {
+                if (!serialPort) { setStatus('请先打开串口'); return; }
+                setStatus('已发送 PID: ' + kp.toFixed(3) + ',' + ki.toFixed(3) + ',' + kd.toFixed(3) + ' · 等待设备应用后触发阶跃...');
+                // 与 AI 调参一致的流程:发 PID → 等 200ms → 发 SSP 触发阶跃 → 等响应
+                serialSend('PID:' + kp.toFixed(3) + ',' + ki.toFixed(3) + ',' + kd.toFixed(3));
+                setTimeout(async () => {
+                    const sp = parseFloat(document.getElementById('spNum').value);
+                    await waitForHwFullResponse(sp, 8000);
+                }, 200);
+            } else {
+                runSimulation();
+                setStatus('仿真已更新 - Kp=' + kp.toFixed(2) + ' Ki=' + ki.toFixed(2) + ' Kd=' + kd.toFixed(2));
+            }
+        }
+        window.onSendPid = onSendPid;
+
+        function onSendSp() {
+            const sp = parseFloat(document.getElementById('spNum').value);
+            if (isHwMode) {
+                if (!serialPort) { setStatus('请先打开串口'); return; }
+                const mode = document.getElementById('stepMode').value;
+                if (mode === 'cyclic') {
+                    // 周期模式:发 TSP,等待设备回 OK 后由 startCycle 进入循环
+                    serialSend('TSP:' + sp.toFixed(3));
+                    setStatus('已发送 TSP:' + sp.toFixed(3) + ' (请用"开始周期"启动循环)');
+                } else {
+                    // 单次阶跃:清屏 + 发 SSP + 等完整响应 + 更新指标
+                    setStatus('已发送 SSP:' + sp.toFixed(3) + ' · 等待阶跃响应...');
+                    waitForHwFullResponse(sp, 8000);
+                }
+            } else {
+                runSimulation();
+                setStatus('仿真已更新 - SP=' + sp.toFixed(2));
+            }
+        }
+        window.onSendSp = onSendSp;
+
+        function togglePause() {
+            // 冻结状态下,点「解冻」按钮 = 解冻 + 继续接收
+            if (isChartFrozen) {
+                unfreezeChart();
+                isPaused = false;
+                const btn = document.getElementById('btnPause');
+                if (btn) { btn.textContent = '暂停'; btn.classList.remove('pid-btn-active'); }
+                setStatus('已解冻 · 继续接收数据');
+                return;
+            }
+            isPaused = !isPaused;
+            const btn = document.getElementById('btnPause');
+            if (btn) {
+                btn.textContent = isPaused ? '继续' : '暂停';
+                btn.classList.toggle('pid-btn-active', isPaused);
+            }
+            setStatus(isPaused ? '已暂停接收' : '已继续接收');
+        }
+        window.togglePause = togglePause;
+
+        // 冻结指示器:在状态栏显示「已冻结」标记,并把暂停按钮改成「解冻」
+        function updateFreezeIndicator() {
+            const btn = document.getElementById('btnPause');
+            if (!btn) return;
+            if (isChartFrozen) {
+                btn.textContent = '解冻';
+                btn.classList.add('pid-btn-active');
+                setStatus('图表已冻结 · 点「解冻」或「发送PID/SP」可继续接收');
+            } else {
+                btn.textContent = '暂停';
+                btn.classList.remove('pid-btn-active');
+            }
+        }
+        window.updateFreezeIndicator = updateFreezeIndicator;
+
+        // 解冻图表(用户主动操作)
+        function unfreezeChart() {
+            if (!isChartFrozen) return;
+            isChartFrozen = false;
+            updateFreezeIndicator();
+        }
+        window.unfreezeChart = unfreezeChart;
+
+        function clearChart() {
+            if (chartData) { chartData.sp.length = 0; chartData.pv.length = 0; chartData.out.length = 0; }
+            stepSp = 0; stepMaxPv = 0; hwLastSampleAt = 0;
+            resetChartView();
+            updateMetricsFromBuffer();
+            setStatus('已清屏');
+        }
+        window.clearChart = clearChart;
+
+        // ==================== 帮助弹窗 ====================
+        function toggleHelp() {
+            const m = document.getElementById('helpOverlay');
+            if (!m) return;
+            m.style.display = (m.style.display === 'none' || m.style.display === '') ? 'flex' : 'none';
+        }
+        window.toggleHelp = toggleHelp;
+
+        // ==================== 周期配置弹窗 ====================
+        function openCycleConfig() {
+            document.getElementById('cyclePeriod').value = cycleConfig.periodSec;
+            document.getElementById('cycleRepeats').value = cycleConfig.repeats;
+            renderCycleSegments();
+            document.getElementById('cycleDutyWarning').style.display = 'none';
+            document.getElementById('cycleModal').classList.add('show');
+        }
+        window.openCycleConfig = openCycleConfig;
+
+        function closeCycleConfig() { document.getElementById('cycleModal').classList.remove('show'); }
+        window.closeCycleConfig = closeCycleConfig;
+
+        function renderCycleSegments() {
+            const list = document.getElementById('cycleSegmentList');
+            list.innerHTML = '';
+            cycleConfig.segments.forEach((seg, i) => {
+                const row = document.createElement('div');
+                row.className = 'cycle-segment-row';
+                row.innerHTML =
+                    '<span class="seg-idx">' + (i + 1) + '</span>' +
+                    '<input type="number" step="0.1" value="' + seg.value + '" data-field="value" data-idx="' + i + '">' +
+                    '<input type="number" step="1" min="0" max="100" value="' + seg.duty + '" data-field="duty" data-idx="' + i + '" placeholder="占空比%">' +
+                    '<button class="seg-del" data-idx="' + i + '">×</button>';
+                list.appendChild(row);
+            });
+            // 绑定事件
+            list.querySelectorAll('input').forEach(inp => {
+                inp.addEventListener('input', function() {
+                    const i = parseInt(this.dataset.idx);
+                    const f = this.dataset.field;
+                    cycleConfig.segments[i][f] = parseFloat(this.value) || 0;
+                });
+            });
+            list.querySelectorAll('.seg-del').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const i = parseInt(this.dataset.idx);
+                    cycleConfig.segments.splice(i, 1);
+                    renderCycleSegments();
+                });
+            });
+        }
+
+        function addCycleSegment() {
+            cycleConfig.segments.push({ value: 0, duty: 0 });
+            renderCycleSegments();
+        }
+        window.addCycleSegment = addCycleSegment;
+
+        function saveCycleConfig() {
+            cycleConfig.periodSec = parseFloat(document.getElementById('cyclePeriod').value) || 10;
+            cycleConfig.repeats = parseInt(document.getElementById('cycleRepeats').value) || 1;
+            const totalDuty = cycleConfig.segments.reduce((s, x) => s + (x.duty || 0), 0);
+            if (Math.abs(totalDuty - 100) > 0.01) {
+                document.getElementById('cycleDutyWarning').style.display = '';
+                document.getElementById('cycleDutyWarning').textContent = '占空比合计 ' + totalDuty.toFixed(1) + '%,必须等于 100%';
+                return;
+            }
+            if (cycleConfig.segments.length === 0) {
+                document.getElementById('cycleDutyWarning').style.display = '';
+                document.getElementById('cycleDutyWarning').textContent = '至少添加一段';
+                return;
+            }
+            closeCycleConfig();
+            updateCycleSummary();
+            // 仿真模式:立即重跑
+            if (!isHwMode) runSimulation();
+        }
+        window.saveCycleConfig = saveCycleConfig;
+
+        // ==================== 周期发送 (硬件模式) ====================
+        function startCycle() {
+            if (!isHwMode) return;
+            if (!serialPort) { setStatus('请先打开串口'); return; }
+            if (cycleConfig.segments.length === 0) { setStatus('请先配置周期'); return; }
+            const totalDuty = cycleConfig.segments.reduce((s, x) => s + (x.duty || 0), 0);
+            if (Math.abs(totalDuty - 100) > 0.01) { setStatus('占空比合计 ' + totalDuty.toFixed(1) + '%,必须等于 100%'); return; }
+            cycleSegIdx = 0;
+            cycleRunCount = 0;
+            serialSend('TSP:' + cycleConfig.segments[0].value.toFixed(3));
+            document.getElementById('btnStartCycle').style.display = 'none';
+            document.getElementById('btnStopCycle').style.display = 'inline-flex';
+            setStatus('周期发送已启动: ' + cycleConfig.segments.length + '段,总周期=' + cycleConfig.periodSec.toFixed(1) + 's × ' + cycleConfig.repeats + '次');
+            scheduleNextSegment();
+        }
+        window.startCycle = startCycle;
+
+        function scheduleNextSegment() {
+            if (cycleTimer) { clearTimeout(cycleTimer); cycleTimer = null; }
+            const seg = cycleConfig.segments[cycleSegIdx];
+            const dur = cycleConfig.periodSec * Math.max(0, seg.duty) / 100.0 * 1000;
+            const nextIdx = (cycleSegIdx + 1) % cycleConfig.segments.length;
+            const isLastOfCycle = (nextIdx === 0);
+            if (isLastOfCycle) {
+                cycleRunCount++;
+                if (cycleConfig.repeats > 0 && cycleRunCount >= cycleConfig.repeats) {
+                    cycleTimer = setTimeout(() => {
+                        stopCycle();
+                        setStatus('周期发送完成');
+                    }, Math.max(50, dur));
+                    return;
+                }
+            }
+            cycleTimer = setTimeout(() => {
+                cycleSegIdx = nextIdx;
+                const nextSeg = cycleConfig.segments[cycleSegIdx];
+                serialSend('TSP:' + nextSeg.value.toFixed(3));
+                setStatus('周期发送: 第' + (cycleRunCount + 1) + '轮 第' + (cycleSegIdx + 1) + '段 SP=' + nextSeg.value.toFixed(3));
+                scheduleNextSegment();
+            }, Math.max(50, dur));
+        }
+
+        function stopCycle() {
+            if (cycleTimer) { clearTimeout(cycleTimer); cycleTimer = null; }
+            document.getElementById('btnStartCycle').style.display = (isHwMode && document.getElementById('stepMode').value === 'cyclic') ? 'inline-flex' : 'none';
+            document.getElementById('btnStopCycle').style.display = 'none';
+            cycleSegIdx = 0; cycleRunCount = 0;
+        }
+        window.stopCycle = stopCycle;
+
+        // ==================== 硬件模式指标计算 ====================
+        function updateMetricsFromBuffer() {
+            if (!chartData || chartData.sp.length < 2) {
+                document.getElementById('metricOvershoot').textContent = '--';
+                document.getElementById('metricRise').textContent = '--';
+                document.getElementById('metricSettle').textContent = '--';
+                document.getElementById('metricSteady').textContent = '--';
+                document.getElementById('metricIae').textContent = '--';
+                document.getElementById('metricTail').textContent = '--';
+                return;
+            }
+            // 用 computeMetrics 已有逻辑(sp,pv,setpoint,t,overshoot)
+            // 超调量:(maxPv - stepSp) / |stepSp| × 100%
+            const setpoint = stepSp;
+            const denom = Math.abs(setpoint) > 1e-6 ? Math.abs(setpoint) : 1;
+            const overshootPct = Math.max(0, (stepMaxPv - setpoint) / denom * 100);
+            // HW: 用 chartData.t 真实时间;Sim fallback: sampleIntervalSec 当 dt
+            const tForMetrics = (chartData.t && chartData.t.length === chartData.sp.length)
+                ? chartData.t
+                : sampleIntervalSec;
+            const m = computeMetrics(chartData.sp, chartData.pv, setpoint, tForMetrics, overshootPct);
+            document.getElementById('metricOvershoot').textContent = m.overshootStr || '--';
+            document.getElementById('metricRise').textContent = m.riseTime || '--';
+            document.getElementById('metricSettle').textContent = m.settleTime || '--';
+            document.getElementById('metricSteady').textContent = m.steadyError || '--';
+            document.getElementById('metricIae').textContent = m.iae || '--';
+            document.getElementById('metricTail').textContent = m.tailError || '--';
+        }
+
+        // ==================== 模态框点击外部关闭 ====================
+        ['aiTuneModal', 'cycleModal', 'helpOverlay'].forEach(id => {
+            const m = document.getElementById(id);
+            if (m) m.addEventListener('click', function(e) { if (e.target === this) {
+                if (id === 'aiTuneModal') window.closeAiTuneModal();
+                else if (id === 'cycleModal') closeCycleConfig();
+                else if (id === 'helpOverlay') toggleHelp();
+            }});
+        });
+
+        // ==================== AI 调参 ====================
+        function logMsg(msg, cls) {
+            const log = document.getElementById('pidLog');
+            document.getElementById('logCard').style.display = '';
+            log.innerHTML += '<div class="log-entry ' + (cls || '') + '">[' + new Date().toLocaleTimeString() + '] ' + msg + '</div>';
+            log.scrollTop = log.scrollHeight;
+        }
+        function clearLog() { document.getElementById('pidLog').innerHTML = ''; }
+
+        function isGoodEnough(metrics, targetRise, targetSettle) {
+            const overshoot = parseFloat(metrics.overshootStr) || 0;
+            const riseTimeVal = parseFloat(metrics.riseTime);
+            const settleTimeVal = parseFloat(metrics.settleTime);
+            const steadyErr = Math.abs(parseFloat(metrics.steadyError) || 0);
+            // 误差用「相对值」:稳态误差 / SP 比例,避免 0.02 硬阈值在 SP=0 或 SP=100 时失真
+            // SP 从最后一个 sp 值推断
+            const spVal = (metrics._spVal !== undefined) ? metrics._spVal : 0;
+            const relErr = spVal > 0.001 ? (steadyErr / spVal) * 100 : steadyErr;  // 百分比
+            // 默认条件(目标未设置时也用这些作为硬性要求)
+            const settledOk = metrics.settled === true || (settleTimeVal !== Infinity && !isNaN(settleTimeVal));
+            const overshootOk = overshoot <= 10;                // 超调 ≤ 10%
+            const steadyErrOk = relErr < 2;                     // 稳态误差 < 2%
+            const basicOk = settledOk && overshootOk && steadyErrOk;
+            if (!basicOk) return false;
+            // 目标检查(用户设了才检查)
+            if (targetRise > 0 && (isNaN(riseTimeVal) || riseTimeVal > targetRise)) return false;
+            if (targetSettle > 0 && (isNaN(settleTimeVal) || settleTimeVal > targetSettle)) return false;
+            return true;
+        }
+
+        function buildPrompt(kp, ki, kd, metrics, history, customPrompt, targetRise, targetSettle) {
+            let p = '## PID 自动调参任务\n\n你是 PID 控制器调参专家。请根据当前阶跃响应性能指标，推荐新的 Kp/Ki/Kd 参数。\n\n';
+            if (customPrompt) p += '### 用户特殊要求\n' + customPrompt + '\n\n';
+            p += '### 调参约束\n1. 分三阶段：先 P 达到快速响应 → 再 I 消除稳态误差 → 最后微调 D 抑制震荡\n2. 每次只大幅调整一个参数，其他参数小幅微调\n3. 有超调时优先增大 Kd 或减小 Kp\n4. 稳态误差大时增大 Ki\n5. 上升慢时增大 Kp\n\n';
+            p += '### 当前参数\nKp=' + kp.toFixed(4) + ', Ki=' + ki.toFixed(4) + ', Kd=' + kd.toFixed(4) + '\n\n';
+            p += '### 当前指标\n超调量: ' + (metrics.overshootStr || '--') + '\n上升时间: ' + (metrics.riseTime || '--') + '\n稳态时间: ' + (metrics.settleTime || '--') + '\n稳态误差: ' + (metrics.steadyError || '--') + '\nIAE: ' + (metrics.iae || '--') + '\n末端误差: ' + (metrics.tailError || '--') + '\n是否稳定: ' + (metrics.settled ? '是' : '否') + '\n\n';
+            if (targetRise > 0) p += '目标上升时间: ≤' + targetRise + ' s\n';
+            if (targetSettle > 0) p += '目标稳态时间: ≤' + targetSettle + ' s\n\n';
+            if (history.length > 0) {
+                p += '### 历史调参记录\n';
+                for (let i = Math.max(0, history.length - 6); i < history.length; i++) {
+                    const h = history[i];
+                    p += '[' + (i + 1) + '] Kp=' + h.kp.toFixed(4) + ' Ki=' + h.ki.toFixed(4) + ' Kd=' + h.kd.toFixed(4);
+                    p += ' | 超调=' + h.overshootStr + ' 上升=' + h.riseTime + ' 稳态=' + h.settleTime;
+                    p += ' 误差=' + h.steadyError + ' IAE=' + h.iae + '\n';
+                }
+            }
+            p += '\n请以JSON格式输出新参数：\n{"kp": 数值, "ki": 数值, "kd": 数值, "reason": "调整原因"}';
+            return p;
+        }
+
+        // 从 AI 返回文本中提取 PID 参数,容错多种返回格式
+        function extractJson(text) {
+            if (!text) return null;
+            let s = text;
+
+            // 1) 优先:markdown 代码块 ```json ... ``` 或 ``` ... ```
+            const fenced = s.match(/```(?:json)?\s*([\s\S]*?)```/i);
+            if (fenced) s = fenced[1].trim();
+
+            // 2) 抽取首个完整 JSON 对象(支持嵌套大括号)
+            const objText = _extractFirstJsonObject(s);
+            if (objText) {
+                const repaired = _repairJson(objText);
+                try {
+                    const obj = JSON.parse(repaired);
+                    if (obj && (obj.kp != null || obj.Kp != null)) {
+                        return {
+                            kp: _num(obj.kp ?? obj.Kp, 0.001, 1000, 1),
+                            ki: _num(obj.ki ?? obj.Ki, 0, 100, 0),
+                            kd: _num(obj.kd ?? obj.Kd, 0, 50, 0),
+                            reason: (obj.reason || obj.explain || obj.note || '').toString()
+                        };
+                    }
+                } catch(e) { /* 继续尝试 */ }
+            }
+
+            // 3) 降级:宽松正则抓 Kp/Ki/Kd(支持科学计数 / 正负号 / 命名大小写)
+            const get = (key) => {
+                const m = s.match(new RegExp('["\']?' + key + '["\']?\\s*[:=]\\s*[-+]?\\d*\\.?\\d+(?:[eE][-+]?\\d+)?', 'i'));
+                return m ? parseFloat(m[0].split(/[:=]/)[1]) : NaN;
+            };
+            const kp = get('kp'), ki = get('ki'), kd = get('kd');
+            if (isFinite(kp)) {
+                const reason = (s.match(/(?:reason|explain|note|说明|原因)["']?\s*[:=]\s*["']?([^"'\n,}\]]{2,80})/i) || [])[1] || '';
+                return {
+                    kp: _num(kp, 0.001, 1000, 1),
+                    ki: _num(ki, 0, 100, 0),
+                    kd: _num(kd, 0, 50, 0),
+                    reason: reason.trim()
+                };
+            }
+
+            // 4) 最后降级:抓 "Kp=2.0, Ki=0.5, Kd=0.1" 这种纯文本
+            const kp2 = s.match(/Kp\s*[=:]\s*[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/i);
+            const ki2 = s.match(/Ki\s*[=:]\s*[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/i);
+            const kd2 = s.match(/Kd\s*[=:]\s*[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/i);
+            if (kp2) {
+                return {
+                    kp: _num(parseFloat(kp2[0].split(/[:=]/)[1]), 0.001, 1000, 1),
+                    ki: ki2 ? _num(parseFloat(ki2[0].split(/[:=]/)[1]), 0, 100, 0) : 0,
+                    kd: kd2 ? _num(parseFloat(kd2[0].split(/[:=]/)[1]), 0, 50, 0) : 0,
+                    reason: 'Text fallback'
+                };
+            }
+
+            return null;
+        }
+
+        // 从字符串中提取首个完整 JSON 对象(支持嵌套)
+        function _extractFirstJsonObject(s) {
+            const start = s.indexOf('{');
+            if (start === -1) return null;
+            let depth = 0, inStr = false, esc = false;
+            for (let i = start; i < s.length; i++) {
+                const c = s[i];
+                if (inStr) {
+                    if (esc) esc = false;
+                    else if (c === '\\') esc = true;
+                    else if (c === '"') inStr = false;
+                } else {
+                    if (c === '"') inStr = true;
+                    else if (c === '{') depth++;
+                    else if (c === '}') { depth--; if (depth === 0) return s.substring(start, i + 1); }
+                }
+            }
+            return null;
+        }
+
+        // 修复常见 JSON 问题:尾部逗号 / 单引号 / JS 注释
+        function _repairJson(t) {
+            return t
+                .replace(/\/\/.*$/gm, '')          // 单行注释
+                .replace(/\/\*[\s\S]*?\*\//g, '')  // 多行注释
+                .replace(/,(\s*[}\]])/g, '$1')     // 尾随逗号
+                .replace(/([{,]\s*)'([^']+?)'\s*:/g, '$1"$2":')  // 单引号键
+                .replace(/:\s*'([^']*?)'/g, ': "$1"');            // 单引号值
+        }
+
+        function _num(v, lo, hi, dflt) {
+            const n = parseFloat(v);
+            if (!isFinite(n)) return dflt;
+            return Math.max(lo, Math.min(hi, n));
+        }
+
+        function heuristicAdjust(kp, ki, kd, metrics) {
+            let nkp = kp, nki = ki, nkd = kd;
+            const overshoot = parseFloat(metrics.overshootStr) || 0;
+            const steadyErr = Math.abs(parseFloat(metrics.steadyError) || 0);
+            if (!metrics.settled && overshoot > 50) { nkp *= 0.3; nki *= 0.3; nkd = Math.max(nkd, 0.5); }
+            else if (!metrics.settled && overshoot > 10) { if (nki > 0) nki *= 0.5; nkd = Math.max(nkd, nkp * 0.05); }
+            else if (steadyErr > 0.5 && nki < 0.01) nki = 0.5;
+            else if (steadyErr > 0.1 && metrics.settled) nki *= 1.5;
+            else if (overshoot > 5) nkd = Math.max(nkd, nkp * 0.03);
+            if (nkp < 0.001 && steadyErr > 0.1) nkp = 1.0;
+            return { kp: Math.max(0.001, nkp), ki: Math.max(0, nki), kd: Math.max(0, nkd), reason: 'Heuristic fallback' };
+        }
+
+        function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+        // 等待硬件设备返回一段完整的阶跃响应(供 AI 调参和手动按钮共用)
+        async function waitForHwStepResponse(spValue, maxWaitMs) {
+            await waitForHwFullResponse(spValue, maxWaitMs);
+            return {
+                sp: chartData.sp.slice(),
+                pv: chartData.pv.slice(),
+                out: chartData.out.slice(),
+                dt: sampleIntervalSec || 0.05
+            };
+        }
+
+        async function startAiTuning() {
+            const apiKey = document.getElementById('aiApiKey').value.trim();
+            if (!apiKey) { alert('请先在 AI 接口设置中填写 API Key'); return; }
+            // 硬件模式:需先打开串口
+            if (isHwMode && !serialPort) { alert('硬件模式下请先打开串口'); return; }
+            const baseUrl = document.getElementById('aiBaseUrl').value.trim() || 'https://api.openai.com/v1';
+            const model = document.getElementById('aiModel').value.trim() || 'gpt-4o-mini';
+            const maxRounds = parseInt(document.getElementById('aiMaxRounds').value) || 10;
+            const targetRise = parseFloat(document.getElementById('targetRise').value) || 0;
+            const targetSettle = parseFloat(document.getElementById('targetSettle').value) || 0;
+            const customPrompt = document.getElementById('customPrompt').value.trim();
+
+            window.closeAiTuneModal();
+            clearLog();
+            isAiRunning = true;
+            lastSentKp = NaN; lastSentKi = NaN; lastSentKd = NaN;  // 每次调参重新跟踪
+            const btnStart = document.getElementById('btnAiTune');
+            const btnStop = document.getElementById('btnAiStop');
+            btnStart.style.display = 'none';
+            btnStop.style.display = 'inline-flex';
+            setStatus('AI 自动调参运行中... (' + (isHwMode ? '硬件模式' : '仿真模式') + ')');
+
+            let p = readParams();
+            let history = [];
+            let converged = false;
+            let stopped = false;
+
+            // 暖机:确保 Kp > 0
+            if (p.kp < 0.001) {
+                applyPidParams(1.0, 0, 0);
+                logMsg('暖机: 设置 Kp=1.0', 'warn');
+                let r = runSimulation();
+                let m = computeMetrics(r.buffer.sp, r.buffer.pv, r.buffer.sp[r.buffer.sp.length - 1] || 0, r.dt, r.overshoot);
+                history.push({ kp: 1.0, ki: 0, kd: 0, ...m });
+                p.kp = 1.0; p.ki = 0; p.kd = 0;
+            }
+
+            for (let round = 1; round <= maxRounds; round++) {
+                if (!isAiRunning) { stopped = true; break; }
+                setStatus('AI 调参 第 ' + round + '/' + maxRounds + ' 轮...');
+                logMsg('--- 第 ' + round + ' 轮 ---', 'ai');
+
+                // 1) 获取当前 PID 下的响应数据
+                let spArr, pvArr, outArr, dt, overshootRaw;
+                if (isHwMode) {
+                    // 硬件:先发 PID,再发 SP 触发阶跃,等响应
+                    const newKp = +p.kp.toFixed(3), newKi = +p.ki.toFixed(3), newKd = +p.kd.toFixed(3);
+                    if (newKp !== lastSentKp || newKi !== lastSentKi || newKd !== lastSentKd) {
+                        await serialSend('PID:' + newKp + ',' + newKi + ',' + newKd);
+                        lastSentKp = newKp; lastSentKi = newKi; lastSentKd = newKd;
+                    }
+                    await sleep(200);
+                    const resp = await waitForHwStepResponse(p.sp, 8000);
+                    if (!resp || !resp.pv || resp.pv.length < 10) {
+                        logMsg('硬件响应数据不足,跳过本轮', 'warn');
+                        continue;
+                    }
+                    spArr = resp.sp; pvArr = resp.pv; outArr = resp.out; dt = resp.dt || 0.05;
+                    overshootRaw = 0;
+                } else {
+                    // 仿真:本地跑
+                    let r = runSimulation();
+                    spArr = r.buffer.sp; pvArr = r.buffer.pv; outArr = r.buffer.out;
+                    dt = r.dt; overshootRaw = r.overshoot;
+                }
+                let m = computeMetrics(spArr, pvArr, spArr[spArr.length - 1] || 0, dt, overshootRaw);
+                history.push({ kp: p.kp, ki: p.ki, kd: p.kd, ...m });
+                logMsg('超调=' + m.overshootStr + ' 上升=' + m.riseTime + ' 稳态=' + m.settleTime + ' 误差=' + m.steadyError);
+                if (isGoodEnough(m, targetRise, targetSettle)) { logMsg('✓ 收敛！参数已满足目标', 'good'); converged = true; break; }
+                // 停滞检测:连续 3 轮指标几乎无变化 → 停止(避免死循环)
+                if (history.length >= 3) {
+                    const a = history[history.length - 2], b = history[history.length - 1];
+                    const similar = Math.abs((parseFloat(a.riseTime) || 0) - (parseFloat(b.riseTime) || 0)) < 0.02
+                        && Math.abs((parseFloat(a.settleTime) || 0) - (parseFloat(b.settleTime) || 0)) < 0.02
+                        && Math.abs((parseFloat(a.steadyError) || 0) - (parseFloat(b.steadyError) || 0)) < 0.05;
+                    if (similar) {
+                        logMsg('⚠ 连续多轮指标无明显改善,停止调参', 'warn');
+                        setStatus('AI 调参已停止 - 指标停滞');
+                        break;
+                    }
+                }
+
+                // 2) 调 AI
+                let aiResult = null;
+                try {
+                    const prompt = buildPrompt(p.kp, p.ki, p.kd, m, history, customPrompt, targetRise, targetSettle);
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 15000);
+                    const response = await fetch(baseUrl.replace(/\/$/, '') + '/chat/completions', {
+                        method: 'POST',
+                        signal: controller.signal,
+                        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+                        body: JSON.stringify({
+                            model: model,
+                            messages: [
+                                { role: 'system', content: '你是PID调参专家。严格只输出一个 JSON 对象,不要任何解释、Markdown、代码块或前后缀。格式:{"kp":数字,"ki":数字,"kd":数字,"reason":"一句话原因"}' },
+                                { role: 'user', content: prompt }
+                            ],
+                            temperature: 0.3, max_tokens: 500
+                        })
+                    });
+                    clearTimeout(timeoutId);
+                    if (response.ok) {
+                        const data = await response.json();
+                        const content = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '';
+                        aiResult = extractJson(content);
+                        if (aiResult) logMsg('AI → Kp=' + aiResult.kp.toFixed(4) + ' Ki=' + aiResult.ki.toFixed(4) + ' Kd=' + aiResult.kd.toFixed(4) + ' | ' + (aiResult.reason || ''), 'ai');
+                        else { logMsg('AI 返回解析失败,原始内容前 200 字: ' + (content || '').substring(0, 200), 'warn'); logMsg('使用启发式调整', 'warn'); }
+                    } else { logMsg('API 错误: ' + response.status + '，降级到启发式调整', 'warn'); }
+                } catch(e) {
+                    if (e.name === 'AbortError') logMsg('请求超时(15s)，降级到启发式调整', 'warn');
+                    else logMsg('网络错误: ' + e.message + '，降级到启发式调整', 'warn');
+                }
+
+                if (!aiResult) {
+                    aiResult = heuristicAdjust(p.kp, p.ki, p.kd, m);
+                    logMsg('启发式 → Kp=' + aiResult.kp.toFixed(4) + ' Ki=' + aiResult.ki.toFixed(4) + ' Kd=' + aiResult.kd.toFixed(4), 'warn');
+                }
+                p.kp = aiResult.kp; p.ki = aiResult.ki; p.kd = aiResult.kd;
+                applyPidParams(p.kp, p.ki, p.kd);
+                // 硬件模式:让设备回读 PID 后再继续
+                if (isHwMode) await sleep(300);
+                else await sleep(300);
+            }
+            isAiRunning = false;
+            btnStart.style.display = 'inline-flex';
+            btnStop.style.display = 'none';
+            // AI 调参成功(收敛/停滞/最大轮)后,冻结图表保留最终波形,避免设备继续发数据破坏
+            if (isHwMode) {
+                isChartFrozen = true;
+                updateFreezeIndicator();
+            }
+            // 硬件模式:仅在「参数最后一次下发后又被 AI 改了」时才补发
+            // (避免重复下发导致设备重置内部状态,产生尖峰)
+            if (isHwMode && serialWriter && p.kp !== lastSentKp) {
+                await serialSend('PID:' + p.kp.toFixed(3) + ',' + p.ki.toFixed(3) + ',' + p.kd.toFixed(3));
+                lastSentKp = p.kp; lastSentKi = p.ki; lastSentKd = p.kd;
+                setStatus('已下发最终 PID 到设备');
+            }
+            if (stopped) {
+                logMsg('已手动停止调参', 'warn');
+                setStatus('AI 调参已停止');
+            } else if (converged) {
+                setStatus('AI 调参完成 - 已收敛 ✓');
+            } else {
+                logMsg('已达到最大轮数 ' + maxRounds, 'warn');
+                setStatus('AI 调参完成 - 已达最大轮数');
+            }
+        }
+        window.startAiTuning = startAiTuning;
+
+        function stopAiTuning() {
+            isAiRunning = false;
+            logMsg('正在停止...', 'warn');
+        }
+        window.stopAiTuning = stopAiTuning;
+
+        // 模态框点击外部关闭 - 已在前面统一绑定(aiTuneModal/cycleModal/helpOverlay)
+
+        // ==================== 初始化 ====================
+        // ============ AI 设置本地持久化(localStorage) ============
+        const AI_SETTINGS_KEY = 'pidAiSettings_v1';
+        function saveAiSettings() {
+            try {
+                const data = {
+                    apiKey: document.getElementById('aiApiKey').value,
+                    baseUrl: document.getElementById('aiBaseUrl').value,
+                    model: document.getElementById('aiModel').value,
+                    maxRounds: document.getElementById('aiMaxRounds').value
+                };
+                localStorage.setItem(AI_SETTINGS_KEY, JSON.stringify(data));
+                const hint = document.getElementById('aiSaveHint');
+                if (hint) { hint.textContent = '已保存 ' + new Date().toLocaleTimeString(); setTimeout(() => { hint.textContent = '已自动保存到本机'; }, 1500); }
+            } catch(e) { /* localStorage 不可用(隐私模式)时静默 */ }
+        }
+        function loadAiSettings() {
+            try {
+                const raw = localStorage.getItem(AI_SETTINGS_KEY);
+                if (!raw) return false;
+                const data = JSON.parse(raw);
+                if (data.apiKey != null) document.getElementById('aiApiKey').value = data.apiKey;
+                if (data.baseUrl) document.getElementById('aiBaseUrl').value = data.baseUrl;
+                if (data.model) document.getElementById('aiModel').value = data.model;
+                if (data.maxRounds) document.getElementById('aiMaxRounds').value = data.maxRounds;
+                return true;
+            } catch(e) { return false; }
+        }
+        window.clearAiSettings = function() {
+            if (!confirm('确认清除本机保存的 API Key 和设置?清除后需要重新输入。')) return;
+            try { localStorage.removeItem(AI_SETTINGS_KEY); } catch(e) {}
+            document.getElementById('aiApiKey').value = '';
+            document.getElementById('aiBaseUrl').value = 'https://api.openai.com/v1';
+            document.getElementById('aiModel').value = 'gpt-4o-mini';
+            document.getElementById('aiMaxRounds').value = '10';
+            const hint = document.getElementById('aiSaveHint');
+            if (hint) hint.textContent = '已清除';
+        };
+        // 任意输入变动自动保存
+        ['aiApiKey', 'aiBaseUrl', 'aiModel', 'aiMaxRounds'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', saveAiSettings);
+        });
+
+        function initPidTool() {
+            const hasSaved = loadAiSettings();
+            initChartEvents();
+            // 初始化时只设置模型默认参数 + 字段可见性,不要触发仿真
+            // (仿真由下面的 setTimeout 统一触发,避免双重 runSimulation)
+            const v = document.getElementById('plantModel').value;
+            document.getElementById('plantXiGroup').style.display = v === 'secondOrder' ? '' : 'none';
+            onStepModeChange();        // 初始化周期配置按钮可见性
+            setTimeout(runSimulation, 300);
+            window.addEventListener('resize', function() { drawChart(); });
+            // 提示用户已恢复
+            if (hasSaved) {
+                const hint = document.getElementById('aiSaveHint');
+                if (hint) { hint.textContent = '已从本机恢复'; setTimeout(() => { hint.textContent = '已自动保存到本机'; }, 2500); }
+            }
+        }
+
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initPidTool);
+        else initPidTool();
+    })();
+    </script>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container ">
+            <div>Copyright © 2024 - 版权归属 LIN</div>
+            <div class="running-time">
+                本博客已运行
+                <span id="blog_running_days" class="odometer"></span> days ,
+                <span id="blog_running_hours" class="odometer"></span> h ,
+                <span id="blog_running_mins" class="odometer"></span> m ,
+                <span id="blog_running_secs" class="odometer"></span> s
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    (function() {
+        const layers = document.querySelectorAll('.bg-layer');
+        let currentIndex = 0;
+        setInterval(() => {
+            layers[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % layers.length;
+            layers[currentIndex].classList.add('active');
+        }, 10000);
+        document.body.classList.add('loaded');
+    })();
+    (function() {
+        const container = document.getElementById('fireflies');
+        const floatPaths = ['float1', 'float2', 'float3', 'float4'];
+        for (let i = 0; i < 50; i++) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'firefly-wrapper';
+            wrapper.style.top = Math.random() * 100 + '%';
+            wrapper.style.left = Math.random() * 100 + '%';
+            const floatDuration = 15 + Math.random() * 20;
+            wrapper.style.setProperty('--float-duration', floatDuration + 's');
+            wrapper.style.setProperty('--float-delay', (Math.random() * -20) + 's');
+            wrapper.style.setProperty('--float-path', floatPaths[Math.floor(Math.random() * 4)]);
+            const firefly = document.createElement('div');
+            firefly.className = 'firefly';
+            const size = 3 + Math.random() * 4;
+            firefly.style.width = size + 'px'; firefly.style.height = size + 'px';
+            firefly.style.setProperty('--breathe-duration', (3 + Math.random() * 5) + 's');
+            firefly.style.setProperty('--breathe-delay', (Math.random() * -10) + 's');
+            wrapper.appendChild(firefly); container.appendChild(wrapper);
+        }
+    })();
+    </script>
+
+    <script src="/Blog/pjax.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/mouse/halo-dream/fairyDustCursor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
+</body>
+</html>
