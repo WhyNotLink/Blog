@@ -7,6 +7,8 @@ date: 2026-04-9
 
 category: [Other]
 
+image: /Blog/images/postbg6.jpg
+
 mermaid: true
 ---
 * TOC

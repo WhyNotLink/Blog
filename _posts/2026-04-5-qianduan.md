@@ -7,6 +7,8 @@ date: 2026-04-5
 
 category: [Web]
 
+image: /Blog/images/postbg11.png
+
 mermaid: true
 
 ---

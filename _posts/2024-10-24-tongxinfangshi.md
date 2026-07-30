@@ -8,6 +8,8 @@ date: 2024-10-24
 
 category: [Other]
 
+image: /Blog/images/postbg5.jpg
+
 mermaid: true
 
 ---

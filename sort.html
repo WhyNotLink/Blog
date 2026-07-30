@@ -130,6 +130,10 @@ layout: null
         <h2 class="section-title">文章分类</h2>
     </div>
     <div class="category-list">
+        <!-- 装饰大图 - 占据原 AI 大卡位置 -->
+        <div class="category-image">
+            <span class="image-caption">EXPLORE</span>
+        </div>
         <!-- AI -->
         <a href="{{ '/categoryhtml/' | relative_url }}AI.html" class="category-item" data-cat="ai">
             <div class="category-icon">🤖</div>
@@ -244,6 +248,61 @@ layout: null
             <div class="category-count-wrap"><span class="category-count odometer">{{ site.categories.Other | size }}</span></div>
         </a>
     </div>
+
+    <!-- Bento 卡片交互 - 注入光斑/扫光 + 鼠标跟随 + 3D 倾斜 -->
+    <script>
+    (function() {
+        var items = document.querySelectorAll('.category-item');
+        // 注入光斑和扫光元素
+        items.forEach(function(item) {
+            var glow = document.createElement('span');
+            glow.className = 'glow';
+            item.appendChild(glow);
+            var shine = document.createElement('span');
+            shine.className = 'shine';
+            item.appendChild(shine);
+        });
+
+        // 鼠标跟随光斑 + 3D 倾斜（rAF 节流）
+        var ticking = false;
+        var pending = null;
+        function handleMove(item, x, y) {
+            var rect = item.getBoundingClientRect();
+            var px = x - rect.left;
+            var py = y - rect.top;
+            var glow = item.querySelector('.glow');
+            if (glow) {
+                glow.style.left = px + 'px';
+                glow.style.top = py + 'px';
+            }
+            // 3D 倾斜：随光标位置倾斜，最大 ±8°
+            var rx = ((py / rect.height) - 0.5) * -8;
+            var ry = ((px / rect.width) - 0.5) * 8;
+            var scale = item.matches(':hover') ? 1.02 : 1;
+            // 区分大卡/小卡使用不同变换
+            if (item.matches(':nth-child(1)')) {
+                item.style.transform = 'translateY(-6px) perspective(800px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) scale(' + scale + ')';
+            } else {
+                item.style.transform = 'translateY(-6px) perspective(800px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) scale(' + scale + ')';
+            }
+        }
+        items.forEach(function(item) {
+            item.addEventListener('mousemove', function(e) {
+                pending = { item: item, x: e.clientX, y: e.clientY };
+                if (ticking) return;
+                ticking = true;
+                requestAnimationFrame(function() {
+                    if (pending) handleMove(pending.item, pending.x, pending.y);
+                    pending = null;
+                    ticking = false;
+                });
+            });
+            item.addEventListener('mouseleave', function() {
+                item.style.transform = '';
+            });
+        });
+    })();
+    </script>
 </main>
 
     <!-- 页脚 -->

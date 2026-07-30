@@ -8,6 +8,8 @@ date: 2025-04-28
 
 category: [AI,Python]
 
+image: /Blog/images/postbg8.jpg
+
 mermaid: true
 
 ---

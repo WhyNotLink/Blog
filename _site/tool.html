@@ -9,20 +9,6 @@
     <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     mermaid.initialize({ startOnLoad: true });
-        
-        const navbar = document.getElementById('navbar');
-        const hero = document.querySelector('.hero');
-        const heroHeight = hero ? hero.offsetHeight : 0;
-
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            if (scrollY > heroHeight) {
-            navbar.classList.add('scrolled');
-            } else {
-            navbar.classList.remove('scrolled');
-            }
-        });
-       
     </script>
         <!-- Odometer 数字滚动插件 -->
     <link rel="stylesheet" href="/Blog/odometr.css">
@@ -147,15 +133,6 @@
             <h2 class="section-title">在线工具</h2>
         </div>
         <div class="tool-list">
-            <a href="/Blog/tools/register_visualizer/register_visualizer.html" class="tool-item" data-cat="register_visualizer">
-                <div class="tool-icon">📊</div>
-                <div class="tool-text">
-                    <span class="tool-name">寄存器文档可视化</span>
-                    <span class="tool-desc">把芯片手册寄存器表自动渲染成可读的中文表格</span>
-                </div>
-                <div class="tool-badge">在线</div>
-                <span class="tool-arrow">→</span>
-            </a>
             <a href="/Blog/tools/regitster_debug_visualizer/register_debug_visualizer.html" class="tool-item" data-cat="register_debug_visualizer">
                 <div class="tool-icon">🛠</div>
                 <div class="tool-text">

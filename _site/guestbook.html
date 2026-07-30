@@ -119,13 +119,6 @@
         </div>
     </nav>
 
-    <div class="hero" id="hero">
-        <div class="hero-content">
-            <h1 class="hero-title">留言板</h1>
-            <p class="hero-subtitle">留下你的足迹，Chat With Me</p>
-        </div>
-    </div>
-
     <main class="main" id="main-content">
         <div class="container">
             <div class="issue-board">
@@ -140,27 +133,9 @@
                         <textarea id="new-content" placeholder="写下你想说的话..." required></textarea>
                     </form>
                     </div>
-                    
-                    <div class="stats-widget">
-                        <h3>留言统计</h3>
-                        <div class="stats-grid">
-                            <div class="stat-item">
-                                <span class="stat-value" id="total-comments">0</span>
-                                <span class="stat-label">总留言</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-value" id="total-replies">0</span>
-                                <span class="stat-label">总回复</span>
-                            </div>
-                        </div>
-                    </div>
                 </aside>
 
                 <section class="main-panel">
-                    <div class="timeline-header">
-                        <h2>留言时间线</h2>
-                        <span class="timeline-count">共 <span id="count-display">0</span> 条留言</span>
-                    </div>
                     <div id="comments-list" class="comments-list">
                     </div>
                 </section>
@@ -185,29 +160,12 @@
     <script src="https://cdn.jsdelivr.net/gh/huangwb8/bloghelper@latest/js/input-with-fire.js"></script>
 
     <script>
-    const navbar = document.getElementById('navbar');
-    const hero = document.getElementById('hero');
-    if (hero) {
-        const heroHeight = hero.offsetHeight;
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            if (scrollY > heroHeight) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-    }
-
     // === Cloudflare Worker API 配置 ===
     // 部署 Worker 后，将下面的 URL 替换为你的 Worker 域名
     const API_BASE = 'https://delicate-hall-d71a-guestbook.2904518529.workers.dev';
 
     const commentsList = document.getElementById('comments-list');
     const newCommentForm = document.getElementById('new-comment-form');
-    const totalCommentsEl = document.getElementById('total-comments');
-    const totalRepliesEl = document.getElementById('total-replies');
-    const countDisplayEl = document.getElementById('count-display');
 
     let allComments = [];
     let isLoading = false;
@@ -241,14 +199,6 @@
         return `${year}-${month}-${day} ${hours}:${minutes}`;
     }
 
-    function updateStats(comments) {
-        const total = comments.length;
-        const replies = comments.filter(c => c.parentId !== null).length;
-        totalCommentsEl.textContent = total;
-        totalRepliesEl.textContent = replies;
-        countDisplayEl.textContent = total;
-    }
-
     async function loadComments() {
         isLoading = true;
         try {
@@ -262,7 +212,6 @@
             });
             
             allComments = comments;
-            updateStats(comments);
             renderComments(comments);
         } catch (e) {
             console.error('Failed to load comments:', e);
@@ -429,10 +378,6 @@
             <form class="reply-form">
                 <input type="text" class="reply-username" placeholder="你的昵称" required>
                 <textarea class="reply-content" placeholder="回复 ${replyUser}..." required></textarea>
-                <label class="owner-toggle">
-                    <input type="checkbox" class="is-owner-check">
-                    <span>作为博主 LIN 回复</span>
-                </label>
                 <div class="reply-actions">
                     <button type="submit" class="reply-submit-btn">发送回复</button>
                     <button type="button" class="reply-cancel-btn">取消</button>

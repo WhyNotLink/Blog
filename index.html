@@ -11,20 +11,6 @@ layout: null
     <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     mermaid.initialize({ startOnLoad: true });
-        
-        const navbar = document.getElementById('navbar');
-        const hero = document.querySelector('.hero');
-        const heroHeight = hero.offsetHeight;
-
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            if (scrollY > heroHeight) {
-            navbar.classList.add('scrolled');
-            } else {
-            navbar.classList.remove('scrolled');
-            }
-        });
-       
     </script>
         <!-- Odometer 数字滚动插件 -->
     <link rel="stylesheet" href="/Blog/odometr.css">
@@ -159,21 +145,26 @@ layout: null
     <!-- 主体内容 -->
     <main class="main" id="main-content">
         <div class="container">
-            <div class="content">
-                <!-- 文章列表 -->
+            <div class="content content-cards">
+                <!-- 文章列表(卡片式) -->
                 {% for post in site.posts %}
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-                    </h2>
-                    <div class="post-meta">
-                        <span class="post-date">{{ post.date | date: "%Y年%m月%d日" }}</span>
-                        <span class="post-category">{{ post.category }}</span>
-                    </div>
-                    <div class="post-content">
-                        {{ post.excerpt }}
-                    </div>
-                    <a href="{{ post.url | relative_url }}" class="post-read-more">Read More</a>
+                <article class="post post-card">
+                    <a href="{{ post.url | relative_url }}" class="post-card-link">
+                        <div class="post-card-cover">
+                            {% if post.image %}
+                            <img src="{{ post.image | replace: '/Blog', '' | relative_url }}" alt="{{ post.title }}" loading="lazy">
+                            {% endif %}
+                            <span class="post-card-category-badge">{{ post.category | first | default: 'Other' }}</span>
+                        </div>
+                        <div class="post-card-body">
+                            <h2 class="post-card-title">{{ post.title }}</h2>
+                            <div class="post-card-meta">
+                                <span class="post-card-date">{{ post.date | date: "%Y-%m-%d" }}</span>
+                            </div>
+                            <p class="post-card-excerpt">{{ post.excerpt | strip_html | truncate: 80 }}</p>
+                            <span class="post-card-readmore">阅读全文 →</span>
+                        </div>
+                    </a>
                 </article>
                 {% endfor %}
 
@@ -228,6 +219,61 @@ layout: null
                 </div>
             </aside>
         </div>
+
+        <!-- 检测横/竖图,竖图自动 object-position: top -->
+        <script>
+        (function() {
+            var ran = false;
+            function markPortrait(img) {
+                if (img.naturalWidth > 0 && img.naturalHeight > img.naturalWidth) {
+                    img.classList.add('is-portrait');
+                }
+                img.setAttribute('data-orient-checked', '1');
+            }
+            function setupPostCardImages(root) {
+                var scope = root || document;
+                var imgs = scope.querySelectorAll('.post-card-cover img:not([data-orient-checked])');
+                if (!imgs.length) return;
+                if (!('IntersectionObserver' in window)) {
+                    imgs.forEach(function(img) {
+                        if (img.complete && img.naturalWidth > 0) markPortrait(img);
+                        else {
+                            img.addEventListener('load', function() { markPortrait(img); }, { once: true });
+                            img.addEventListener('error', function() { img.setAttribute('data-orient-checked','1'); }, { once: true });
+                        }
+                    });
+                    return;
+                }
+                var io = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (!entry.isIntersecting) return;
+                        var img = entry.target;
+                        io.unobserve(img);
+                        if (img.complete && img.naturalWidth > 0) {
+                            markPortrait(img);
+                        } else {
+                            img.addEventListener('load', function() { markPortrait(img); }, { once: true });
+                            img.addEventListener('error', function() { img.setAttribute('data-orient-checked','1'); }, { once: true });
+                        }
+                    });
+                }, { rootMargin: '200px 0px' });
+                imgs.forEach(function(img) { io.observe(img); });
+            }
+            // 立即检测一次（首次加载 & PJAX 重新执行时）
+            setupPostCardImages();
+            // 通过 pjaxLoaded 钩子，在 PJAX 内容替换后再次检测
+            // 用 ran 标记避免重复链式包装
+            if (!ran && !window._indexPortraitHooked) {
+                window._indexPortraitHooked = true;
+                var origPjaxLoaded = window.pjaxLoaded;
+                window.pjaxLoaded = function() {
+                    if (typeof origPjaxLoaded === 'function') origPjaxLoaded();
+                    // 等待下一帧再检测（DOM 已替换）
+                    requestAnimationFrame(function() { setupPostCardImages(); });
+                };
+            }
+        })();
+        </script>
     </main>
 
     <!-- 页脚 -->
@@ -293,7 +339,7 @@ layout: null
                 
                 firefly.style.setProperty('--breathe-duration', breatheDuration + 's');
                 firefly.style.setProperty('--breathe-delay', breatheDelay + 's');
-                
+
                 wrapper.appendChild(firefly);
                 container.appendChild(wrapper);
             }

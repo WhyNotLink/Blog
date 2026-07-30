@@ -12,20 +12,6 @@ layout: null
     <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     mermaid.initialize({ startOnLoad: true });
-        
-        const navbar = document.getElementById('navbar');
-        const hero = document.querySelector('.hero');
-        const heroHeight = hero.offsetHeight;
-
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            if (scrollY > heroHeight) {
-            navbar.classList.add('scrolled');
-            } else {
-            navbar.classList.remove('scrolled');
-            }
-        });
-       
     </script>
         <!-- Odometer 数字滚动插件 -->
     <link rel="stylesheet" href="/Blog/odometr.css">

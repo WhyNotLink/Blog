@@ -69,6 +69,8 @@ layout: null
                 <li><a href="../index.html">首页</a></li>
                 <li><a href="../sort.html">分类</a></li>
                 <li><a href="../history.html">归档</a></li>
+                <li><a href="../tool.html">工具</a></li>
+                <li><a href="../guestbook.html">留言</a></li>
                 <li><a href="../aboutme.html">关于我</a></li>
             </ul>
         </div>
@@ -82,17 +84,25 @@ layout: null
                 {% for post in site.posts %}
                     {% if post.category contains "Python" %}
                     <article class="post">
-                        <h2 class="post-title">
-                            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-                        </h2>
-                        <div class="post-meta">
-                            <span class="post-date">{{ post.date | date: "%Y年%m月%d日" }}</span>
-                            <span class="post-category">{{ post.category }}</span>
+                        <div class="post-date-block">
+                            <div class="post-date-day">{{ post.date | date: "%d" }}</div>
+                            <div class="post-date-year">{{ post.date | date: "%Y年%m月" }}</div>
                         </div>
-                        <div class="post-content">
-                            {{ post.excerpt }}
+                        <div class="post-body">
+                            <h2 class="post-title">
+                                <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+                            </h2>
+                            <div class="post-content">
+                                {{ post.excerpt }}
+                            </div>
+                            <div class="post-meta">
+                                <span class="post-category">{{ post.category }}</span>
+                            </div>
                         </div>
-                        <a href="{{ post.url | relative_url }}" class="post-read-more">Read More</a>
+                        <div class="post-action">
+                            <a href="{{ post.url | relative_url }}" class="post-read-more">→</a>
+                            <span class="post-read-label">READ</span>
+                        </div>
                     </article>
                     {% endif %}
                 {% endfor %}

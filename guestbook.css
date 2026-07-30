@@ -1,13 +1,17 @@
+/* ===== 留言板 - 现代玻璃拟态风格 ===== */
 .footer {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    background-color: #333;
+    background-color: rgba(20, 20, 30, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     color: #fff;
     text-align: center;
     padding: 10px 0;
     z-index: 100;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 .footer .container {
     display: flex;
@@ -20,19 +24,22 @@
 
 .main {
     padding-bottom: 80px;
+    padding-top: 30px;
 }
 
 .main .container {
     display: block;
-    max-width: 1000px;
+    max-width: 1100px;
 }
 
+/* ===== 整体布局 ===== */
 .issue-board {
     display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 30px;
+    grid-template-columns: 340px 1fr;
+    gap: 28px;
 }
 
+/* ===== 侧边栏 ===== */
 .sidebar-panel {
     position: sticky;
     top: 80px;
@@ -40,267 +47,256 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    user-select: none;
 }
 
-.main-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.new-comment-card {
-    position: relative;
-    background:
-        linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%) top/100% 4px no-repeat,
-        rgba(255, 255, 255, 0.82);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    border-radius: 16px;
+/* ===== 玻璃卡片基础 ===== */
+.glass-card {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(20px) saturate(1.6);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
     box-shadow:
-        0 8px 28px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.7);
-    padding: 20px;
+        0 8px 32px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    padding: 24px;
+    color: #fff;
+    position: relative;
     overflow: hidden;
 }
-
-.new-comment-card h2 {
-    font-size: 1.25rem;
-    margin-bottom: 16px;
-    color: #2b2b2b;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.glass-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
 }
 
-.new-comment-card h2::before {
-    content: "";
-    width: 4px;
-    height: 18px;
-    border-radius: 3px;
-    background: linear-gradient(180deg, #667eea, #764ba2);
+/* ===== 发表留言卡片 ===== */
+.new-comment-card h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 0.5px;
+}
+.new-comment-card h2 .icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 .form-row {
     display: flex;
     gap: 8px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
+    margin-bottom: 12px;
 }
-
 .form-row input {
     flex: 1;
-    padding: 9px 12px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    font-size: 0.85rem;
-    background: rgba(255, 255, 255, 0.7);
+    padding: 11px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
     outline: none;
     transition: all 0.3s ease;
     box-sizing: border-box;
 }
-
+.form-row input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
 .form-row input:focus {
-    border-color: #667eea;
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: rgba(102, 126, 234, 0.6);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
 }
 
 #new-content {
     width: 100%;
-    padding: 12px 14px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    padding: 14px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
     font-family: inherit;
     font-size: 0.9rem;
-    background: rgba(255, 255, 255, 0.7);
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
     resize: vertical;
-    min-height: 80px;
+    min-height: 90px;
     outline: none;
     transition: all 0.3s ease;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
+    box-sizing: border-box;
 }
-
+#new-content::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
 #new-content:focus {
-    border-color: #667eea;
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: rgba(102, 126, 234, 0.6);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
 }
 
 .submit-btn {
-    padding: 9px 14px;
-    min-width: 64px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #a5b4fc 0%, #c4b5fd 100%);
     color: #fff;
     border: none;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 500;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
-    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 1px;
 }
-
+.submit-btn::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
 .submit-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #93a3fc 0%, #b39bfc 100%);
+    box-shadow: 0 8px 20px rgba(165, 180, 252, 0.45);
 }
-
+.submit-btn:hover::after {
+    left: 100%;
+}
+.submit-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
 .submit-btn.success {
-    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+    background: linear-gradient(135deg, #86efac 0%, #4ade80 100%);
 }
 
-.owner-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.85rem;
-    color: #666;
-    cursor: pointer;
-}
-
-.owner-toggle input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    accent-color: #667eea;
-    cursor: pointer;
-}
-
-.stats-widget {
-    background: rgba(255, 255, 255, 0.7);
-    border-radius: 12px;
-    padding: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-}
-
-.stats-widget h3 {
-    font-size: 1rem;
-    color: #555;
-    margin-bottom: 16px;
-    font-weight: 500;
-}
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-}
-
-.stat-item {
-    text-align: center;
-    padding: 12px;
-    background: rgba(102, 126, 234, 0.06);
-    border-radius: 10px;
-}
-
-.stat-value {
-    display: block;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #667eea;
-    font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
-}
-
-.stat-label {
-    font-size: 0.8rem;
-    color: #888;
-}
-
-.timeline-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 0;
-}
-
-.timeline-header h2 {
-    font-size: 1.3rem;
-    color: #fff;
-}
-
-.timeline-count {
-    font-size: 0.9rem;
-    color: #fff;
-    font-weight: 500;
-}
 
 .comments-list {
     position: relative;
 }
 
+/* ===== 留言项 - 时间线 ===== */
 .comment-item {
     display: flex;
     position: relative;
-    padding-left: 30px;
-    margin-bottom: 20px;
+    padding-left: 38px;
+    margin-bottom: 24px;
+    /* 入场动画 */
+    opacity: 0;
+    transform: translateY(20px);
+    animation: commentIn 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
 }
-
+@keyframes commentIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 .comment-item.nested {
-    padding-left: 20px;
+    padding-left: 28px;
 }
-
 .comment-item:last-child {
     margin-bottom: 0;
 }
 
+/* 时间线主线 */
 .timeline-line {
     position: absolute;
-    left: 5px;
-    top: 16px;
-    bottom: -20px;
+    left: 9px;
+    top: 32px;
+    bottom: -24px;
     width: 2px;
-    background: linear-gradient(180deg, rgba(102, 126, 234, 0.3), rgba(102, 126, 234, 0.1));
+    background: linear-gradient(180deg, rgba(102, 126, 234, 0.4), rgba(102, 126, 234, 0.05));
 }
-
 .comment-item:last-child .timeline-line {
     display: none;
 }
 
+/* 时间线圆点 - 24px 大圆 + 内圈 */
 .timeline-dot {
     position: absolute;
     left: 0;
     top: 16px;
-    width: 12px;
-    height: 12px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
-    background: rgba(102, 126, 234, 0.4);
-    border: 3px solid rgba(255, 255, 255, 0.9);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: rgba(102, 126, 234, 0.3);
+    border: 3px solid #667eea;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
+.timeline-dot::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
+}
 .timeline-dot.owner-dot {
     background: linear-gradient(135deg, #f093fb, #f5576c);
-    box-shadow: 0 0 0 3px rgba(240, 147, 251, 0.2);
+    border-color: #f5576c;
+    box-shadow: 0 0 0 4px rgba(240, 147, 251, 0.2);
 }
 
+/* ===== 留言卡片 - 玻璃样式 ===== */
 .comment-card {
     flex: 1;
-    background: rgba(255, 255, 255, 0.75);
-    border-radius: 14px;
-    padding: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(16px) saturate(1.5);
+    -webkit-backdrop-filter: blur(16px) saturate(1.5);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 16px;
+    padding: 18px 20px;
     transition: all 0.3s ease;
+    color: #fff;
+    position: relative;
 }
-
 .comment-card:hover {
-    background: rgba(255, 255, 255, 0.88);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateX(4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .comment-header {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: wrap;
     margin-bottom: 12px;
 }
 
+/* ===== 头像 ===== */
 .avatar-wrapper {
     position: relative;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     flex-shrink: 0;
 }
-
 .avatar-img {
     width: 100%;
     height: 100%;
@@ -309,261 +305,282 @@
     position: absolute;
     top: 0;
     left: 0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
 }
-
 .avatar {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-weight: 700;
+    font-size: 1rem;
     flex-shrink: 0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.3);
 }
-
 .visitor-avatar {
     display: none;
 }
-
 .owner-avatar {
     background: linear-gradient(135deg, #f093fb, #f5576c);
     display: none;
 }
 
 .comment-author {
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.95rem;
+    letter-spacing: 0.3px;
 }
-
 .visitor-name {
-    color: #667eea;
+    color: #c7d2fe;
 }
-
 .owner-name {
-    color: #f5576c;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
 }
 
 .owner-badge {
-    padding: 2px 8px;
+    padding: 2px 10px;
     background: linear-gradient(135deg, #f093fb, #f5576c);
     color: #fff;
-    font-size: 0.75rem;
-    font-weight: 500;
-    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 999px;
+    letter-spacing: 1px;
 }
 
 .comment-time {
-    font-size: 0.8rem;
-    color: #999;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.5);
     margin-left: auto;
+    font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
 }
 
 .reply-btn {
-    padding: 4px 12px;
-    font-size: 0.8rem;
-    color: #667eea;
-    background: rgba(102, 126, 234, 0.08);
-    border: 1px solid rgba(102, 126, 234, 0.2);
-    border-radius: 12px;
+    padding: 5px 14px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #c7d2fe;
+    background: rgba(199, 210, 254, 0.1);
+    border: 1px solid rgba(199, 210, 254, 0.25);
+    border-radius: 999px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
-
 .reply-btn:hover {
-    background: rgba(102, 126, 234, 0.15);
-    border-color: #667eea;
+    background: rgba(199, 210, 254, 0.2);
+    border-color: #c7d2fe;
+    color: #fff;
+    transform: translateY(-1px);
 }
 
 .comment-content {
     font-size: 0.95rem;
-    line-height: 1.7;
-    color: #333;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.92);
     word-break: break-word;
 }
 
+/* ===== 回复表单 ===== */
 .reply-form-container {
-    margin-top: 14px;
+    margin-top: 16px;
 }
-
 .reply-form {
-    padding: 14px;
-    background: rgba(102, 126, 234, 0.06);
-    border-radius: 10px;
-    border: 1px solid rgba(102, 126, 234, 0.15);
+    padding: 16px;
+    background: rgba(102, 126, 234, 0.08);
+    border-radius: 14px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
 }
-
 .reply-form input,
 .reply-form textarea {
     width: 100%;
-    padding: 8px 12px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 6px;
-    font-size: 0.85rem;
-    background: rgba(255, 255, 255, 0.7);
+    padding: 10px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    font-size: 0.88rem;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
     outline: none;
     transition: all 0.3s ease;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
 }
-
+.reply-form input::placeholder,
+.reply-form textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
 .reply-form input:focus,
 .reply-form textarea:focus {
-    border-color: #667eea;
-    background: #fff;
+    border-color: rgba(102, 126, 234, 0.6);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
 }
-
 .reply-form textarea {
     resize: vertical;
-    min-height: 50px;
+    min-height: 60px;
     font-family: inherit;
 }
-
 .reply-actions {
     display: flex;
     justify-content: flex-end;
     gap: 8px;
+    margin-top: 4px;
 }
-
 .reply-submit-btn {
-    padding: 6px 16px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 8px 18px;
+    background: linear-gradient(135deg, #667eea 0%, #8fcaa3 100%);
     color: #fff;
     border: none;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 500;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
 }
-
 .reply-submit-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.45);
 }
-
 .reply-cancel-btn {
-    padding: 6px 16px;
+    padding: 8px 18px;
     background: transparent;
-    color: #666;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 6px;
-    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.3s ease;
 }
-
 .reply-cancel-btn:hover {
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
 }
 
+/* ===== 回复列表 ===== */
 .replies-list {
-    margin-top: 16px;
-    padding-left: 20px;
-    border-left: 2px solid rgba(102, 126, 234, 0.15);
+    margin-top: 18px;
+    padding-left: 22px;
+    border-left: 2px solid rgba(102, 126, 234, 0.2);
 }
-
 .replies-list .comment-item {
     padding-left: 0;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
-
 .replies-list .timeline-line,
 .replies-list .timeline-dot {
     display: none;
 }
-
 .replies-list .comment-card {
-    padding: 14px;
-    background: rgba(102, 126, 234, 0.04);
-    border-radius: 10px;
-    border-left: 3px solid rgba(102, 126, 234, 0.2);
+    padding: 14px 16px;
+    background: rgba(102, 126, 234, 0.08);
+    border-color: rgba(102, 126, 234, 0.2);
+    border-left: 3px solid #667eea;
 }
-
 .replies-list .avatar-wrapper {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
 }
-
 .replies-list .avatar-img {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
 }
-
 .replies-list .avatar {
-    width: 30px;
-    height: 30px;
-    font-size: 0.8rem;
+    width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
 }
-
 .flat-reply {
     padding-left: 20px !important;
     margin-left: 10px;
 }
 
+/* ===== 空状态 ===== */
 .empty-state {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 60px 20px;
-    color: #999;
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 16px;
+    padding: 80px 20px;
+    color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
 }
-
 .empty-icon {
     font-size: 4rem;
     margin-bottom: 16px;
-    opacity: 0.6;
+    opacity: 0.7;
+    filter: grayscale(0.3);
 }
-
 .empty-state p {
     margin: 4px 0;
     font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
 }
-
 .empty-hint {
     font-size: 0.85rem !important;
-    opacity: 0.7;
+    opacity: 0.6;
 }
 
-@media (max-width: 768px) {
+/* ===== 响应式 ===== */
+@media (max-width: 900px) {
     .issue-board {
         grid-template-columns: 1fr;
         gap: 24px;
     }
-    
     .sidebar-panel {
         position: static;
     }
-    
-    .new-comment-card {
+    .new-comment-card, .stats-widget {
         padding: 20px;
     }
-    
-    .new-comment-card h2 {
-        font-size: 1.15rem;
+}
+
+@media (max-width: 600px) {
+    .timeline-header h2 {
+        font-size: 1.2rem;
     }
-    
+    .comment-item {
+        padding-left: 32px;
+    }
+    .timeline-dot {
+        width: 20px;
+        height: 20px;
+    }
+    .timeline-dot::after {
+        width: 6px;
+        height: 6px;
+    }
+    .timeline-line {
+        left: 8px;
+    }
     .comment-card {
-        padding: 16px;
+        padding: 14px 16px;
     }
-    
     .comment-header {
         gap: 8px;
     }
-    
+    .avatar-wrapper,
     .avatar {
-        width: 32px;
-        height: 32px;
+        width: 34px;
+        height: 34px;
+    }
+    .avatar {
         font-size: 0.85rem;
     }
-    
     .replies-list {
-        padding-left: 15px;
+        padding-left: 14px;
+    }
+    .stat-value {
+        font-size: 1.6rem;
     }
 }

@@ -8,6 +8,8 @@ date: 2024-11-30
 
 category: [Python]
 
+image: /Blog/images/postbg4.jpg
+
 mermaid: true
 
 ---

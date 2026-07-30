@@ -6,7 +6,39 @@
 
     if (!window.history || !window.history.pushState || !window.fetch) return;
 
+    // 导航栏滚动效果 - 在 PJAX 切换后重新绑定，始终操作当前 navbar
+    // 使用 rAF 节流，避免滚动时频繁触发样式变更
+    var _navbarScrollHandler = null;
+    function setupNavbarScroll() {
+        if (_navbarScrollHandler) {
+            window.removeEventListener('scroll', _navbarScrollHandler);
+            _navbarScrollHandler = null;
+        }
+        var ticking = false;
+        var isScrolled = false;
+        _navbarScrollHandler = function() {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(function() {
+                var navbar = document.getElementById('navbar');
+                if (navbar) {
+                    var shouldScroll = window.scrollY > 100;
+                    if (shouldScroll !== isScrolled) {
+                        if (shouldScroll) navbar.classList.add('scrolled');
+                        else navbar.classList.remove('scrolled');
+                        isScrolled = shouldScroll;
+                    }
+                }
+                ticking = false;
+            });
+        };
+        window.addEventListener('scroll', _navbarScrollHandler, { passive: true });
+        // 立即触发一次以同步初始状态
+        _navbarScrollHandler();
+    }
+
     function init() {
+        setupNavbarScroll();
         document.addEventListener('click', function(e) {
             var link = e.target.closest('a');
             if (!link) return;
@@ -85,6 +117,9 @@
                 // 3. 替换内容（用户看不到，因为 opacity: 0）
                 updatePage(newDoc, url);
                 removeOldCSS(newDoc);
+
+                // 重新绑定 navbar 滚动效果（navbar 已被 outerHTML 替换）
+                setupNavbarScroll();
 
                 // 执行页面特有的初始化脚本
                 if (typeof window.pjaxLoaded === 'function') window.pjaxLoaded();

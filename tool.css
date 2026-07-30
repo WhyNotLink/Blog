@@ -156,9 +156,6 @@ body {
 }
 
 /* 每个工具的主题色 */
-.tool-item[data-cat="register_visualizer"] {
-    --tool-grad: linear-gradient(135deg, #667eea, #764ba2);
-}
 .tool-item[data-cat="register_debug_visualizer"] {
     --tool-grad: linear-gradient(135deg, #f093fb, #f5576c);
 }

@@ -7,7 +7,10 @@ date: 2024-10-9
 
 category: [C]
 
+image: /Blog/images/postbg1.jpg
+
 mermaid: true
+
 ---
 * TOC
 {:toc}

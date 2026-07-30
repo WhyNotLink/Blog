@@ -12,20 +12,6 @@ layout: null
     <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     mermaid.initialize({ startOnLoad: true });
-        
-        const navbar = document.getElementById('navbar');
-        const hero = document.querySelector('.hero');
-        const heroHeight = hero ? hero.offsetHeight : 0;
-
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            if (scrollY > heroHeight) {
-            navbar.classList.add('scrolled');
-            } else {
-            navbar.classList.remove('scrolled');
-            }
-        });
-       
     </script>
 
         <!-- Odometer 数字滚动插件 -->
@@ -238,7 +224,7 @@ layout: null
 
         // 加载默认SVD文件列表
         function loadDefaultSvdFiles() {
-            fetch('/Blog/tools/register_visualizer/svds/svd_list.json')
+            fetch('/Blog/tools/regitster_debug_visualizer/svds/svd_list.json')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('无法访问svds文件夹');
@@ -319,7 +305,7 @@ layout: null
         function loadSvdFile(fileName) {
             const file = fileName || 'STM32G471xx.svd';
             
-            fetch('/Blog/tools/register_visualizer/svds/' + file)
+            fetch('/Blog/tools/regitster_debug_visualizer/svds/' + file)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('文件加载失败: ' + response.status);

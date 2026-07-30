@@ -7,6 +7,8 @@ date: 2026-05-04
 
 category: [Python]
 
+image: /Blog/images/postbg14.jpg
+
 mermaid: true
 ---
 * TOC

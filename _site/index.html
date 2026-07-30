@@ -8,20 +8,6 @@
     <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     mermaid.initialize({ startOnLoad: true });
-        
-        const navbar = document.getElementById('navbar');
-        const hero = document.querySelector('.hero');
-        const heroHeight = hero.offsetHeight;
-
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            if (scrollY > heroHeight) {
-            navbar.classList.add('scrolled');
-            } else {
-            navbar.classList.remove('scrolled');
-            }
-        });
-       
     </script>
         <!-- Odometer 数字滚动插件 -->
     <link rel="stylesheet" href="/Blog/odometr.css">
@@ -156,235 +142,309 @@
     <!-- 主体内容 -->
     <main class="main" id="main-content">
         <div class="container">
-            <div class="content">
-                <!-- 文章列表 -->
+            <div class="content content-cards">
+                <!-- 文章列表(卡片式) -->
                 
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="/Blog/linux/2026/06/29/Arch.html">安装ARCH</a>
-                    </h2>
-                    <div class="post-meta">
-                        <span class="post-date">2026年06月29日</span>
-                        <span class="post-category">Linux</span>
-                    </div>
-                    <div class="post-content">
-                        <hr />
-
-                    </div>
-                    <a href="/Blog/linux/2026/06/29/Arch.html" class="post-read-more">Read More</a>
+                <article class="post post-card">
+                    <a href="/Blog/linux/2026/06/29/Arch.html" class="post-card-link">
+                        <div class="post-card-cover">
+                            
+                            <img src="/Blog/images/postbg15.jpg" alt="安装ARCH" loading="lazy">
+                            
+                            <span class="post-card-category-badge">Linux</span>
+                        </div>
+                        <div class="post-card-body">
+                            <h2 class="post-card-title">安装ARCH</h2>
+                            <div class="post-card-meta">
+                                <span class="post-card-date">2026-06-29</span>
+                            </div>
+                            <p class="post-card-excerpt">
+</p>
+                            <span class="post-card-readmore">阅读全文 →</span>
+                        </div>
+                    </a>
                 </article>
                 
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="/Blog/python/2026/05/04/shujujiegou.html">数据结构</a>
-                    </h2>
-                    <div class="post-meta">
-                        <span class="post-date">2026年05月04日</span>
-                        <span class="post-category">Python</span>
-                    </div>
-                    <div class="post-content">
-                        <hr />
-
-                    </div>
-                    <a href="/Blog/python/2026/05/04/shujujiegou.html" class="post-read-more">Read More</a>
+                <article class="post post-card">
+                    <a href="/Blog/python/2026/05/04/shujujiegou.html" class="post-card-link">
+                        <div class="post-card-cover">
+                            
+                            <img src="/Blog/images/postbg14.jpg" alt="数据结构" loading="lazy">
+                            
+                            <span class="post-card-category-badge">Python</span>
+                        </div>
+                        <div class="post-card-body">
+                            <h2 class="post-card-title">数据结构</h2>
+                            <div class="post-card-meta">
+                                <span class="post-card-date">2026-05-04</span>
+                            </div>
+                            <p class="post-card-excerpt">
+</p>
+                            <span class="post-card-readmore">阅读全文 →</span>
+                        </div>
+                    </a>
                 </article>
                 
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="/Blog/other/2026/04/09/GitInit.html">Git使用指南</a>
-                    </h2>
-                    <div class="post-meta">
-                        <span class="post-date">2026年04月09日</span>
-                        <span class="post-category">Other</span>
-                    </div>
-                    <div class="post-content">
-                        <hr />
-
-                    </div>
-                    <a href="/Blog/other/2026/04/09/GitInit.html" class="post-read-more">Read More</a>
+                <article class="post post-card">
+                    <a href="/Blog/other/2026/04/09/GitInit.html" class="post-card-link">
+                        <div class="post-card-cover">
+                            
+                            <img src="/Blog/images/postbg6.jpg" alt="Git使用指南" loading="lazy">
+                            
+                            <span class="post-card-category-badge">Other</span>
+                        </div>
+                        <div class="post-card-body">
+                            <h2 class="post-card-title">Git使用指南</h2>
+                            <div class="post-card-meta">
+                                <span class="post-card-date">2026-04-09</span>
+                            </div>
+                            <p class="post-card-excerpt">
+</p>
+                            <span class="post-card-readmore">阅读全文 →</span>
+                        </div>
+                    </a>
                 </article>
                 
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="/Blog/c/2026/04/07/TICAR.html">TI小车</a>
-                    </h2>
-                    <div class="post-meta">
-                        <span class="post-date">2026年04月07日</span>
-                        <span class="post-category">C</span>
-                    </div>
-                    <div class="post-content">
-                        <hr />
-
-                    </div>
-                    <a href="/Blog/c/2026/04/07/TICAR.html" class="post-read-more">Read More</a>
+                <article class="post post-card">
+                    <a href="/Blog/c/2026/04/07/TICAR.html" class="post-card-link">
+                        <div class="post-card-cover">
+                            
+                            <img src="/Blog/images/postbg13.jpg" alt="TI小车" loading="lazy">
+                            
+                            <span class="post-card-category-badge">C</span>
+                        </div>
+                        <div class="post-card-body">
+                            <h2 class="post-card-title">TI小车</h2>
+                            <div class="post-card-meta">
+                                <span class="post-card-date">2026-04-07</span>
+                            </div>
+                            <p class="post-card-excerpt">
+</p>
+                            <span class="post-card-readmore">阅读全文 →</span>
+                        </div>
+                    </a>
                 </article>
                 
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="/Blog/other/2026/04/05/xiantan.html">如何入门嵌入式开发</a>
-                    </h2>
-                    <div class="post-meta">
-                        <span class="post-date">2026年04月05日</span>
-                        <span class="post-category">Other</span>
-                    </div>
-                    <div class="post-content">
-                        <p>本章内容是闲谈，给后面实验室的学弟学妹们一个参考。
+                <article class="post post-card">
+                    <a href="/Blog/other/2026/04/05/xiantan.html" class="post-card-link">
+                        <div class="post-card-cover">
+                            
+                            <img src="/Blog/images/postbg12.jpg" alt="如何入门嵌入式开发" loading="lazy">
+                            
+                            <span class="post-card-category-badge">Other</span>
+                        </div>
+                        <div class="post-card-body">
+                            <h2 class="post-card-title">如何入门嵌入式开发</h2>
+                            <div class="post-card-meta">
+                                <span class="post-card-date">2026-04-05</span>
+                            </div>
+                            <p class="post-card-excerpt">本章内容是闲谈，给后面实验室的学弟学妹们一个参考。
 其实嵌入式开发是一个复杂的过程，需要学习很多知识。
 它不仅涉及硬件还有软件
-一般人精通一方面就很厉害了，如果你有兴趣可以全方面学习。</p>
-
-                    </div>
-                    <a href="/Blog/other/2026/04/05/xiantan.html" class="post-read-more">Read More</a>
+一般人精通一方面就很厉害了...</p>
+                            <span class="post-card-readmore">阅读全文 →</span>
+                        </div>
+                    </a>
                 </article>
                 
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="/Blog/web/2026/04/05/qianduan.html">前端开发</a>
-                    </h2>
-                    <div class="post-meta">
-                        <span class="post-date">2026年04月05日</span>
-                        <span class="post-category">Web</span>
-                    </div>
-                    <div class="post-content">
-                        <hr />
-
-                    </div>
-                    <a href="/Blog/web/2026/04/05/qianduan.html" class="post-read-more">Read More</a>
+                <article class="post post-card">
+                    <a href="/Blog/web/2026/04/05/qianduan.html" class="post-card-link">
+                        <div class="post-card-cover">
+                            
+                            <img src="/Blog/images/postbg11.png" alt="前端开发" loading="lazy">
+                            
+                            <span class="post-card-category-badge">Web</span>
+                        </div>
+                        <div class="post-card-body">
+                            <h2 class="post-card-title">前端开发</h2>
+                            <div class="post-card-meta">
+                                <span class="post-card-date">2026-04-05</span>
+                            </div>
+                            <p class="post-card-excerpt">
+</p>
+                            <span class="post-card-readmore">阅读全文 →</span>
+                        </div>
+                    </a>
                 </article>
                 
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="/Blog/other/2026/04/02/tuchuan.html">模拟图传与数字图传</a>
-                    </h2>
-                    <div class="post-meta">
-                        <span class="post-date">2026年04月02日</span>
-                        <span class="post-category">Other</span>
-                    </div>
-                    <div class="post-content">
-                        <h1 id="数字图传">数字图传</h1>
-
-                    </div>
-                    <a href="/Blog/other/2026/04/02/tuchuan.html" class="post-read-more">Read More</a>
+                <article class="post post-card">
+                    <a href="/Blog/other/2026/04/02/tuchuan.html" class="post-card-link">
+                        <div class="post-card-cover">
+                            
+                            <img src="/Blog/images/postbg10.jpg" alt="模拟图传与数字图传" loading="lazy">
+                            
+                            <span class="post-card-category-badge">Other</span>
+                        </div>
+                        <div class="post-card-body">
+                            <h2 class="post-card-title">模拟图传与数字图传</h2>
+                            <div class="post-card-meta">
+                                <span class="post-card-date">2026-04-02</span>
+                            </div>
+                            <p class="post-card-excerpt">数字图传
+</p>
+                            <span class="post-card-readmore">阅读全文 →</span>
+                        </div>
+                    </a>
                 </article>
                 
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="/Blog/ai/python/2025/04/28/yolotrain.html">Yolo训练</a>
-                    </h2>
-                    <div class="post-meta">
-                        <span class="post-date">2025年04月28日</span>
-                        <span class="post-category">AIPython</span>
-                    </div>
-                    <div class="post-content">
-                        <h1 id="工程结构">工程结构</h1>
-
-                    </div>
-                    <a href="/Blog/ai/python/2025/04/28/yolotrain.html" class="post-read-more">Read More</a>
+                <article class="post post-card">
+                    <a href="/Blog/ai/python/2025/04/28/yolotrain.html" class="post-card-link">
+                        <div class="post-card-cover">
+                            
+                            <img src="/Blog/images/postbg8.jpg" alt="Yolo训练" loading="lazy">
+                            
+                            <span class="post-card-category-badge">AI</span>
+                        </div>
+                        <div class="post-card-body">
+                            <h2 class="post-card-title">Yolo训练</h2>
+                            <div class="post-card-meta">
+                                <span class="post-card-date">2025-04-28</span>
+                            </div>
+                            <p class="post-card-excerpt">工程结构
+</p>
+                            <span class="post-card-readmore">阅读全文 →</span>
+                        </div>
+                    </a>
                 </article>
                 
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="/Blog/android/2025/04/18/android.html">Android graled配置</a>
-                    </h2>
-                    <div class="post-meta">
-                        <span class="post-date">2025年04月18日</span>
-                        <span class="post-category">Android</span>
-                    </div>
-                    <div class="post-content">
-                        <hr />
-
-                    </div>
-                    <a href="/Blog/android/2025/04/18/android.html" class="post-read-more">Read More</a>
+                <article class="post post-card">
+                    <a href="/Blog/android/2025/04/18/android.html" class="post-card-link">
+                        <div class="post-card-cover">
+                            
+                            <img src="/Blog/images/postbg9.jpg" alt="Android graled配置" loading="lazy">
+                            
+                            <span class="post-card-category-badge">Android</span>
+                        </div>
+                        <div class="post-card-body">
+                            <h2 class="post-card-title">Android graled配置</h2>
+                            <div class="post-card-meta">
+                                <span class="post-card-date">2025-04-18</span>
+                            </div>
+                            <p class="post-card-excerpt">
+</p>
+                            <span class="post-card-readmore">阅读全文 →</span>
+                        </div>
+                    </a>
                 </article>
                 
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="/Blog/cubmx/keil5/2025/04/18/G431.html">使用CubMX配置G431RBT6开发板</a>
-                    </h2>
-                    <div class="post-meta">
-                        <span class="post-date">2025年04月18日</span>
-                        <span class="post-category">CubMXKeil5</span>
-                    </div>
-                    <div class="post-content">
-                        <hr />
-
-                    </div>
-                    <a href="/Blog/cubmx/keil5/2025/04/18/G431.html" class="post-read-more">Read More</a>
+                <article class="post post-card">
+                    <a href="/Blog/cubmx/keil5/2025/04/18/G431.html" class="post-card-link">
+                        <div class="post-card-cover">
+                            
+                            <img src="/Blog/images/postbg7.jpg" alt="使用CubMX配置G431RBT6开发板" loading="lazy">
+                            
+                            <span class="post-card-category-badge">CubMX</span>
+                        </div>
+                        <div class="post-card-body">
+                            <h2 class="post-card-title">使用CubMX配置G431RBT6开发板</h2>
+                            <div class="post-card-meta">
+                                <span class="post-card-date">2025-04-18</span>
+                            </div>
+                            <p class="post-card-excerpt">
+</p>
+                            <span class="post-card-readmore">阅读全文 →</span>
+                        </div>
+                    </a>
                 </article>
                 
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="/Blog/python/2024/11/30/pythonjiaocheng2.html">Python教程(二)</a>
-                    </h2>
-                    <div class="post-meta">
-                        <span class="post-date">2024年11月30日</span>
-                        <span class="post-category">Python</span>
-                    </div>
-                    <div class="post-content">
-                        <hr />
-
-                    </div>
-                    <a href="/Blog/python/2024/11/30/pythonjiaocheng2.html" class="post-read-more">Read More</a>
+                <article class="post post-card">
+                    <a href="/Blog/python/2024/11/30/pythonjiaocheng2.html" class="post-card-link">
+                        <div class="post-card-cover">
+                            
+                            <img src="/Blog/images/postbg4.jpg" alt="Python教程(二)" loading="lazy">
+                            
+                            <span class="post-card-category-badge">Python</span>
+                        </div>
+                        <div class="post-card-body">
+                            <h2 class="post-card-title">Python教程(二)</h2>
+                            <div class="post-card-meta">
+                                <span class="post-card-date">2024-11-30</span>
+                            </div>
+                            <p class="post-card-excerpt">
+</p>
+                            <span class="post-card-readmore">阅读全文 →</span>
+                        </div>
+                    </a>
                 </article>
                 
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="/Blog/python/2024/11/27/pythonjiaocheng.html">Python教程(一)</a>
-                    </h2>
-                    <div class="post-meta">
-                        <span class="post-date">2024年11月27日</span>
-                        <span class="post-category">Python</span>
-                    </div>
-                    <div class="post-content">
-                        <hr />
-
-                    </div>
-                    <a href="/Blog/python/2024/11/27/pythonjiaocheng.html" class="post-read-more">Read More</a>
+                <article class="post post-card">
+                    <a href="/Blog/python/2024/11/27/pythonjiaocheng.html" class="post-card-link">
+                        <div class="post-card-cover">
+                            
+                            <img src="/Blog/images/postbg3.jpg" alt="Python教程(一)" loading="lazy">
+                            
+                            <span class="post-card-category-badge">Python</span>
+                        </div>
+                        <div class="post-card-body">
+                            <h2 class="post-card-title">Python教程(一)</h2>
+                            <div class="post-card-meta">
+                                <span class="post-card-date">2024-11-27</span>
+                            </div>
+                            <p class="post-card-excerpt">
+</p>
+                            <span class="post-card-readmore">阅读全文 →</span>
+                        </div>
+                    </a>
                 </article>
                 
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="/Blog/other/2024/10/24/tongxinfangshi.html">硬件通信方式</a>
-                    </h2>
-                    <div class="post-meta">
-                        <span class="post-date">2024年10月24日</span>
-                        <span class="post-category">Other</span>
-                    </div>
-                    <div class="post-content">
-                        <hr />
-
-                    </div>
-                    <a href="/Blog/other/2024/10/24/tongxinfangshi.html" class="post-read-more">Read More</a>
+                <article class="post post-card">
+                    <a href="/Blog/other/2024/10/24/tongxinfangshi.html" class="post-card-link">
+                        <div class="post-card-cover">
+                            
+                            <img src="/Blog/images/postbg5.jpg" alt="硬件通信方式" loading="lazy">
+                            
+                            <span class="post-card-category-badge">Other</span>
+                        </div>
+                        <div class="post-card-body">
+                            <h2 class="post-card-title">硬件通信方式</h2>
+                            <div class="post-card-meta">
+                                <span class="post-card-date">2024-10-24</span>
+                            </div>
+                            <p class="post-card-excerpt">
+</p>
+                            <span class="post-card-readmore">阅读全文 →</span>
+                        </div>
+                    </a>
                 </article>
                 
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="/Blog/c/2024/10/10/Cjiaocheng2.html">C语言教程（二）</a>
-                    </h2>
-                    <div class="post-meta">
-                        <span class="post-date">2024年10月10日</span>
-                        <span class="post-category">C</span>
-                    </div>
-                    <div class="post-content">
-                        <hr />
-
-                    </div>
-                    <a href="/Blog/c/2024/10/10/Cjiaocheng2.html" class="post-read-more">Read More</a>
+                <article class="post post-card">
+                    <a href="/Blog/c/2024/10/10/Cjiaocheng2.html" class="post-card-link">
+                        <div class="post-card-cover">
+                            
+                            <img src="/Blog/images/postbg2.jpg" alt="C语言教程（二）" loading="lazy">
+                            
+                            <span class="post-card-category-badge">C</span>
+                        </div>
+                        <div class="post-card-body">
+                            <h2 class="post-card-title">C语言教程（二）</h2>
+                            <div class="post-card-meta">
+                                <span class="post-card-date">2024-10-10</span>
+                            </div>
+                            <p class="post-card-excerpt">
+</p>
+                            <span class="post-card-readmore">阅读全文 →</span>
+                        </div>
+                    </a>
                 </article>
                 
-                <article class="post">
-                    <h2 class="post-title">
-                        <a href="/Blog/c/2024/10/09/Cjiaocheng.html">C语言教程（一）</a>
-                    </h2>
-                    <div class="post-meta">
-                        <span class="post-date">2024年10月09日</span>
-                        <span class="post-category">C</span>
-                    </div>
-                    <div class="post-content">
-                        <hr />
-
-                    </div>
-                    <a href="/Blog/c/2024/10/09/Cjiaocheng.html" class="post-read-more">Read More</a>
+                <article class="post post-card">
+                    <a href="/Blog/c/2024/10/09/Cjiaocheng.html" class="post-card-link">
+                        <div class="post-card-cover">
+                            
+                            <img src="/Blog/images/postbg1.jpg" alt="C语言教程（一）" loading="lazy">
+                            
+                            <span class="post-card-category-badge">C</span>
+                        </div>
+                        <div class="post-card-body">
+                            <h2 class="post-card-title">C语言教程（一）</h2>
+                            <div class="post-card-meta">
+                                <span class="post-card-date">2024-10-09</span>
+                            </div>
+                            <p class="post-card-excerpt">
+</p>
+                            <span class="post-card-readmore">阅读全文 →</span>
+                        </div>
+                    </a>
                 </article>
                 
 
@@ -439,6 +499,61 @@
                 </div>
             </aside>
         </div>
+
+        <!-- 检测横/竖图,竖图自动 object-position: top -->
+        <script>
+        (function() {
+            var ran = false;
+            function markPortrait(img) {
+                if (img.naturalWidth > 0 && img.naturalHeight > img.naturalWidth) {
+                    img.classList.add('is-portrait');
+                }
+                img.setAttribute('data-orient-checked', '1');
+            }
+            function setupPostCardImages(root) {
+                var scope = root || document;
+                var imgs = scope.querySelectorAll('.post-card-cover img:not([data-orient-checked])');
+                if (!imgs.length) return;
+                if (!('IntersectionObserver' in window)) {
+                    imgs.forEach(function(img) {
+                        if (img.complete && img.naturalWidth > 0) markPortrait(img);
+                        else {
+                            img.addEventListener('load', function() { markPortrait(img); }, { once: true });
+                            img.addEventListener('error', function() { img.setAttribute('data-orient-checked','1'); }, { once: true });
+                        }
+                    });
+                    return;
+                }
+                var io = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (!entry.isIntersecting) return;
+                        var img = entry.target;
+                        io.unobserve(img);
+                        if (img.complete && img.naturalWidth > 0) {
+                            markPortrait(img);
+                        } else {
+                            img.addEventListener('load', function() { markPortrait(img); }, { once: true });
+                            img.addEventListener('error', function() { img.setAttribute('data-orient-checked','1'); }, { once: true });
+                        }
+                    });
+                }, { rootMargin: '200px 0px' });
+                imgs.forEach(function(img) { io.observe(img); });
+            }
+            // 立即检测一次（首次加载 & PJAX 重新执行时）
+            setupPostCardImages();
+            // 通过 pjaxLoaded 钩子，在 PJAX 内容替换后再次检测
+            // 用 ran 标记避免重复链式包装
+            if (!ran && !window._indexPortraitHooked) {
+                window._indexPortraitHooked = true;
+                var origPjaxLoaded = window.pjaxLoaded;
+                window.pjaxLoaded = function() {
+                    if (typeof origPjaxLoaded === 'function') origPjaxLoaded();
+                    // 等待下一帧再检测（DOM 已替换）
+                    requestAnimationFrame(function() { setupPostCardImages(); });
+                };
+            }
+        })();
+        </script>
     </main>
 
     <!-- 页脚 -->
@@ -504,7 +619,7 @@
                 
                 firefly.style.setProperty('--breathe-duration', breatheDuration + 's');
                 firefly.style.setProperty('--breathe-delay', breatheDelay + 's');
-                
+
                 wrapper.appendChild(firefly);
                 container.appendChild(wrapper);
             }
